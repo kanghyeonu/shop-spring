@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link href="/main.css" rel="stylesheet">
+</head>
+<body>
+
+<div th:replace="~{ util/nav.html::navbar }"></div>
+
+<h4> Let's Login </h4>
+
+<div th:if="${param.error}">
+    <h4>잘못된 아이디나 비밀번호입니다.</h4>
+</div>
+
+<form action="/login" method="POST">
+    <input name="username">
+    <input name="password" type="password">
+    <button type="submit" style="display:inline">로그인</button>
+</form>

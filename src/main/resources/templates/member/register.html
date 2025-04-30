@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link href="/main.css" rel="stylesheet">
+</head>
+<body>
+
+<div th:replace="~{ util/nav.html::navbar }"></div>
+
+<form id="signupForm" action="/member" method="POST">
+    <input name="email" placeholder="사용할 아이디(이메일)를 입력하세요">
+    <input name="password" placeholder="사용할 비밀번호를 입력하세요">
+    <input name="confirm_password" placeholder="비밀번호를 재입력하세요">
+    <input name="name" placeholder="이름을 입력햊세요">
+    <input name="brithDate" placeholder="생일6자리를 입력해주세요">
+    <input name="address" placeholder="주소를 입력해주세요">
+    <input name="addressDetail" placeholder="상세 주소를 입력해주세요">
+    <input name="nickname" placeholder="별명을 입력하세요(선택)">
+    <button type="button" th:onclick="isValid()">가입</button>
+    <script >
+        function isValid() {
+            const form = document.getElementById('signupForm');
+            const email = form.email.value;
+            const password = form.password.value;
+            const confirmPassword = form.confirm_password.value;
+
+            if (!email || email.trim().length === 0){
+                alert("이메일을 입력해주세요");
+                return;
+            }
+
+            // 비밀번호 일치 여부 확인
+            if (password !== confirmPassword) {
+                alert("비밀번호가 일치하지 않습니다.");
+                return; // 검사를 통과하지 못하면 제출하지 않음
+            }
+
+            // 모든 검사를 통과하면 폼 제출
+            form.submit();
+        }
+    </script>
+</form>
+
+</body>
+</html>
