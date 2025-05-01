@@ -37,13 +37,14 @@ public class SecurityConfig {
         // csrf를 킨다면 form에 위의 코드를 삽입해줘서 서버가 발급한 token 정보도 서버에게 전달 해야함
         // csrf를 키면 ajax에서도 토큰을 넣어줘야함 -> 검색 해보자
         http.csrf(csrf -> csrf.csrfTokenRepository(csrfTokenRepository())
-                .ignoringRequestMatchers("/login", "/member") // 보안을 끌 페이지 설정 안하는게 좋음
+                .ignoringRequestMatchers("/login", "/members") // 보안을 끌 페이지 설정 안하는게 좋음
         );
 
         http.authorizeHttpRequests((authorize) ->
                 authorize.requestMatchers("/**").permitAll() // permitAll 모든 유저의 접속을 허락
         );
-        //session login
+        // session login
+        // 폼 형태로 로그인
         http.formLogin((formLogin) -> formLogin.loginPage("/login")
                 .defaultSuccessUrl("/my-page")
                 //.failureUrl("/login?error=true")

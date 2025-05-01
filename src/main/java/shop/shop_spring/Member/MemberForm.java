@@ -15,10 +15,10 @@ import java.time.LocalDate;
 @ToString
 public class MemberForm {
     private Long id;
-    private String email;
+    private String Email;
     private String password;
     private String name;
-    private LocalDate birthDate;
+    private String birthDate;
     private String address;
     private String addressDetail;
     private String nickname;

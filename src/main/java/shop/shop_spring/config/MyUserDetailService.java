@@ -1,0 +1,32 @@
+package shop.shop_spring.config;
+
+import lombok.RequiredArgsConstructor;
+import org.apache.catalina.User;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+import shop.shop_spring.Member.MemberRepository;
+
+import java.util.Collection;
+import java.util.List;
+
+//@Service
+//@RequiredArgsConstructor
+//public class MyUserDetailService implements UserDetailsService {
+//    private final MemberRepository memberRepository;
+//
+//    /** 로그인 페이지에서 로그인 시 사용자 정보를 DB에서 꺼내는 코드
+//     *  DB에서 가져온 유저정보와 사용자가 폼에서 제출한 아이디 비번 정보를 비교
+//     * @return 로그인 성공 및 로그인 유저에게 쿠키 전송
+//     */
+//    @Override
+//    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+//        // DB로부터 username을 가진 유저 정보의 비밀번호와 체출한 비밀번호를 비교
+//        // 비밀번호만 넣어주면 Spring Security가 알아허 새줌
+//        // username로 DB의 정보 로드(로그인한 아이디 or 이메일)
+//        return new UserDetails();
+//
+//    }
+//}
