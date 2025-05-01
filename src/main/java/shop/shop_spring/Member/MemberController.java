@@ -11,12 +11,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class MemberController {
     private final MemberService memberService;
 
-    @GetMapping("/member/new")
+    @GetMapping("/members/new")
     String createForm(){
-        return "member/register";
+        return "members/register";
     }
 
-    @PostMapping("/member")
+    @PostMapping("/members")
     String signup(@ModelAttribute MemberForm form){
         memberService.join(form);
         return "";
@@ -24,7 +24,7 @@ public class MemberController {
 
     @GetMapping("/login")
     String login() {
-        return "/member/login";
+        return "/members/login";
     }
 
 }
