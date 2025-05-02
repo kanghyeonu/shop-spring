@@ -1,7 +1,6 @@
 package shop.shop_spring.Member;
 
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -12,12 +11,20 @@ import java.time.format.DateTimeParseException;
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
-    private final ModelMapper modelMapper;
 
     public void join(MemberForm form){
         Member member = formToMember(form);
         validateMember(member);
         memberRepository.save(member);
+    }
+
+    private void validateMember(Member member) {
+        /**
+         *  이메일
+         *  비밀번호
+         *  주소 & 상세 주소
+         *  생일
+         */
     }
 
     private Member formToMember (MemberForm form) {
@@ -46,14 +53,7 @@ public class MemberService {
     }
 
 
-    private void validateMember(Member member) {
-        /**
-         *  이메일
-         *  비밀번호
-         *  주소 & 상세 주소
-         *  생일
-         */
-    }
+
 
 
 }
