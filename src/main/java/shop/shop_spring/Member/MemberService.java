@@ -1,16 +1,24 @@
 package shop.shop_spring.Member;
 
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import shop.shop_spring.Email.EmailDto;
+import shop.shop_spring.Email.EmailServiceImpl;
+import shop.shop_spring.Redis.RedisEmailAuthentication;
 
+import java.io.UnsupportedEncodingException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
+    private final EmailServiceImpl emailService;
+    private final RedisEmailAuthentication redisEmailAuthentication;
 
     public void join(MemberForm form){
         Member member = formToMember(form);
@@ -52,8 +60,34 @@ public class MemberService {
         return member;
     }
 
+    public void sendAuthenticationCode(String email) throws MessagingException, UnsupportedEncodingException {
+        String code = createRandomCode();
+        redisEmailAuthentication.setEmailAuthenticationExpire(email, code, 6L);
 
+        String text = "";
+        text += "안녕하세요. myShop입니다.";
+        text += "<br/><br/>";
+        text += "인증코드 보내드립니다. 5분 내로 입력해주세요";
+        text += "<br/><br/>";
+        text += "인증코드 : <b>"+code+"</b>";
 
+        EmailDto data = EmailDto.builder()
+                .email(email)
+                .title("이메일 인증코드 발송 메일입니다.")
+                .text(text)
+                .build();
+        /* 입력한 이메일로 인증코드 발송 */
+        emailService.sendMail(data);
+    }
 
+    private String createRandomCode(){
+        // Random 객체 생성
+        Random random = new Random();
+        int randomNumber = random.nextInt(1000000);
+        // 6자리 이하 정수에서 0 padding
+        String sixDigitCode = String.format("%06d", randomNumber);
 
+        return sixDigitCode;
+
+    }
 }
