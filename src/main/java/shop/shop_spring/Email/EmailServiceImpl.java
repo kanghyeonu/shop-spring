@@ -6,9 +6,9 @@ import jakarta.mail.internet.InternetAddress;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMailMessage;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.stereotype.Service;
+import shop.shop_spring.Dto.EmailDto;
 
 import java.io.UnsupportedEncodingException;
 
@@ -22,7 +22,6 @@ public class EmailServiceImpl implements EmailService{
 
     private final JavaMailSender emailSender;
 
-
     @Override
     public String sendMail(EmailDto dto) throws MessagingException, UnsupportedEncodingException{
         MimeMessage message = createMessage(dto.getEmail(), dto.getTitle(), dto.getText());
@@ -31,7 +30,6 @@ public class EmailServiceImpl implements EmailService{
     }
 
     private MimeMessage createMessage(String recipient, String title, String text) throws MessagingException, UnsupportedEncodingException {
-        System.out.println(recipient);
         MimeMessage message = emailSender.createMimeMessage();
         message.setFrom(new InternetAddress(address, personal));
         message.setRecipients(Message.RecipientType.TO, recipient);

@@ -1,6 +1,5 @@
-package shop.shop_spring.Email;
+package shop.shop_spring.Dto;
 
-import jakarta.websocket.server.ServerEndpoint;
 import lombok.*;
 
 @Getter

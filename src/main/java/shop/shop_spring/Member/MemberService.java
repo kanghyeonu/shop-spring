@@ -3,8 +3,9 @@ package shop.shop_spring.Member;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import shop.shop_spring.Email.EmailDto;
+import shop.shop_spring.Dto.EmailDto;
 import shop.shop_spring.Email.EmailServiceImpl;
+import shop.shop_spring.Exception.DataNotFoundException;
 import shop.shop_spring.Redis.RedisEmailAuthentication;
 
 import java.io.UnsupportedEncodingException;
@@ -81,7 +82,6 @@ public class MemberService {
     }
 
     private String createRandomCode(){
-        // Random 객체 생성
         Random random = new Random();
         int randomNumber = random.nextInt(1000000);
         // 6자리 이하 정수에서 0 padding
@@ -89,5 +89,16 @@ public class MemberService {
 
         return sixDigitCode;
 
+    }
+
+    public void validateAuthenticationCode(String email, String code) {
+        String existCode = redisEmailAuthentication.getEmailAuthenticationCode(email);
+        if (existCode == null){
+            throw new DataNotFoundException("유효하지 않은 사용자");
+        }
+
+        if (!existCode.equals(code)){
+            throw new DataNotFoundException("유효하지 않은 인증 번호");
+        }
     }
 }

@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.bind.ConstructorBinding;
 
 @Getter
 @ConfigurationProperties(prefix = "mail")
-public class MailProperties {
+public class EmailProperties {
     private final String host;
     private final String address;
     private final String personal;
@@ -15,7 +15,7 @@ public class MailProperties {
     private final int port;
 
     @ConstructorBinding
-    public MailProperties(String host, String address, String personal, String username, String password, int port) {
+    public EmailProperties(String host, String address, String personal, String username, String password, int port) {
         this.host = host;
         this.address = address;
         this.personal = personal;

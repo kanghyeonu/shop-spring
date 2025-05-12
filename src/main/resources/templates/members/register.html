@@ -118,6 +118,8 @@
 
     // 6자리 인증번호 인증 버튼 클릭 이벤트
     codeVerifyBtn.addEventListener('click', function() {
+
+      const emailValue = emailInput.value.trim(); // 입력된 이메일 값
       // 6자리 인증번호가 정확한지 정규식으로 검증 (숫자 6자리)
       const code = verificationCodeInput.value.trim();
       const codeRegex = /^\d{6}$/;
@@ -125,8 +127,25 @@
         alert("입력한 인증번호는 6자리 숫자여야 합니다.");
         return;
       }
-      // (여기서 실제 서버와의 코드를 비교하는 로직을 넣을 수 있음)
-      alert("이메일 인증이 완료되었습니다.");  // 시뮬레이션 알림
+
+      // 서버에 랜덤 숫자를 전송을 위한 POST 요청
+        fetch('/members/validate-email', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json' // JSON 형태로 데이터 전송
+          },
+          body: JSON.stringify({
+            email: emailValue,
+            code: code
+          }) // 요청 본문: 사용자가 입력한 이메일
+        })
+        .then(response => {
+          // 서버 응답이 정상이 아닐 경우에 오류 발생
+          if (!response.ok) {
+            throw new Error('서버 응답 에러');
+          }
+           alert("이메일 인증이 완료되었습니다.");  // 시뮬레이션 알림
+        })
 
       // 인증이 성공하면 6자리 인증 버튼을 '인증 완료' 상태로 표시
       codeVerifyBtn.textContent = "인증 완료";
