@@ -1,13 +1,9 @@
-package shop.shop_spring.Member;
+package shop.shop_spring.Domain;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
@@ -16,7 +12,7 @@ import java.util.List;
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) private Long id;
-    @Column(nullable = false, unique = true) private String    Email;
+    @Column(nullable = false, unique = true) private String    email;
     @Column(nullable = false)   private String                 password;
     @Column(nullable = false)   private String                 name;
     @Column(nullable = false)   private LocalDate              birthDate;

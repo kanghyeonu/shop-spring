@@ -6,10 +6,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import shop.shop_spring.Domain.Member;
 import shop.shop_spring.Dto.ApiResponse;
 import shop.shop_spring.Email.EmailService;
 
 import java.io.UnsupportedEncodingException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,7 +29,8 @@ public class MemberController {
 
     @PostMapping("/members")
     public String signup(@ModelAttribute MemberForm form){
-        memberService.join(form);
+        Member member = formToMember(form);
+        memberService.join(member);
         return "";
     }
 
@@ -60,4 +65,30 @@ public class MemberController {
                 success("인증 번호 발송 성공", responseBody);
         return ResponseEntity.status(200).body(responseBody);
     }
+
+    private Member formToMember (MemberForm form) {
+        Member member = new Member();
+        member.setEmail(form.getEmail());
+        member.setPassword(form.getPassword());
+        member.setName(form.getName());
+        member.setAddress(form.getAddress());
+        member.setAddressDetail(form.getAddressDetail());
+
+        String localDateStr = form.getBirthDate();
+        if (localDateStr == null || localDateStr.trim().isEmpty()){
+            throw new IllegalArgumentException("생년월일이 비었음");
+        }
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        LocalDate localDate;
+        try {
+            localDate = LocalDate.parse(localDateStr, formatter);
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("입력된 '" + localDateStr + "'는 유효한 YYYYMMDD 날짜 형식이 아니거나 유효한 날짜가 아닙니다.", e);
+        }
+        member.setBirthDate(localDate);
+        member.setNickname(form.getNickname());
+
+        return member;
+    }
+
 }

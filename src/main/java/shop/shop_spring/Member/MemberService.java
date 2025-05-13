@@ -3,6 +3,8 @@ package shop.shop_spring.Member;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import shop.shop_spring.Domain.Member;
 import shop.shop_spring.Dto.EmailDto;
 import shop.shop_spring.Email.EmailServiceImpl;
 import shop.shop_spring.Exception.DataNotFoundException;
@@ -12,6 +14,8 @@ import java.io.UnsupportedEncodingException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
 
 @Service
@@ -21,44 +25,25 @@ public class MemberService {
     private final EmailServiceImpl emailService;
     private final RedisEmailAuthentication redisEmailAuthentication;
 
-    public void join(MemberForm form){
-        Member member = formToMember(form);
+    @Transactional
+    public Long join(Member member){
         validateMember(member);
         memberRepository.save(member);
+        return member.getId();
     }
 
     private void validateMember(Member member) {
         /**
-         *  이메일
+         *  이메일: 고유
          *  비밀번호
          *  주소 & 상세 주소
          *  생일
          */
-    }
-
-    private Member formToMember (MemberForm form) {
-        Member member = new Member();
-        member.setEmail(form.getEmail());
-        member.setPassword(form.getPassword());
-        member.setName(form.getName());
-        member.setAddress(form.getAddress());
-        member.setAddressDetail(form.getAddressDetail());
-
-        String localDateStr = form.getBirthDate();
-        if (localDateStr == null || localDateStr.trim().isEmpty()){
-            throw new IllegalArgumentException("생년월일이 비었음");
-        }
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-        LocalDate localDate;
-        try {
-            localDate = LocalDate.parse(localDateStr, formatter);
-        } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException("입력된 '" + localDateStr + "'는 유효한 YYYYMMDD 날짜 형식이 아니거나 유효한 날짜가 아닙니다.", e);
-        }
-        member.setBirthDate(localDate);
-        member.setNickname(form.getNickname());
-
-        return member;
+        //이메일 중복 체크
+        memberRepository.findByEmail(member.getEmail())
+                .ifPresent(m -> {
+                    throw new IllegalArgumentException("이미 존재하는 회원");
+                });
     }
 
     public void sendAuthenticationCode(String email) throws MessagingException, UnsupportedEncodingException {
@@ -101,4 +86,12 @@ public class MemberService {
             throw new DataNotFoundException("유효하지 않은 인증 번호");
         }
     }
+
+    public Optional<Member> findById(Long memberId) {
+        return memberRepository.findById(memberId);
+    }
+
+//    public Optional<Member> findByEmail(String memberEmail){
+//        return memberRepository.findByEmail(memberEmail);
+//    }
 }
