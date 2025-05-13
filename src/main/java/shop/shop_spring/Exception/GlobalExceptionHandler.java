@@ -1,6 +1,7 @@
 package shop.shop_spring.Exception;
 
 import jakarta.mail.MessagingException;
+import org.springframework.boot.availability.AvailabilityChangeEvent;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -12,8 +13,16 @@ import java.io.UnsupportedEncodingException;
 @RestControllerAdvice
 public class GlobalExceptionHandler  {
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ApiResponse<Void>> handleIllegalArgumentException(IllegalArgumentException e){
+        System.err.println("IllegalArgumentException: " + e.getMessage());
+
+        ApiResponse<Void> errorResponse = ApiResponse.error(HttpStatus.BAD_REQUEST, e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+
     @ExceptionHandler(DataNotFoundException.class)
-    public ResponseEntity<ApiResponse<Void>> hadleDataNotFoundExcetpion(DataNotFoundException e){
+    public ResponseEntity<ApiResponse<Void>> handleDataNotFoundExcetpion(DataNotFoundException e){
         System.err.println("DataNotFoundException: " + e.getMessage());
         // 표준 에러 응답 반환
         ApiResponse<Void> errorResponse = ApiResponse.errorNoData(HttpStatus.BAD_REQUEST,

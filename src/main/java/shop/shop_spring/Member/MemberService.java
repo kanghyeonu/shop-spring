@@ -2,6 +2,7 @@ package shop.shop_spring.Member;
 
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.shop_spring.Domain.Member;
@@ -24,10 +25,12 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final EmailServiceImpl emailService;
     private final RedisEmailAuthentication redisEmailAuthentication;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public Long join(Member member){
         validateMember(member);
+        member.setPassword(passwordEncoder.encode(member.getPassword()));
         memberRepository.save(member);
         return member.getId();
     }
@@ -39,12 +42,16 @@ public class MemberService {
          *  주소 & 상세 주소
          *  생일
          */
-        //이메일 중복 체크
-        memberRepository.findByEmail(member.getEmail())
+        validateDuplicateMember(member.getEmail());
+    }
+
+    public void validateDuplicateMember(String email) {
+        memberRepository.findByEmail(email)
                 .ifPresent(m -> {
                     throw new IllegalArgumentException("이미 존재하는 회원");
                 });
     }
+
 
     public void sendAuthenticationCode(String email) throws MessagingException, UnsupportedEncodingException {
         String code = createRandomCode();
@@ -90,6 +97,7 @@ public class MemberService {
     public Optional<Member> findById(Long memberId) {
         return memberRepository.findById(memberId);
     }
+
 
 //    public Optional<Member> findByEmail(String memberEmail){
 //        return memberRepository.findByEmail(memberEmail);

@@ -31,7 +31,7 @@ public class MemberController {
     public String signup(@ModelAttribute MemberForm form){
         Member member = formToMember(form);
         memberService.join(member);
-        return "";
+        return "redirect:/login";
     }
 
     @GetMapping("/login")
@@ -42,6 +42,9 @@ public class MemberController {
     // 인증 번호 전송
     @PostMapping("/members/verify-email")
     public ResponseEntity<ApiResponse<Map<String, String>>> sendEmail(@RequestBody Map<String, String> data) throws MessagingException, UnsupportedEncodingException {
+        // 중복 회원 체크
+        memberService.validateDuplicateMember(data.get("email"));
+        
         memberService.sendAuthenticationCode(data.get("email"));
 
         // 성공 시 응답 데이터 준비
@@ -57,13 +60,16 @@ public class MemberController {
 
     //이메일 인증
     @PostMapping("/members/validate-email")
-    public ResponseEntity<Map<String, String>> validateEmail(@RequestBody Map<String, String> data) {
-        Map<String, String> responseBody = new HashMap<>();
+    public ResponseEntity<ApiResponse<Map<String, String>>> validateEmail(@RequestBody Map<String, String> data) {
         memberService.validateAuthenticationCode(data.get("email"), data.get("code"));
-        System.out.println("인증완료");
+
+        Map<String, String> responseData = new HashMap<>();
+        responseData.put("email", data.get("email"));
+
         ApiResponse<Map<String, String>> successResponse = ApiResponse.
-                success("인증 번호 발송 성공", responseBody);
-        return ResponseEntity.status(200).body(responseBody);
+                success("인증 성공", responseData);
+
+        return ResponseEntity.status(200).body(successResponse);
     }
 
     private Member formToMember (MemberForm form) {
