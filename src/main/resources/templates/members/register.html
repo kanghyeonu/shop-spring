@@ -141,22 +141,30 @@
         })
         .then(response => {
           // 서버 응답이 정상이 아닐 경우에 오류 발생
-          if (!response.ok) {
-            throw new Error('서버 응답 에러');
+          if (response.ok) {
+            alert("이메일 인증이 완료되었습니다.");  // 시뮬레이션 알림
+            // 인증이 성공하면 6자리 인증 버튼을 '인증 완료' 상태로 표시
+            codeVerifyBtn.textContent = "인증 완료";
+            codeVerifyBtn.disabled = true;
+            codeVerifyBtn.className = "btn-verified";
+
+             // 이메일 인증 완료 플래그 설정
+            emailVerified = true;
+             // 이메일 입력 필드를 읽기전용으로 바꿔 수정 불가하게 설정 (옵션)
+            emailInput.readOnly = true;
+
+          } else {
+            alert("인증번호가 올바르지 않거나 서버 오류가 발생했습니다."); // 일반적인 실패 메시지
+            // 버튼 상태를 원래대로 되돌리거나 실패 상태를 표시합니다.
+            codeVerifyBtn.disabled = false; // 버튼 다시 활성화
+            codeVerifyBtn.className = "btn-verify"; // 원래 스타일로 복원
+            emailVerified = false;
+            emailInput.readOnly = false; // 필요에 따라 입력 필드 다시 활성화
           }
-           alert("이메일 인증이 완료되었습니다.");  // 시뮬레이션 알림
+
         })
 
-      // 인증이 성공하면 6자리 인증 버튼을 '인증 완료' 상태로 표시
-      codeVerifyBtn.textContent = "인증 완료";
-      codeVerifyBtn.disabled = true;
-      codeVerifyBtn.className = "btn-verified";
 
-      // 이메일 인증 완료 플래그 설정
-      emailVerified = true;
-
-      // 이메일 입력 필드를 읽기전용으로 바꿔 수정 불가하게 설정 (옵션)
-      emailInput.readOnly = true;
     });
 
     // 최종 폼 제출 전 검사 함수
