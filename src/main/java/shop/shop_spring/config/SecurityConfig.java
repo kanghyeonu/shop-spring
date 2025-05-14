@@ -30,8 +30,14 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain SecurityFilterChain(HttpSecurity http) throws Exception {
         http.csrf((csrf) -> csrf.disable()); // csrf 끄기
+
+        http.sessionManagement((session) -> session
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        );
+
+
 
 
         // <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
@@ -44,12 +50,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests((authorize) ->
                 authorize.requestMatchers("/**").permitAll() // permitAll 모든 유저의 접속을 허락
         );
-        // session login
-        // 폼 형태로 로그인
-        http.formLogin((formLogin) -> formLogin.loginPage("/login")
-                .defaultSuccessUrl("/my-page")
-                //.failureUrl("/login?error=true")
-        );
+
         http.logout(logout -> logout.logoutUrl("/logout")
                 .logoutSuccessUrl("/items/list")
         );

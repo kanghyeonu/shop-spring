@@ -5,17 +5,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import shop.shop_spring.Domain.Member;
 import shop.shop_spring.Dto.EmailDto;
 import shop.shop_spring.Email.EmailServiceImpl;
 import shop.shop_spring.Exception.DataNotFoundException;
 import shop.shop_spring.Redis.RedisEmailAuthentication;
 
 import java.io.UnsupportedEncodingException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 
@@ -42,11 +37,11 @@ public class MemberService {
          *  주소 & 상세 주소
          *  생일
          */
-        validateDuplicateMember(member.getEmail());
+        validateDuplicateMember(member.getUsername());
     }
 
-    public void validateDuplicateMember(String email) {
-        memberRepository.findByEmail(email)
+    public void validateDuplicateMember(String username) {
+        memberRepository.findByUsername(username)
                 .ifPresent(m -> {
                     throw new IllegalArgumentException("이미 존재하는 회원");
                 });

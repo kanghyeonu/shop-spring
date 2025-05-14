@@ -21,5 +21,18 @@
 <form action="/login" method="POST">
     <input name="username">
     <input name="password" type="password">
-    <button type="submit" style="display:inline">로그인</button>
 </form>
+<button onclick="login()">로그인</button>
+
+<script>
+    function login(){
+      fetch('/members/login', {
+        method : 'POST',
+        headers : {'Content-Type': 'application/json'},
+        body : JSON.stringify({
+          username : document.querySelector('#username').value,
+          password : document.querySelector('#password').value
+        })
+      }).then(r => r.text()).then((r)=>{ console.log(r) })
+    }
+</script>

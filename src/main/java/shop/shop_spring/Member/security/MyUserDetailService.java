@@ -1,16 +1,16 @@
-package shop.shop_spring.config;
+package shop.shop_spring.Member.security;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.catalina.User;
-import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import shop.shop_spring.Exception.DataNotFoundException;
+import shop.shop_spring.Member.Member;
 import shop.shop_spring.Member.MemberRepository;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.Optional;
 
 //@Service
 //@RequiredArgsConstructor
@@ -26,7 +26,12 @@ import java.util.List;
 //        // DB로부터 username을 가진 유저 정보의 비밀번호와 체출한 비밀번호를 비교
 //        // 비밀번호만 넣어주면 Spring Security가 알아허 새줌
 //        // username로 DB의 정보 로드(로그인한 아이디 or 이메일)
-//        return new UserDetails();
+//        Optional<Member> result = memberRepository.findByEmail(username);
+//        if (result.isEmpty()){
+//            throw new DataNotFoundException("유효하지 않은 이메일 주소");
+//        }
+//        Member user = result.get();
+//        return new User(user.getUsername(), user.getPassword(),);
 //
 //    }
 //}

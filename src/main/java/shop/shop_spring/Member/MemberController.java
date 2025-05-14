@@ -4,11 +4,14 @@ import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import shop.shop_spring.Domain.Member;
 import shop.shop_spring.Dto.ApiResponse;
-import shop.shop_spring.Email.EmailService;
+import shop.shop_spring.Member.enums.Role;
 
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDate;
@@ -22,6 +25,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class MemberController {
     private final MemberService memberService;
+    private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
     @GetMapping("/register")
     public String createForm(){
@@ -40,6 +44,17 @@ public class MemberController {
         return "/members/login";
     }
 
+    @PostMapping("/login")
+    @ResponseBody
+    public String doLogin(@RequestBody Map<String, String> data) {
+        var authToken = new UsernamePasswordAuthenticationToken(
+                data.get("username"), data.get("password")
+        );
+        var auth = authenticationManagerBuilder.getObject().authenticate(authToken);
+        SecurityContextHolder.getContext().setAuthentication(auth);
+
+        return "/members/login";
+    }
     // 인증 번호 전송
     @PostMapping("/verify-email")
     public ResponseEntity<ApiResponse<Map<String, String>>> sendEmail(@RequestBody Map<String, String> data) throws MessagingException, UnsupportedEncodingException {
@@ -73,7 +88,7 @@ public class MemberController {
 
     private Member formToMember (MemberForm form) {
         Member member = new Member();
-        member.setEmail(form.getEmail());
+        member.setUsername(form.getEmail());
         member.setPassword(form.getPassword());
         member.setName(form.getName());
         member.setAddress(form.getAddress());
@@ -92,6 +107,7 @@ public class MemberController {
         }
         member.setBirthDate(localDate);
         member.setNickname(form.getNickname());
+        member.setRole(Role.ROLE_USER);
 
         return member;
     }
