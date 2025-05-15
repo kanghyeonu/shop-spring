@@ -1,4 +1,4 @@
-package shop.shop_spring.Member.security;
+package shop.shop_spring.Security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -38,8 +38,15 @@ public class MyUserDetailService implements UserDetailsService {
         List<GrantedAuthority> auths = new ArrayList<>();
         auths.add(new SimpleGrantedAuthority(user.getRole().toString()));
 
+        MyUser myUser = new MyUser(user.getUsername(), user.getPassword(), auths);
+        myUser.setId(user.getId());
+        myUser.setName(user.getName());
+        if (user.getNickname() == null){
+            myUser.setNickname("null");
+        } else{
+            myUser.setNickname(user.getNickname());
+        }
 
-        return new User(user.getUsername(), user.getPassword(), auths);
-
+        return myUser; // 컨트롤러의 Authentication auth 파라미터
     }
 }

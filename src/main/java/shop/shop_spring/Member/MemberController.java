@@ -1,6 +1,9 @@
 package shop.shop_spring.Member;
 
 import jakarta.mail.MessagingException;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import shop.shop_spring.Dto.ApiResponse;
 import shop.shop_spring.Member.enums.Role;
+import shop.shop_spring.Security.JwtUtil;
 
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDate;
@@ -46,14 +50,21 @@ public class MemberController {
 
     @PostMapping("/login")
     @ResponseBody
-    public String doLogin(@RequestBody Map<String, String> data) {
+    public String doLogin(@RequestBody Map<String, String> data,
+                          HttpServletResponse httpServletResponse) {
         var authToken = new UsernamePasswordAuthenticationToken(
                 data.get("username"), data.get("password")
         );
         var auth = authenticationManagerBuilder.getObject().authenticate(authToken);
         SecurityContextHolder.getContext().setAuthentication(auth);
 
-        return "/members/login";
+        var jwt = JwtUtil.createToken(SecurityContextHolder.getContext().getAuthentication());
+        var cookie = new Cookie("jwt", jwt);
+        cookie.setMaxAge(10);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        httpServletResponse.addCookie(cookie);
+        return jwt;
     }
     // 인증 번호 전송
     @PostMapping("/verify-email")

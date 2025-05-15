@@ -37,23 +37,13 @@ public class SecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         );
 
-
-
-
-        // <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-        // csrf를 킨다면 form에 위의 코드를 삽입해줘서 서버가 발급한 token 정보도 서버에게 전달 해야함
-        // csrf를 키면 ajax에서도 토큰을 넣어줘야함 -> 검색 해보자
-        http.csrf(csrf -> csrf.csrfTokenRepository(csrfTokenRepository())
-                .ignoringRequestMatchers("/**") // 보안을 끌 페이지 설정 안하는게 좋음
-        );
-
         http.authorizeHttpRequests((authorize) ->
                 authorize.requestMatchers("/**").permitAll() // permitAll 모든 유저의 접속을 허락
         );
 
-        http.logout(logout -> logout.logoutUrl("/logout")
-                .logoutSuccessUrl("/items/list")
-        );
+//        http.logout(logout -> logout.logoutUrl("/logout")
+//                .logoutSuccessUrl("/items/list")
+//        );
 
         return http.build();
     }
