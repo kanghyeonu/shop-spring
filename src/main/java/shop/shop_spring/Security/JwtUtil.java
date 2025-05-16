@@ -29,11 +29,11 @@ public class JwtUtil {
         var user = (MyUser) auth.getPrincipal();
         String jwt = Jwts.builder()
                 .claim("username", user.getUsername())
-                .claim("id", user.getId().toString())
                 .claim("nickname", user.getNickname())
                 .claim("name", user.getName())
+                .claim("role", user.getRole().toString())
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 10000)) //유효기간 10초
+                .expiration(new Date(System.currentTimeMillis() + 60000)) //유효기간 1분
                 .signWith(key)
                 .compact();
         return jwt;

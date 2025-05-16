@@ -34,18 +34,18 @@ public class MyUserDetailService implements UserDetailsService {
         if (result.isEmpty()){
             throw new DataNotFoundException("유효하지 않은 이메일 주소");
         }
-        Member user = result.get();
-        List<GrantedAuthority> auths = new ArrayList<>();
-        auths.add(new SimpleGrantedAuthority(user.getRole().toString()));
+        Member member = result.get();
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority(member.getRole().name()));
 
-        MyUser myUser = new MyUser(user.getUsername(), user.getPassword(), auths);
-        myUser.setId(user.getId());
-        myUser.setName(user.getName());
-        if (user.getNickname() == null){
+        MyUser myUser = new MyUser(member.getUsername(), member.getPassword(), authorities);
+        myUser.setName(member.getName());
+        if (member.getNickname() == null){
             myUser.setNickname("null");
         } else{
-            myUser.setNickname(user.getNickname());
+            myUser.setNickname(member.getNickname());
         }
+        myUser.setRole(member.getRole());
 
         return myUser; // 컨트롤러의 Authentication auth 파라미터
     }

@@ -1,6 +1,5 @@
-package shop.shop_spring.config;
+package shop.shop_spring.Security;
 
-import org.aspectj.weaver.BCException;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -23,19 +22,15 @@ public class SecurityConfig {
     }
 
     @Bean
-    public CsrfTokenRepository csrfTokenRepository() {
-        HttpSessionCsrfTokenRepository repository = new HttpSessionCsrfTokenRepository();
-        repository.setHeaderName("X-XSRF-TOKEN");
-        return repository;
-    }
-
-    @Bean
     public SecurityFilterChain SecurityFilterChain(HttpSecurity http) throws Exception {
         http.csrf((csrf) -> csrf.disable()); // csrf 끄기
 
         http.sessionManagement((session) -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         );
+
+        // 커스텀 필터 추가
+        http.addFilterBefore(new JwtAuthenticationFilter(), ExceptionTranslationFilter.class);
 
         http.authorizeHttpRequests((authorize) ->
                 authorize.requestMatchers("/**").permitAll() // permitAll 모든 유저의 접속을 허락

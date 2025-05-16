@@ -15,7 +15,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import shop.shop_spring.Dto.ApiResponse;
 import shop.shop_spring.Member.enums.Role;
+import shop.shop_spring.Security.AuthService;
 import shop.shop_spring.Security.JwtUtil;
+import shop.shop_spring.Security.MyUser;
 
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDate;
@@ -29,13 +31,23 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class MemberController {
     private final MemberService memberService;
-    private final AuthenticationManagerBuilder authenticationManagerBuilder;
+    private final AuthService authService;
 
+
+    /**
+     * 회원 가입 페이지 요청
+     * @return
+     */
     @GetMapping("/register")
     public String createForm(){
         return "members/register";
     }
 
+    /**
+     * 회원가입
+     * @param form
+     * @return 로그인 페이지
+     */
     @PostMapping
     public String signup(@ModelAttribute MemberForm form){
         Member member = formToMember(form);
@@ -48,23 +60,35 @@ public class MemberController {
         return "/members/login";
     }
 
+    /**
+     * 로그인 수행
+     * @param data
+     * @param httpServletResponse
+     * @return 로그인에 대한 jwt
+     */
     @PostMapping("/login")
     @ResponseBody
     public String doLogin(@RequestBody Map<String, String> data,
                           HttpServletResponse httpServletResponse) {
-        var authToken = new UsernamePasswordAuthenticationToken(
-                data.get("username"), data.get("password")
-        );
-        var auth = authenticationManagerBuilder.getObject().authenticate(authToken);
-        SecurityContextHolder.getContext().setAuthentication(auth);
 
-        var jwt = JwtUtil.createToken(SecurityContextHolder.getContext().getAuthentication());
+        String jwt = authService.login(data.get("username"), data.get("password"));
+
+        // 쿠키에 jwt 저장
         var cookie = new Cookie("jwt", jwt);
-        cookie.setMaxAge(10);
-        cookie.setHttpOnly(true);
+        cookie.setMaxAge(60);
+        cookie.setHttpOnly(true); // js 등에서 접근 x
         cookie.setPath("/");
         httpServletResponse.addCookie(cookie);
+
         return jwt;
+    }
+
+    @GetMapping("/my-page")
+    public String showMyPage(Authentication auth){
+        MyUser user = (MyUser) auth.getPrincipal();
+        System.out.println(user.getUsername());
+        System.out.println(user.getAuthorities());
+        return "members/my-pages";
     }
     // 인증 번호 전송
     @PostMapping("/verify-email")
