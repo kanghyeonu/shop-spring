@@ -2,8 +2,10 @@ package shop.shop_spring.Security;
 
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AuthService {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
+    private final JwtUtil jwtUtil;
 
     public String login(String username, String password){
 
@@ -19,13 +22,13 @@ public class AuthService {
 
         // 인증 토큰 인증 프로세스
         // MyUserDetailsService.loadUserByUsername() 호출
-        var auth = authenticationManagerBuilder.getObject().authenticate(authToken);
+        Authentication authenticatedAuth = authenticationManagerBuilder.getObject().authenticate(authToken);
 
         // 인증 정보 설정
-        SecurityContextHolder.getContext().setAuthentication(auth);
+        SecurityContextHolder.getContext().setAuthentication(authenticatedAuth);
 
         // jwt 반환
-        return JwtUtil.createToken(SecurityContextHolder.getContext().getAuthentication());
+        return jwtUtil.createToken(SecurityContextHolder.getContext().getAuthentication());
     }
 
 }

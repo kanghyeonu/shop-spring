@@ -1,5 +1,6 @@
 package shop.shop_spring.Security;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -15,7 +16,9 @@ import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
     @Bean
     PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
@@ -30,7 +33,7 @@ public class SecurityConfig {
         );
 
         // 커스텀 필터 추가
-        http.addFilterBefore(new JwtAuthenticationFilter(), ExceptionTranslationFilter.class);
+        http.addFilterBefore(jwtAuthenticationFilter, ExceptionTranslationFilter.class);
 
         http.authorizeHttpRequests((authorize) ->
                 authorize.requestMatchers("/**").permitAll() // permitAll 모든 유저의 접속을 허락

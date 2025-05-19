@@ -16,7 +16,7 @@ import java.util.Date;
 public class JwtUtil {
     @Value("${spring.jwt.secret}")
     private String secretKeyString;
-    private static SecretKey key;
+    private SecretKey key;
 
     @PostConstruct
     public void init(){
@@ -25,7 +25,7 @@ public class JwtUtil {
     }
 
     // JWT 만들어주는 함수
-    public static String createToken(Authentication auth) {
+    public String createToken(Authentication auth) {
         var user = (MyUser) auth.getPrincipal();
         String jwt = Jwts.builder()
                 .claim("username", user.getUsername())
@@ -40,7 +40,7 @@ public class JwtUtil {
     }
 
     // JWT 디코딩
-    public static Claims extractToken(String token) {
+    public Claims extractToken(String token) {
         Claims claims = Jwts.parser().verifyWith(key).build()
                 .parseSignedClaims(token).getPayload();
         return claims;

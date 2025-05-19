@@ -19,7 +19,7 @@ public class MemberServiceTest {
 
     private Member createTestMember() {
         Member member = new Member();
-        member.setEmail("test@example.com");
+        member.setUsername("test@example.com");
         member.setPassword("test");
         member.setName("홍길동");
         member.setAddress("테스트시");

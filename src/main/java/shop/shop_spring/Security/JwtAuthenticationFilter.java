@@ -1,4 +1,7 @@
 package shop.shop_spring.Security;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 import shop.shop_spring.Member.enums.Role;
 
 import io.jsonwebtoken.Claims;
@@ -20,7 +23,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@Component
+@AllArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+    private final JwtUtil jwtUtil;
     @Override
     protected void doFilterInternal(
             HttpServletRequest request,
@@ -55,7 +61,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // Claims: jwt Cookie 내의 jwt 문자열로부터 추출된 정보들
         Claims claim;
         try {
-            claim = JwtUtil.extractToken(jwtCookie);
+            claim = jwtUtil.extractToken(jwtCookie);
         } catch (Exception e){
             filterChain.doFilter(request, response);
             return;
