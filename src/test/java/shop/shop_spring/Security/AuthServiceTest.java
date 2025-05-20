@@ -35,7 +35,6 @@ public class AuthServiceTest {
         SecurityContextHolder.clearContext();
     }
 
-
     @Test
     void 로그인_성공() {
         // Given

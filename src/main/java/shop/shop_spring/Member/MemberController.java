@@ -88,7 +88,7 @@ public class MemberController {
         MyUser user = (MyUser) auth.getPrincipal();
         System.out.println(user.getUsername());
         System.out.println(user.getAuthorities());
-        return "members/my-pages";
+        return "members/my-page";
     }
     // 인증 번호 전송
     @PostMapping("/verify-email")

@@ -4,6 +4,7 @@ import jakarta.mail.MessagingException;
 import org.springframework.boot.availability.AvailabilityChangeEvent;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import shop.shop_spring.Dto.ApiResponse;
@@ -47,6 +48,14 @@ public class GlobalExceptionHandler  {
         ApiResponse<Void> errorResponse = ApiResponse.errorNoData(HttpStatus.INTERNAL_SERVER_ERROR,
                 "이메일 데이터 처리 중 오류가 발생했습니다.");
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ApiResponse<Void>> handleBadCredentialsException(BadCredentialsException e){
+        System.err.println("BadCredentialsException 발생:" + e.getMessage());
+        ApiResponse<Void> errorResponse = ApiResponse.errorNoData(HttpStatus.BAD_REQUEST,
+                "잘못된 아이디 또는 비밀번호");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
     // 그 외 모든 예상치 못한 Exception 발생 시 처리

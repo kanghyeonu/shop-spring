@@ -38,7 +38,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // 쿠키 없을 때 예외처리
         Cookie[] cookies = request.getCookies();
         if (cookies == null){
-            System.out.println("쿠키 없음");
             filterChain.doFilter(request, response);
             return;
         }
@@ -53,7 +52,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
         // jwt가 없을 때
         if (jwtCookie.equals("")){
-            System.out.println("jwt 없음");
             filterChain.doFilter(request, response);
             return;
         }
