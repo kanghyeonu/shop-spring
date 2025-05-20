@@ -1,10 +1,13 @@
 package shop.shop_spring.Security;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,6 +28,15 @@ public class SecurityConfig {
     }
 
     @Bean
+    public WebSecurityCustomizer webSecurityCustomizer(){
+        return web -> web.ignoring()
+                .requestMatchers(PathRequest
+                        .toStaticResources()
+                        .atCommonLocations()
+                );
+    }
+
+    @Bean
     public SecurityFilterChain SecurityFilterChain(HttpSecurity http) throws Exception {
         http.csrf((csrf) -> csrf.disable()); // csrf 끄기
 
@@ -35,15 +47,15 @@ public class SecurityConfig {
         // 커스텀 필터 추가
         http.addFilterBefore(jwtAuthenticationFilter, ExceptionTranslationFilter.class);
 
-        http.authorizeHttpRequests((authorize) ->
-                authorize.requestMatchers("/**").permitAll() // permitAll 모든 유저의 접속을 허락
-        );
+        http.authorizeHttpRequests((authorize) -> authorize
+                        .requestMatchers("/members/my-page/**").authenticated()
+                        .requestMatchers("/product/**", "/main", "/members/register", "/members/login" ).permitAll())
+                .logout(logout -> logout.permitAll());
 
-//        http.logout(logout -> logout.logoutUrl("/logout")
-//                .logoutSuccessUrl("/items/list")
-//        );
 
         return http.build();
     }
+
+
 
 }

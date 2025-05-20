@@ -12,16 +12,9 @@
 
 <div th:replace="~{ util/nav.html::navbar }"></div>
 
-<h4> My Page </h4>
+<h4> 회원 정보 수정 </h4>
 
-<div sec:authorize="isAuthenticated()" >
-    <h4><a href="members/my-page/profile">회원 정보 수정</a></h4>
-</div>
 
-<!--<div sec:authentication="principal"></div>-->
-<!--<div sec:authentication="principal.username"></div>-->
-<!--<div sec:authorize="hasAuthority('ROLE_USER')"></div>-->
-<!--<h4>이 유저는 일반 유저</h4>-->
 
 </body>
 </html>

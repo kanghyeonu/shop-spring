@@ -70,7 +70,7 @@ public class MemberController {
     @ResponseBody
     public String doLogin(@RequestBody Map<String, String> data,
                           HttpServletResponse httpServletResponse) {
-
+        System.out.println(data.get("username"));
         String jwt = authService.login(data.get("username"), data.get("password"));
 
         // 쿠키에 jwt 저장
@@ -86,9 +86,13 @@ public class MemberController {
     @GetMapping("/my-page")
     public String showMyPage(Authentication auth){
         MyUser user = (MyUser) auth.getPrincipal();
-        System.out.println(user.getUsername());
-        System.out.println(user.getAuthorities());
+
         return "members/my-page";
+    }
+
+    @GetMapping("/my-page/profile")
+    public String showProfile(){
+        return "members/profile";
     }
     // 인증 번호 전송
     @PostMapping("/verify-email")
