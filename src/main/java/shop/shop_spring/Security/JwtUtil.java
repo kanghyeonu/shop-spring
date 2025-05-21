@@ -33,7 +33,7 @@ public class JwtUtil {
                 .claim("name", user.getName())
                 .claim("role", user.getRole().toString())
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 60000)) //유효기간 1분
+                .expiration(new Date(System.currentTimeMillis() + 60000 * 5)) //유효기간 5분
                 .signWith(key)
                 .compact();
         return jwt;

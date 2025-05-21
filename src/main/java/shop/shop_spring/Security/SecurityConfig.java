@@ -52,6 +52,7 @@ public class SecurityConfig {
                         .requestMatchers("/product/**", "/main", "/members/register", "/members/login" ).permitAll())
                 .logout(logout -> logout.permitAll());
 
+        // .formLogin(...) 은 session 방식에서 사용함 빼야함
 
         return http.build();
     }

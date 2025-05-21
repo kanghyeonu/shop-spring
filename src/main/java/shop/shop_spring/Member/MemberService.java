@@ -6,11 +6,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.shop_spring.Dto.EmailDto;
+import shop.shop_spring.Dto.UpdateMemberDto;
 import shop.shop_spring.Email.EmailServiceImpl;
 import shop.shop_spring.Exception.DataNotFoundException;
 import shop.shop_spring.Redis.RedisEmailAuthentication;
 
 import java.io.UnsupportedEncodingException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import java.util.Random;
 
@@ -89,10 +92,43 @@ public class MemberService {
         }
     }
 
-    public Optional<Member> findById(Long memberId) {
-        return memberRepository.findById(memberId);
+    public Member findById(Long memberId) {
+        Optional<Member> result = memberRepository.findById(memberId);
+        if (result.isEmpty()){
+            throw new DataNotFoundException("존재하지 않는 사용자 정보: ID");
+        }
+        return result.get();
+    }
+    public Member findByUsername(String username) {
+        Optional<Member> result = memberRepository.findByUsername(username);
+        if (result.isEmpty()){
+            throw new DataNotFoundException("존재하지 않는 사용자 정보: username");
+        }
+        return result.get();
     }
 
+    @Transactional
+    public Member updateMember(UpdateMemberDto dto) {
+        Member existingMember = findByUsername(dto.getUsername());
+        if (dto.getPassword() != null){
+            existingMember.setPassword(passwordEncoder.encode(existingMember.getPassword()));
+        }
+        if (dto.getBirthDate() != null){
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+            existingMember.setBirthDate(LocalDate.parse(dto.getBirthDate(), formatter));
+        }
+        if (dto.getAddress() != null){
+            existingMember.setAddress(dto.getAddress());
+        }
+        if (dto.getAddressDetail() != null){
+            existingMember.setAddressDetail(dto.getAddressDetail());
+        }
+        if (dto.getNickName() != null){
+            existingMember.setNickname(dto.getNickName());
+        }
+        memberRepository.save(existingMember);
+        return new Member();
+    }
 
 //    public Optional<Member> findByEmail(String memberEmail){
 //        return memberRepository.findByEmail(memberEmail);

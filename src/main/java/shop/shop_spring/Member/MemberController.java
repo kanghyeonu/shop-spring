@@ -1,22 +1,19 @@
 package shop.shop_spring.Member;
 
+import org.springframework.ui.Model;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import shop.shop_spring.Dto.ApiResponse;
+import shop.shop_spring.Dto.UpdateMemberDto;
 import shop.shop_spring.Member.enums.Role;
 import shop.shop_spring.Security.AuthService;
-import shop.shop_spring.Security.JwtUtil;
 import shop.shop_spring.Security.MyUser;
 
 import java.io.UnsupportedEncodingException;
@@ -70,17 +67,20 @@ public class MemberController {
     @ResponseBody
     public String doLogin(@RequestBody Map<String, String> data,
                           HttpServletResponse httpServletResponse) {
-        System.out.println(data.get("username"));
         String jwt = authService.login(data.get("username"), data.get("password"));
 
+        addJwtCookieToResponse(httpServletResponse, jwt);
+
+        return jwt;
+    }
+
+    private void addJwtCookieToResponse(HttpServletResponse httpServletResponse, String jwt){
         // 쿠키에 jwt 저장
         var cookie = new Cookie("jwt", jwt);
-        cookie.setMaxAge(60);
+        cookie.setMaxAge(60 * 5);
         cookie.setHttpOnly(true); // js 등에서 접근 x
         cookie.setPath("/");
         httpServletResponse.addCookie(cookie);
-
-        return jwt;
     }
 
     @GetMapping("/my-page")
@@ -91,9 +91,29 @@ public class MemberController {
     }
 
     @GetMapping("/my-page/profile")
-    public String showProfile(){
+    public String showProfile(Authentication auth, Model model){
+        MyUser myUser = (MyUser) auth.getPrincipal();
+        Member member = memberService.findByUsername(myUser.getUsername());
+
+        model.addAttribute("username", member.getUsername());
+        model.addAttribute("name", member.getName());
+        model.addAttribute("birthDate", member.getBirthDate());
+        model.addAttribute("address", member.getAddress());
+        model.addAttribute("addressDetail", member.getAddressDetail());
+        model.addAttribute("nickName", member.getNickname());
+
         return "members/profile";
     }
+
+    @PutMapping("my-page/profile")
+    public ResponseEntity<ApiResponse<Void>> modifyProfile(@RequestBody UpdateMemberDto dto){
+
+        Member updatedMember = memberService.updateMember(dto);
+
+        ApiResponse<Void> successResponse = ApiResponse.successNoData("회원 정보 수정 완료");
+        return ResponseEntity.status(HttpStatus.OK).body(successResponse);
+    }
+
     // 인증 번호 전송
     @PostMapping("/verify-email")
     public ResponseEntity<ApiResponse<Map<String, String>>> sendEmail(@RequestBody Map<String, String> data) throws MessagingException, UnsupportedEncodingException {
@@ -103,8 +123,7 @@ public class MemberController {
         memberService.sendAuthenticationCode(data.get("email"));
 
         // 성공 시 응답 데이터 준비
-        Map<String, String> responseData = new HashMap<>();
-        responseData.put("email", data.get("email"));
+        Map<String, String> responseData = createResponseData("email", data.get("email"));
         ApiResponse<Map<String, String>> successResponse = ApiResponse.
                 success("인증 번호 발송 성공", responseData);
 
@@ -116,11 +135,9 @@ public class MemberController {
     public ResponseEntity<ApiResponse<Map<String, String>>> validateEmail(@RequestBody Map<String, String> data) {
         memberService.validateAuthenticationCode(data.get("email"), data.get("code"));
 
-        Map<String, String> responseData = new HashMap<>();
-        responseData.put("email", data.get("email"));
-
+        Map<String, String> responseData = createResponseData("email", data.get("email"));
         ApiResponse<Map<String, String>> successResponse = ApiResponse.
-                success("인증 성공", responseData);
+                success("이메일 인증 성공", responseData);
 
         return ResponseEntity.status(200).body(successResponse);
     }
@@ -151,4 +168,9 @@ public class MemberController {
         return member;
     }
 
+    private Map<String, String> createResponseData(String key, String message){
+        Map<String, String> responseData = new HashMap<>();
+        responseData.put(key, message);;
+        return responseData;
+    }
 }

@@ -2,7 +2,7 @@
     <a class="logo">SpringMall</a>
 <!--    <a href="/items/list/1">List</a>-->
     <div sec:authorize="isAnonymous()">
-        <a href="/login">login</a>
+        <a href="/members/login">login</a>
     </div>
     <div sec:authorize="isAuthenticated()">
         <a href="/members/my-page">마이페이지</a>

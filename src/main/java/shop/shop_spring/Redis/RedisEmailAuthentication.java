@@ -5,11 +5,13 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 
 @Component
 @RequiredArgsConstructor
+@Transactional
 public class RedisEmailAuthentication {
     @Qualifier("redisEmailAuthenticationTemplate")
     private final StringRedisTemplate redisTemplate;

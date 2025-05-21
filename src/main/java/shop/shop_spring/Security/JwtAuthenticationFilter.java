@@ -71,7 +71,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // 추출된 claim으로
         MyUser myUser = new MyUser(claim.get("username").toString(), "none", authorities);
         myUser.setName(claim.get("name").toString());
-        myUser.setName(claim.get("nickname").toString());
+        myUser.setNickname(claim.get("nickname").toString());
         myUser.setRole(Enum.valueOf(Role.class, claim.get("role").toString()));
 
         var authToken = new UsernamePasswordAuthenticationToken(

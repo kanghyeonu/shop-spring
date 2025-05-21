@@ -14,8 +14,7 @@ import java.time.LocalDate;
 @Setter
 @ToString
 public class MemberForm {
-    private Long id;
-    private String Email;
+    private String email;
     private String password;
     private String name;
     private String birthDate;
