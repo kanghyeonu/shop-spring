@@ -60,6 +60,22 @@
       });
     }
 </script>
-<button>비밀번호 찾기</button>
+<button type="button" id="findPasswordBtn">비밀번호 찾기</button>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+            const findPasswordButton = document.getElementById('findPasswordBtn');
+
+            // 버튼에 클릭 이벤트 리스너 추가
+            if (findPasswordButton) { // 버튼 요소가 존재하는지 확인
+                findPasswordButton.addEventListener('click', function() {
+                    // 버튼 클릭 시 '/password-reset' 경로로 페이지 이동
+                    window.location.href = '/members/password-reset';
+                });
+            } else {
+                console.error("ID가 'findPasswordButton'인 요소를 찾을 수 없습니다.");
+            }
+    });
+
+</script>
 </body>
 </html>

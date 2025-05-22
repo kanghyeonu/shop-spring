@@ -21,6 +21,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -74,6 +75,9 @@ public class MemberController {
         return jwt;
     }
 
+    /**
+     * 쿠키 추가
+     */
     private void addJwtCookieToResponse(HttpServletResponse httpServletResponse, String jwt){
         // 쿠키에 jwt 저장
         var cookie = new Cookie("jwt", jwt);
@@ -105,27 +109,74 @@ public class MemberController {
         return "members/profile";
     }
 
-    @PutMapping("my-page/profile")
+    @PutMapping("/my-page/profile")
     public ResponseEntity<ApiResponse<Void>> modifyProfile(@RequestBody UpdateMemberDto dto){
-
-        Member updatedMember = memberService.updateMember(dto);
-
+        // validateMember(updateMemberDtoToMember(dto)) 검증 한번 하는게 좋을 듯
+        memberService.updateMember(updateMemberDtoToMember(dto));
+        
         ApiResponse<Void> successResponse = ApiResponse.successNoData("회원 정보 수정 완료");
+        
+        return ResponseEntity.status(HttpStatus.OK).body(successResponse);
+    }
+    
+    private Member updateMemberDtoToMember(UpdateMemberDto dto){
+        Member member = new Member();
+        member.setUsername(dto.getUsername());
+        member.setPassword(dto.getPassword());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        LocalDate localDate;
+        try {
+            localDate = LocalDate.parse(dto.getBirthDate(), formatter);
+
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("잘못된 날짜 형식");
+        }
+        member.setBirthDate(localDate);
+        member.setAddress(dto.getAddress());
+        member.setAddressDetail(dto.getAddressDetail());
+        member.setNickname(dto.getNickName());
+        return member;
+    }
+
+    @GetMapping("/password-reset")
+    public String showPasswordReset(){
+        return "members/password-reset";
+    }
+
+    @PostMapping("/password-reset")
+    @ResponseBody
+    public ResponseEntity resetPassword(@RequestBody Map<String, String> data){
+        String username = data.get("username");
+        String name = data.get("name");
+        String brithDate = data.get("birthDate");
+
+        memberService.validateUserInformation(username, name, brithDate);
+
+        Map<String, String> responseData = createResponseData("사용자", data.get("username"));
+        ApiResponse<Map<String, String>> successResponse =
+                ApiResponse.success("본인 인증 완료", responseData);
         return ResponseEntity.status(HttpStatus.OK).body(successResponse);
     }
 
+    @PostMapping("/change-password")
+    public ResponseEntity updatePassword(@RequestBody Map<String, String> data){
+        // 변경로직작성
+
+        ApiResponse<Void> response = ApiResponse.successNoData("비밀번호 변경 완료");
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
     // 인증 번호 전송
     @PostMapping("/verify-email")
     public ResponseEntity<ApiResponse<Map<String, String>>> sendEmail(@RequestBody Map<String, String> data) throws MessagingException, UnsupportedEncodingException {
         // 중복 회원 체크
         memberService.validateDuplicateMember(data.get("email"));
-        // 인증 번호 검증
+        // 인증 번호 생성 및 메일 전송
         memberService.sendAuthenticationCode(data.get("email"));
 
         // 성공 시 응답 데이터 준비
         Map<String, String> responseData = createResponseData("email", data.get("email"));
-        ApiResponse<Map<String, String>> successResponse = ApiResponse.
-                success("인증 번호 발송 성공", responseData);
+        ApiResponse<Map<String, String>> successResponse =
+                ApiResponse.success("인증 번호 발송 성공", responseData);
 
         return ResponseEntity.status(HttpStatus.OK).body(successResponse);
     }
@@ -136,8 +187,8 @@ public class MemberController {
         memberService.validateAuthenticationCode(data.get("email"), data.get("code"));
 
         Map<String, String> responseData = createResponseData("email", data.get("email"));
-        ApiResponse<Map<String, String>> successResponse = ApiResponse.
-                success("이메일 인증 성공", responseData);
+        ApiResponse<Map<String, String>> successResponse =
+                ApiResponse.success("이메일 인증 성공", responseData);
 
         return ResponseEntity.status(200).body(successResponse);
     }
@@ -171,6 +222,17 @@ public class MemberController {
     private Map<String, String> createResponseData(String key, String message){
         Map<String, String> responseData = new HashMap<>();
         responseData.put(key, message);;
+        return responseData;
+    }
+
+    private Map<String, ?> createResponseData(List<String> key, List<?> data){
+        if (key.size() != data.size()) {
+            throw new IllegalArgumentException("입력된 key와 data의 길이가 다름");
+        }
+        Map<String, Object> responseData = new HashMap<>();
+        for (int i = 0; i < key.size(); i++){
+            responseData.put(key.get(i), data.get(i));
+        }
         return responseData;
     }
 }

@@ -5,7 +5,6 @@ import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -13,14 +12,22 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.ExceptionTranslationFilter;
-import org.springframework.security.web.csrf.CsrfTokenRepository;
-import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+
+    String[] urlsBePermittedAll = {
+            "/product/**",
+            "/main",
+            "/members/register",
+            "/members/login",
+            "/members/password-reset",
+            "/members/change-password"
+    };
+
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     @Bean
     PasswordEncoder passwordEncoder(){
@@ -38,6 +45,8 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain SecurityFilterChain(HttpSecurity http) throws Exception {
+
+
         http.csrf((csrf) -> csrf.disable()); // csrf 끄기
 
         http.sessionManagement((session) -> session
@@ -49,7 +58,7 @@ public class SecurityConfig {
 
         http.authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers("/members/my-page/**").authenticated()
-                        .requestMatchers("/product/**", "/main", "/members/register", "/members/login" ).permitAll())
+                        .requestMatchers(urlsBePermittedAll).permitAll())
                 .logout(logout -> logout.permitAll());
 
         // .formLogin(...) 은 session 방식에서 사용함 빼야함

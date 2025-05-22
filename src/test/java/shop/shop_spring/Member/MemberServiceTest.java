@@ -56,4 +56,6 @@ public class MemberServiceTest {
         // then
         assertThat(e.getMessage()).isEqualTo("이미 존재하는 회원");
     }
+
+    // 멤버 정보 변경
 }

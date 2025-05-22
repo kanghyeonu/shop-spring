@@ -2,6 +2,7 @@ package shop.shop_spring.Member;
 
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.internal.bytebuddy.asm.MemberSubstitution;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +15,7 @@ import shop.shop_spring.Redis.RedisEmailAuthentication;
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Optional;
 import java.util.Random;
 
@@ -108,26 +110,40 @@ public class MemberService {
     }
 
     @Transactional
-    public Member updateMember(UpdateMemberDto dto) {
-        Member existingMember = findByUsername(dto.getUsername());
-        if (dto.getPassword() != null){
+    public void updateMember(Member member) {
+        Member existingMember = findByUsername(member.getUsername());
+        if (member.getPassword() != null){
             existingMember.setPassword(passwordEncoder.encode(existingMember.getPassword()));
         }
-        if (dto.getBirthDate() != null){
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-            existingMember.setBirthDate(LocalDate.parse(dto.getBirthDate(), formatter));
+        if (member.getBirthDate() != null){
+            existingMember.setBirthDate(member.getBirthDate());
         }
-        if (dto.getAddress() != null){
-            existingMember.setAddress(dto.getAddress());
+        if (member.getAddress() != null){
+            existingMember.setAddress(member.getAddress());
         }
-        if (dto.getAddressDetail() != null){
-            existingMember.setAddressDetail(dto.getAddressDetail());
+        if (member.getAddressDetail() != null){
+            existingMember.setAddressDetail(member.getAddressDetail());
         }
-        if (dto.getNickName() != null){
-            existingMember.setNickname(dto.getNickName());
+        if (member.getNickname() != null){
+            existingMember.setNickname(member.getNickname());
         }
         memberRepository.save(existingMember);
-        return new Member();
+    }
+
+    public void validateUserInformation(String username, String name, String birthDate) {
+        Member member = findByUsername(username);
+
+        if (!member.getName().equals(name)){
+            System.out.println(member.getName() + name);
+            throw new IllegalArgumentException("잘못된 회원 정보");
+        }
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        String birthDateFromDb = member.getBirthDate().format(formatter);
+        if (!birthDateFromDb.equals(birthDate)){
+            throw new IllegalArgumentException("잘못된 회원 정보");
+        }
+
     }
 
 //    public Optional<Member> findByEmail(String memberEmail){
