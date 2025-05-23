@@ -152,7 +152,7 @@ public class MemberController {
 
         memberService.validateUserInformation(username, name, brithDate);
 
-        Map<String, String> responseData = createResponseData("사용자", data.get("username"));
+        Map<String, String> responseData = createResponseData("username", data.get("username"));
         ApiResponse<Map<String, String>> successResponse =
                 ApiResponse.success("본인 인증 완료", responseData);
         return ResponseEntity.status(HttpStatus.OK).body(successResponse);
@@ -169,8 +169,6 @@ public class MemberController {
     // 인증 번호 전송
     @PostMapping("/verify-email")
     public ResponseEntity<ApiResponse<Map<String, String>>> sendEmail(@RequestBody Map<String, String> data) throws MessagingException, UnsupportedEncodingException {
-        // 중복 회원 체크
-        memberService.validateDuplicateMember(data.get("email"));
         // 인증 번호 생성 및 메일 전송
         memberService.sendAuthenticationCode(data.get("email"));
 

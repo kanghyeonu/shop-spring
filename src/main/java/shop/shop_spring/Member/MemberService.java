@@ -38,14 +38,14 @@ public class MemberService {
     private void validateMember(Member member) {
         /**
          *  이메일: 고유
-         *  비밀번호
-         *  주소 & 상세 주소
+         *  비밀번호: FE에서 판단 될지도?
+         *  주소 & 상세 주소:
          *  생일
          */
         validateDuplicateMember(member.getUsername());
     }
 
-    public void validateDuplicateMember(String username) {
+    private void validateDuplicateMember(String username) {
         memberRepository.findByUsername(username)
                 .ifPresent(m -> {
                     throw new IllegalArgumentException("이미 존재하는 회원");
@@ -54,6 +54,7 @@ public class MemberService {
 
 
     public void sendAuthenticationCode(String email) throws MessagingException, UnsupportedEncodingException {
+        validateDuplicateMember(email);
         String code = createRandomCode();
         redisEmailAuthentication.setEmailAuthenticationExpire(email, code, 6L);
 
