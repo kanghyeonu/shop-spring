@@ -114,7 +114,7 @@ public class MemberService {
     public void updateMember(Member member) {
         Member existingMember = findByUsername(member.getUsername());
         if (member.getPassword() != null){
-            existingMember.setPassword(passwordEncoder.encode(member.getPassword()));
+            existingMember.setPassword(passwordEncoder.encode(existingMember.getPassword()));
         }
         if (member.getBirthDate() != null){
             existingMember.setBirthDate(member.getBirthDate());
