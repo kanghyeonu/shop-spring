@@ -173,4 +173,40 @@ public class MemberServiceTest {
         verify(memberRepository, times(1)).findByUsername(nonExistingUsername);
 
     }
+
+    @Test
+    void 비밀번호_변경_성공(){
+        //given
+        String username = "test@example.com";
+        String newRawPassword = "newPassword";
+        String encodedNewPassword = "encodedNewPassword";
+
+        Member member = createTestMember();
+        member.setId(1L);
+        member.setUsername(username);
+        member.setPassword("oldPassword");
+
+        when(memberRepository.findByUsername(username)).thenReturn(Optional.of(member));
+        when(passwordEncoder.encode(newRawPassword)).thenReturn(encodedNewPassword);
+
+        ArgumentCaptor<Member> memberArgumentCaptor = ArgumentCaptor.forClass(Member.class);
+        when(memberRepository.save(any(Member.class))).thenReturn(member);
+
+        // when
+        memberService.updatePassword(username, newRawPassword);
+
+        // then
+        verify(memberRepository, times(1)).findByUsername(username);
+        verify(passwordEncoder, times(1)).encode(newRawPassword);
+        verify(memberRepository, times(1)).save(memberArgumentCaptor.capture());
+
+        Member capturedMember = memberArgumentCaptor.getValue();
+
+        assertNotNull(capturedMember);
+        assertEquals(encodedNewPassword, capturedMember.getPassword(), "Member 객체의 비밀번호가 업데이트 되어야함");
+        assertEquals(encodedNewPassword, member.getPassword(), "비밀번호 업데이트 후 기존 Member 객체도 업데이트 되어야함");
+        assertEquals(member.getId(), capturedMember.getId());
+
+
+    }
 }
