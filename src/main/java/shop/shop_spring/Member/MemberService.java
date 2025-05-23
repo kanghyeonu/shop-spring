@@ -146,6 +146,13 @@ public class MemberService {
 
     }
 
+    @Transactional
+    public void updatePassword(String username, String newPassword) {
+        Member member = findByUsername(username);
+        member.setPassword(passwordEncoder.encode(newPassword));
+        memberRepository.save(member);
+    }
+
 //    public Optional<Member> findByEmail(String memberEmail){
 //        return memberRepository.findByEmail(memberEmail);
 //    }

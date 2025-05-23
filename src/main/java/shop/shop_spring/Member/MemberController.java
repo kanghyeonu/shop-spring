@@ -160,7 +160,8 @@ public class MemberController {
 
     @PostMapping("/change-password")
     public ResponseEntity updatePassword(@RequestBody Map<String, String> data){
-        // 변경로직작성
+
+        memberService.updatePassword(data.get("username"), data.get("newPassword"));
 
         ApiResponse<Void> response = ApiResponse.successNoData("비밀번호 변경 완료");
         return ResponseEntity.status(HttpStatus.OK).body(response);
