@@ -3,13 +3,12 @@ package shop.shop_spring.Security;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import shop.shop_spring.Exception.DataNotFoundException;
-import shop.shop_spring.Member.Member;
+import shop.shop_spring.Member.domain.Member;
 import shop.shop_spring.Member.MemberRepository;
 
 import java.util.ArrayList;

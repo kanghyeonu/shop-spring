@@ -1,8 +1,8 @@
-package shop.shop_spring.Member;
+package shop.shop_spring.Member.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
-import shop.shop_spring.Member.enums.Role;
+import shop.shop_spring.Member.domain.enums.Role;
 
 import java.time.LocalDate;
 

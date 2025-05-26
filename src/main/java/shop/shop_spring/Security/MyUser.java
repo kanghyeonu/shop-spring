@@ -4,9 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
-import shop.shop_spring.Member.enums.Role;
+import shop.shop_spring.Member.domain.enums.Role;
 
-import java.time.LocalDate;
 import java.util.Collection;
 
 @Getter

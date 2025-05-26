@@ -1,22 +1,18 @@
 package shop.shop_spring.Member;
 
-import org.assertj.core.api.MapAssert;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.transaction.annotation.Transactional;
 import shop.shop_spring.Exception.DataNotFoundException;
+import shop.shop_spring.Member.domain.Member;
 
-import static  org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.Optional;
 

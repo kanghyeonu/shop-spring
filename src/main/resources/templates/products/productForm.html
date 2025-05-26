@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+
+<div th:replace="~{ util/nav.html::navbar }"></div>
+
+<form id="signupForm" action="/members" method="POST">
+    <!-- 이메일 입력 및 인증 버튼 -->
+    <div id="emailRow">
+        <!-- 이메일 입력 -->
+        <input type="text" name="email" id="emailInput" placeholder="사용할 아이디(이메일)를 입력하세요" style="display:inline">
+        <!-- 이메일 인증 버튼 (처음엔 비활성화) -->
+        <button type="button" id="emailAuthBtn" class="btn-disabled" disabled>인증</button>
+    </div>
+
+    <!-- 이메일 인증 후 6자리 코드 입력 컨테이너 (처음 숨김) -->
+    <div id="emailVerificationContainer" style="display:none; margin-top:10px;">
+        <!-- 6자리 인증번호 입력 -->
+        <input type="text" id="verificationCode" name="verificationCode" placeholder="6자리 인증번호 입력" maxlength="6" style="display:inline">
+        <!-- 6자리 인증번호 인증 버튼 -->
+        <button type="button" id="codeVerifyBtn" class="btn-enabled">인증</button>
+    </div>
+
+    <!-- 나머지 입력 필드들 -->
+    <input name="password" type="password" placeholder="사용할 비밀번호를 입력하세요">
+    <input name="confirm_password" type="password" placeholder="비밀번호를 재입력하세요">
+    <input name="name" placeholder="이름을 입력햊세요">
+    <input name="birthDate" placeholder="생일8자리(19711012 등)를 입력해주세요">
+    <input name="address" placeholder="주소를 입력해주세요">
+    <input name="addressDetail" placeholder="상세 주소를 입력해주세요">
+    <input name="nickname" placeholder="별명을 입력하세요(선택)">
+
+    <!-- 가입 버튼: form 검증 후 제출 -->
+    <button type="button" onclick="isValid()">가입</button>
+</form>

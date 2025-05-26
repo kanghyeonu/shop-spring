@@ -1,8 +1,7 @@
 package shop.shop_spring.Security;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import shop.shop_spring.Member.enums.Role;
+import shop.shop_spring.Member.domain.enums.Role;
 
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
@@ -18,9 +17,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Component

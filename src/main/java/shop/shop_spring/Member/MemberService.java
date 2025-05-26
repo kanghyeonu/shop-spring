@@ -2,20 +2,17 @@ package shop.shop_spring.Member;
 
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.internal.bytebuddy.asm.MemberSubstitution;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.shop_spring.Dto.EmailDto;
-import shop.shop_spring.Dto.UpdateMemberDto;
 import shop.shop_spring.Email.EmailServiceImpl;
 import shop.shop_spring.Exception.DataNotFoundException;
+import shop.shop_spring.Member.domain.Member;
 import shop.shop_spring.Redis.RedisEmailAuthentication;
 
 import java.io.UnsupportedEncodingException;
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.Optional;
 import java.util.Random;
 

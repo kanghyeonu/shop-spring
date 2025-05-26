@@ -1,4 +1,4 @@
-package shop.shop_spring.Member.enums;
+package shop.shop_spring.Member.domain.enums;
 
 public enum Role {
     // Spring Security에서 권장하는 권한 접두사 'ROLE_'를 사용합니다.

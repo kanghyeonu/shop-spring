@@ -12,7 +12,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import shop.shop_spring.Dto.ApiResponse;
 import shop.shop_spring.Dto.UpdateMemberDto;
-import shop.shop_spring.Member.enums.Role;
+import shop.shop_spring.Member.domain.Member;
+import shop.shop_spring.Member.domain.enums.Role;
 import shop.shop_spring.Security.AuthService;
 import shop.shop_spring.Security.MyUser;
 
