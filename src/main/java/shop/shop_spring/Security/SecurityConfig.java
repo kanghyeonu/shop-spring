@@ -20,12 +20,13 @@ import org.springframework.security.web.access.ExceptionTranslationFilter;
 public class SecurityConfig {
 
     String[] urlsBePermittedAll = {
-            "/product/**",
+            "/products/**",
             "/main",
             "/members/register",
             "/members/login",
             "/members/password-reset",
-            "/members/change-password"
+            "/members/change-password",
+            "/categories/**"
     };
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;

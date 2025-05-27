@@ -3,7 +3,7 @@ package shop.shop_spring.Product.domain;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import shop.shop_spring.Category.Category;
+import shop.shop_spring.Category.domain.Category;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -33,13 +33,13 @@ public class Product {
                 cascade = CascadeType.ALL, // 상품 삭제 시 상세 설명eh 삭제
                 orphanRemoval = true, // 고아 객체도 제거
                 fetch = FetchType.LAZY)
-    private ProductDetail productDetail;
+    private ProductDescription description;
 
-    public void setProductDetail(ProductDetail productDetail){
-        if (this.productDetail != null) {
-            this.productDetail.setProduct(null);
+    public void setDescription(ProductDescription productDetail){
+        if (this.description != null) {
+            this.description.setProduct(null);
         }
-        this.productDetail = productDetail;
+        this.description = productDetail;
         if (productDetail != null){
             productDetail.setProduct(this);
         }

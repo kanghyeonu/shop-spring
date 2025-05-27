@@ -153,7 +153,7 @@ public class MemberController {
 
         memberService.validateUserInformation(username, name, brithDate);
 
-        Map<String, String> responseData = createResponseData("username", data.get("username"));
+        Map<String, String> responseData = ApiResponse.createResponseData("username", data.get("username"));
         ApiResponse<Map<String, String>> successResponse =
                 ApiResponse.success("본인 인증 완료", responseData);
         return ResponseEntity.status(HttpStatus.OK).body(successResponse);
@@ -174,7 +174,7 @@ public class MemberController {
         memberService.sendAuthenticationCode(data.get("email"));
 
         // 성공 시 응답 데이터 준비
-        Map<String, String> responseData = createResponseData("email", data.get("email"));
+        Map<String, String> responseData = ApiResponse.createResponseData("email", data.get("email"));
         ApiResponse<Map<String, String>> successResponse =
                 ApiResponse.success("인증 번호 발송 성공", responseData);
 
@@ -186,7 +186,7 @@ public class MemberController {
     public ResponseEntity<ApiResponse<Map<String, String>>> validateEmail(@RequestBody Map<String, String> data) {
         memberService.validateAuthenticationCode(data.get("email"), data.get("code"));
 
-        Map<String, String> responseData = createResponseData("email", data.get("email"));
+        Map<String, String> responseData = ApiResponse.createResponseData("email", data.get("email"));
         ApiResponse<Map<String, String>> successResponse =
                 ApiResponse.success("이메일 인증 성공", responseData);
 
@@ -219,20 +219,4 @@ public class MemberController {
         return member;
     }
 
-    private Map<String, String> createResponseData(String key, String message){
-        Map<String, String> responseData = new HashMap<>();
-        responseData.put(key, message);;
-        return responseData;
-    }
-
-    private Map<String, ?> createResponseData(List<String> key, List<?> data){
-        if (key.size() != data.size()) {
-            throw new IllegalArgumentException("입력된 key와 data의 길이가 다름");
-        }
-        Map<String, Object> responseData = new HashMap<>();
-        for (int i = 0; i < key.size(); i++){
-            responseData.put(key.get(i), data.get(i));
-        }
-        return responseData;
-    }
 }

@@ -6,6 +6,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.http.HttpStatus;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 
 @Getter
 @Setter
@@ -38,5 +42,22 @@ public class ApiResponse<T> {
     // 오버로드: 데이터가 없는 실패 응답
     public static ApiResponse<Void> errorNoData(HttpStatus status, String message) {
         return new ApiResponse<>(status.value(), message, null);
+    }
+
+    public static Map<String, String> createResponseData(String key, String message){
+        Map<String, String> responseData = new HashMap<>();
+        responseData.put(key, message);;
+        return responseData;
+    }
+
+    public static Map<String, String> createResponseData(List<String> key, List<?> data){
+        if (key.size() != data.size()) {
+            throw new IllegalArgumentException("입력된 key와 data의 길이가 다름");
+        }
+        Map<String, String> responseData = new HashMap<>();
+        for (int i = 0; i < key.size(); i++){
+            responseData.put(key.get(i), data.get(i).toString());
+        }
+        return responseData;
     }
 }
