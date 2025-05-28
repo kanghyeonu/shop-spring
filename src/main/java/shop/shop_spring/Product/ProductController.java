@@ -5,15 +5,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import shop.shop_spring.Category.domain.Category;
 import shop.shop_spring.Dto.ApiResponse;
-import shop.shop_spring.Product.domain.Product;
-import shop.shop_spring.Product.domain.ProductDescription;
+import shop.shop_spring.Product.Dto.ProductCreationRequest;
 
+
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -32,39 +31,30 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<Map<String, String>>> createProduct(@RequestBody ProductForm form){
-//        Product product = formToProduct(form);
-
-//        Product newProduct = productService.createProduct(product);
-
-        System.out.println(form.getTitle());
-        System.out.println(form.getUsername());
-        System.out.println(form.getPrice());
-        System.out.println(form.getCategoryId());
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<ApiResponse<Map<String, String>>> createProduct(@RequestBody ProductCreationRequest request){
+        productService.createProduct(request);
 
         List<String> productInfoKeys = new ArrayList<>();
         List<String> productInfoValues = new ArrayList<>();
         Map<String, String> responseData = ApiResponse.createResponseData(productInfoKeys, productInfoValues);
-        ApiResponse<Map<String, String>> successResponse = ApiResponse.success("상품 등록 성공", responseData);
+        ApiResponse<Map<String, String>> successResponse = ApiResponse.success("상품 등록 완료", responseData);
 
         return ResponseEntity.status(HttpStatus.OK).body(successResponse);
     }
 
-    private Product formToProduct(ProductForm form){
-        Product product = new Product();
-        product.setTitle(form.getTitle());
-        product.setPrice(form.getPrice());
-        product.setUsername(form.getUsername());
-        product.setStockQuantity(form.getStockQuantity());
+    private ProductCreationRequest formToProductCreationRequest(ProductForm form){
+        ProductCreationRequest request = new ProductCreationRequest();
 
-        ProductDescription productDescription = new ProductDescription();
-        productDescription.setDescription(form.getDescription());
-        product.setDescription(productDescription);
+        request.setTitle(form.getTitle());
+        request.setPrice(form.getPrice());
+        request.setUsername(form.getUsername());
+        request.setStockQuantity(form.getStockQuantity());
+        request.setThumbnailUrl(form.getThumbnailUrl());
+        request.setDescription(form.getDescription());
+        request.setCategoryId(form.getCategoryId());
 
-//        Category category = new Category();
-//        category.setName(form.getCategory());
-
-        return product;
-
+        return request;
     }
+
 }

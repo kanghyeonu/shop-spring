@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import shop.shop_spring.Category.domain.Category;
-
+import shop.shop_spring.Product.enums.Status;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -49,8 +49,8 @@ public class Product {
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @Column(nullable = false, length = 50)
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     @Column(length = 500)
     private String thumbnailUrl;

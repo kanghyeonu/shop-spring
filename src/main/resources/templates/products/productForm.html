@@ -141,9 +141,9 @@ function applyProduct() {
              throw new Error(`상품 등록 실패: ${errorData.message || response.statusText}`);
         });
     })
-    .then(savedProduct => {
+    .then(savedProductId => {
         // 등록 성공 시 처리
-        alert('상품이 성공적으로 등록되었습니다! 상품 ID: ' + savedProduct.id);
+        alert('상품이 성공적으로 등록되었습니다! 상품 ID: ' + savedProductId);
         console.log('등록된 상품 정보:', savedProduct);
         // 성공 후 페이지 이동이나 폼 초기화 등 추가 작업 수행
         // window.location.href = '/products/' + savedProduct.id; // 예: 등록된 상품 상세 페이지로 이동
