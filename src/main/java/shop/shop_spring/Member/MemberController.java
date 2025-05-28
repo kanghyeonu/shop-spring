@@ -11,7 +11,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import shop.shop_spring.Dto.ApiResponse;
-import shop.shop_spring.Dto.UpdateMemberDto;
+import shop.shop_spring.Member.Dto.MemberCreationRequest;
+import shop.shop_spring.Member.Dto.MemberUpdateRequest;
 import shop.shop_spring.Member.domain.Member;
 import shop.shop_spring.Member.domain.enums.Role;
 import shop.shop_spring.Security.AuthService;
@@ -21,8 +22,6 @@ import java.io.UnsupportedEncodingException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -32,25 +31,19 @@ public class MemberController {
     private final MemberService memberService;
     private final AuthService authService;
 
-
-    /**
-     * 회원 가입 페이지 요청
-     * @return
-     */
+    // 회원 가입 페이지 요청
     @GetMapping("/register")
     public String createForm(){
         return "members/register";
     }
 
     /**
-     * 회원가입
-     * @param form
-     * @return 로그인 페이지
+     * 회원가입 요청
      */
     @PostMapping
     public String signup(@ModelAttribute MemberForm form){
-        Member member = formToMember(form);
-        memberService.join(member);
+        MemberCreationRequest memberCreationRequest = formToMemberCreationReqeust(form);
+        memberService.createMember(memberCreationRequest);
         return "redirect:/members/login";
     }
 
@@ -111,7 +104,7 @@ public class MemberController {
     }
 
     @PutMapping("/my-page/profile")
-    public ResponseEntity<ApiResponse<Void>> modifyProfile(@RequestBody UpdateMemberDto dto){
+    public ResponseEntity<ApiResponse<Void>> modifyProfile(@RequestBody MemberUpdateRequest dto){
         // validateMember(updateMemberDtoToMember(dto)) 검증 한번 하는게 좋을 듯
         memberService.updateMember(updateMemberDtoToMember(dto));
         
@@ -120,7 +113,7 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.OK).body(successResponse);
     }
     
-    private Member updateMemberDtoToMember(UpdateMemberDto dto){
+    private Member updateMemberDtoToMember(MemberUpdateRequest dto){
         Member member = new Member();
         member.setUsername(dto.getUsername());
         member.setPassword(dto.getPassword());
@@ -193,30 +186,16 @@ public class MemberController {
         return ResponseEntity.status(200).body(successResponse);
     }
 
-    private Member formToMember (MemberForm form) {
-        Member member = new Member();
-        member.setUsername(form.getEmail());
-        member.setPassword(form.getPassword());
-        member.setName(form.getName());
-        member.setAddress(form.getAddress());
-        member.setAddressDetail(form.getAddressDetail());
-
-        String localDateStr = form.getBirthDate();
-        if (localDateStr == null || localDateStr.trim().isEmpty()){
-            throw new IllegalArgumentException("생년월일이 비었음");
-        }
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-        LocalDate localDate;
-        try {
-            localDate = LocalDate.parse(localDateStr, formatter);
-        } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException("입력된 '" + localDateStr + "'는 유효한 YYYYMMDD 날짜 형식이 아니거나 유효한 날짜가 아닙니다.", e);
-        }
-        member.setBirthDate(localDate);
-        member.setNickname(form.getNickname());
-        member.setRole(Role.ROLE_USER);
-
-        return member;
+    private MemberCreationRequest formToMemberCreationReqeust (MemberForm form) {
+        MemberCreationRequest memberCreationRequest = new MemberCreationRequest();
+        memberCreationRequest.setUsername(form.getEmail());
+        memberCreationRequest.setPassword(form.getPassword());
+        memberCreationRequest.setName(form.getName());
+        memberCreationRequest.setAddress(form.getAddress());
+        memberCreationRequest.setAddressDetail(form.getAddressDetail());
+        memberCreationRequest.setBirthDate(form.getBirthDate());
+        memberCreationRequest.setNickname(form.getNickname());
+        return memberCreationRequest;
     }
 
 }

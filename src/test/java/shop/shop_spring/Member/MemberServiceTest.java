@@ -4,10 +4,12 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import shop.shop_spring.Exception.DataNotFoundException;
+import shop.shop_spring.Member.Dto.MemberCreationRequest;
 import shop.shop_spring.Member.domain.Member;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -27,11 +29,11 @@ public class MemberServiceTest {
     @Mock
     private PasswordEncoder passwordEncoder;
 
-        private Member createTestMember() {
+    private Member createTestMember() {
         Member member = new Member();
         member.setId(1L);
         member.setUsername("test@example.com");
-        member.setPassword("test");
+        member.setPassword("1234");
         member.setName("홍길동");
         member.setAddress("테스트시");
         member.setAddressDetail("테스트동");
@@ -43,60 +45,58 @@ public class MemberServiceTest {
     @Test
     void 회원가입_성공(){
         // given
-        String rawPassword = "rawPassword";
-        String encodedPassword = "encodedPassword";
+        MemberCreationRequest request = new MemberCreationRequest();
+        request.setUsername("test@example.com");
+        request.setPassword("1234");
+        request.setName("홍길동");
+        request.setAddress("테스트시");
+        request.setAddressDetail("테스트동");
+        request.setBirthDate("19980101");
+        request.setName("테스트");
+        String encodedPassword = "encoded_password";
 
-        Long expectedMemberId = 1L;
-
-        Member inputMember = createTestMember();
-        inputMember.setPassword(rawPassword);
-        Member savedMember = createTestMember();
-        savedMember.setId(expectedMemberId);
-        savedMember.setPassword(encodedPassword);
-
-        when(passwordEncoder.encode(rawPassword)).thenReturn(encodedPassword);
+        when(passwordEncoder.encode("1234")).thenReturn(encodedPassword);
+        when(memberRepository.findByUsername("test@example.com")).thenReturn(Optional.empty());
 
         ArgumentCaptor<Member> memberArgumentCaptor = ArgumentCaptor.forClass(Member.class);
-        when(memberRepository.save(memberArgumentCaptor.capture())).thenReturn(savedMember);
 
         // when
-        Long savedMemberId = memberService.join(inputMember);
+        memberService.createMember(request);
 
         // then
-        assertNotNull(savedMemberId);
-        assertEquals(expectedMemberId, savedMemberId);
+        verify(memberRepository, times(1)).save(memberArgumentCaptor.capture());
+        verify(passwordEncoder, times(1)).encode("1234");
 
-        verify(passwordEncoder, times(1)).encode(rawPassword);
-        verify(memberRepository, times(1)).save(any(Member.class));
+        Member savedMember = memberArgumentCaptor.getValue();
 
-        Member capturedMember = memberArgumentCaptor.getValue();
-        assertNotNull(capturedMember);
-        assertEquals(encodedPassword, capturedMember.getPassword(), "save 메서드에 전달된 객체의 비밀번호는 암호화 되야함");
-        assertEquals(encodedPassword, inputMember.getPassword(), "서비스 메서드 실행 후 입력 member 비밀번호는 암호화되야함");
-        assertEquals(inputMember.getUsername(), capturedMember.getUsername(), "저장 후의 member username이 다름");
-
+        assertNotNull(savedMember);
+        assertEquals(request.getUsername(), savedMember.getUsername());
+        assertEquals(encodedPassword, savedMember.getPassword());
     }
 
     @Test
     void 회원가입_실패_중복() {
-        String duplicatedUsername = "dupUsername";
         // given
-        Member inputMember = createTestMember();
-        inputMember.setUsername(duplicatedUsername);
-        Member exsitingMember = createTestMember();
-        exsitingMember.setUsername(duplicatedUsername);
+        MemberCreationRequest request = new MemberCreationRequest();
+        request.setUsername("test@example.com");
+        request.setPassword("1234");
+        request.setName("홍길동");
+        request.setAddress("테스트시");
+        request.setAddressDetail("테스트동");
+        request.setBirthDate("19980101");
+        request.setName("테스트");
 
-        when(memberRepository.findByUsername(duplicatedUsername)).thenReturn(Optional.of(exsitingMember));
+        Member existingMember = createTestMember();
+
+        when(memberRepository.findByUsername("test@example.com")).thenReturn(Optional.of(existingMember));
 
         // when & then
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                () -> memberService.join(inputMember));
+        assertThrows(IllegalArgumentException.class, () -> {
+           memberService.createMember(request);
+        });
 
-        assertEquals("이미 존재하는 회원", exception.getMessage());
-
-        verify(memberRepository, times(1)).findByUsername(duplicatedUsername);
-
-        verify(passwordEncoder, never()).encode(anyString());
+        verify(memberRepository, times(1)).findByUsername("test@example.com");
+        verify(passwordEncoder, never()).encode("1234");
         verify(memberRepository, never()).save(any(Member.class));
     }
 
