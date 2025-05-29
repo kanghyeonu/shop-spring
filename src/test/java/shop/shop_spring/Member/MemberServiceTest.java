@@ -296,7 +296,7 @@ public class MemberServiceTest {
         assertEquals(newAddress, capturedMember.getAddress(), "기존 회원의 주소가 업데이트되지 않음");
         assertEquals(newAddressDetail, capturedMember.getAddressDetail(), "기존 회원의 주소가 업데이트 되지않음");
         // 바뀌지 앟은거 체크
-        assertEquals("test", capturedMember.getPassword(), "비밀번호가 업데이트됨");
+        assertEquals("1234", capturedMember.getPassword(), "비밀번호가 업데이트됨");
         assertEquals("테스트", capturedMember.getNickname(), "닉네임이 업데이트됨");
         assertEquals(LocalDate.of(1998, 1, 1), capturedMember.getBirthDate(), "생일이 업데이트됨");
 

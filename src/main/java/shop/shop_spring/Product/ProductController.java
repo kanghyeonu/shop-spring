@@ -33,12 +33,10 @@ public class ProductController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<ApiResponse<Map<String, String>>> createProduct(@RequestBody ProductCreationRequest request){
-        productService.createProduct(request);
+        Long Id = productService.createProduct(request);
 
-        List<String> productInfoKeys = new ArrayList<>();
-        List<String> productInfoValues = new ArrayList<>();
-        Map<String, String> responseData = ApiResponse.createResponseData(productInfoKeys, productInfoValues);
-        ApiResponse<Map<String, String>> successResponse = ApiResponse.success("상품 등록 완료", responseData);
+        Map<String, String> responseData = ApiResponse.createResponseData("상품 아이디", Id.toString());
+        ApiResponse<Map<String, String> > successResponse = ApiResponse.success("상품 등록 완료", responseData);
 
         return ResponseEntity.status(HttpStatus.OK).body(successResponse);
     }

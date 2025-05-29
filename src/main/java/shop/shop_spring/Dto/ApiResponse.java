@@ -50,7 +50,7 @@ public class ApiResponse<T> {
         return responseData;
     }
 
-    public static Map<String, String> createResponseData(List<String> key, List<?> data){
+    public static Map<String, String> createResponseData(List<String> key, List<String> data){
         if (key.size() != data.size()) {
             throw new IllegalArgumentException("입력된 key와 data의 길이가 다름");
         }
