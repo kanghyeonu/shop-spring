@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import shop.shop_spring.Dto.ApiResponse;
 import shop.shop_spring.Product.Dto.ProductCreationRequest;
+import shop.shop_spring.Product.domain.Product;
 
 
 import java.time.LocalDateTime;
@@ -21,7 +22,21 @@ import java.util.Map;
 @RequestMapping("/products")
 @RequiredArgsConstructor
 public class ProductController {
-    private final ProductService productService;
+    private final ProductServiceImpl productService;
+
+    @GetMapping
+    public String showProductListPage(Model model){
+        List<Product> products = productService.getAllProduct();
+        model.addAttribute("products", products);
+        return "products/list";
+    }
+
+    @GetMapping("/{id}")
+    String showDetail(@PathVariable Long id, Model model){
+        Product product = productService.findById(id);
+        model.addAttribute("product", product);
+        return "products/detail";
+    }
 
     @GetMapping("/new")
     @PreAuthorize("isAuthenticated()")

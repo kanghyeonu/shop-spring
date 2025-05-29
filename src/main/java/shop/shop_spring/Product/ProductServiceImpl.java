@@ -6,12 +6,15 @@ import org.springframework.stereotype.Service;
 import shop.shop_spring.Category.CategoryRepository;
 import shop.shop_spring.Category.CategoryService;
 import shop.shop_spring.Category.domain.Category;
+import shop.shop_spring.Exception.DataNotFoundException;
 import shop.shop_spring.Product.Dto.ProductCreationRequest;
 import shop.shop_spring.Product.domain.Product;
 import shop.shop_spring.Product.domain.ProductDescription;
 import shop.shop_spring.Product.enums.Status;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -48,6 +51,10 @@ public class ProductServiceImpl implements ProductService{
          */
     }
 
+    public List<Product> getAllProduct(){
+        return productRepository.findAll();
+    }
+
     private Product productCreationRequestToProduct(ProductCreationRequest request){
         Product product = new Product();
         product.setTitle(request.getTitle());
@@ -63,4 +70,11 @@ public class ProductServiceImpl implements ProductService{
     }
 
 
+    public Product findById(Long id) {
+        Optional<Product> result = productRepository.findById(id);
+        if (result.isEmpty()){
+            throw new DataNotFoundException("삭제된 상품임");
+        }
+        return result.get();
+    }
 }

@@ -47,7 +47,6 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain SecurityFilterChain(HttpSecurity http) throws Exception {
 
-
         http.csrf((csrf) -> csrf.disable()); // csrf 끄기
 
         http.sessionManagement((session) -> session
@@ -58,8 +57,8 @@ public class SecurityConfig {
         http.addFilterBefore(jwtAuthenticationFilter, ExceptionTranslationFilter.class);
 
         http.authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/members/my-page/**").authenticated()
-                        .requestMatchers(urlsBePermittedAll).permitAll())
+                        .requestMatchers(urlsBePermittedAll).permitAll()
+                        .requestMatchers("/members/my-page/**").authenticated())
                 .logout(logout -> logout.permitAll());
 
         // .formLogin(...) 은 session 방식에서 사용함 빼야함

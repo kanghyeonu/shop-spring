@@ -46,7 +46,7 @@
         document.getElementById('parentCategorySelect').addEventListener('change', function() {
             const parentId = this.value;
             const childSelect = document.getElementById('childCategorySelect');
-            childSelect.innerHTML = '<option value="">상세 카테고리 선택</option>'; // 초기화
+            childSelect.innerHTML = '<option value="">하위 카테고리 선택</option>'; // 초기화
 
             if (!parentId) {
                 childSelect.disabled = true;
@@ -143,7 +143,7 @@ function applyProduct() {
     })
     .then(savedProductId => {
         // 등록 성공 시 처리
-        alert('상품이 성공적으로 등록되었습니다!'););
+        alert('상품이 성공적으로 등록되었습니다!');
         // 성공 후 페이지 이동이나 폼 초기화 등 추가 작업 수행
         // window.location.href = '/products/' + savedProduct.id; // 예: 등록된 상품 상세 페이지로 이동
         form.reset(); // 폼 초기화
