@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import shop.shop_spring.Category.domain.Category;
 import shop.shop_spring.Exception.DataNotFoundException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,5 +33,32 @@ public class CategoryService {
             throw new DataNotFoundException("잘못된 카테고리 아이디");
         }
         return result.get();
+    }
+
+    // 하위 카테고리 조회
+    public List<Long> getAllDescendantCategoryIds(Long categoryId){
+        List<Long> categoryIds = new ArrayList<>();
+        if (categoryId == null){
+            return categoryIds;
+        }
+
+        Optional<Category> result = categoryRepository.findById(categoryId);
+        if (result.isPresent()){
+            Category category =  result.get();
+            categoryIds.add(category.getId());
+
+            findAllDescendantIds(category, categoryIds);
+        }
+
+        return categoryIds;
+    }
+
+    private void findAllDescendantIds(Category parent, List<Long> ids) {
+        for (Category child : parent.getChildren()){
+            ids.add(child.getId());
+            if(!child.getChildren().isEmpty()){
+                findAllDescendantIds(child, ids);
+            }
+        }
     }
 }

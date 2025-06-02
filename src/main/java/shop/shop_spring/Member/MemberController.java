@@ -15,6 +15,10 @@ import shop.shop_spring.Member.Dto.MemberCreationRequest;
 import shop.shop_spring.Member.Dto.MemberUpdateRequest;
 import shop.shop_spring.Member.domain.Member;
 import shop.shop_spring.Member.domain.enums.Role;
+import shop.shop_spring.Product.Dto.ProductSearchCondition;
+import shop.shop_spring.Product.Dto.ProductUpdateRequest;
+import shop.shop_spring.Product.ProductService;
+import shop.shop_spring.Product.domain.Product;
 import shop.shop_spring.Security.AuthService;
 import shop.shop_spring.Security.MyUser;
 
@@ -22,6 +26,7 @@ import java.io.UnsupportedEncodingException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -29,6 +34,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class MemberController {
     private final MemberService memberService;
+    private final ProductService productService;
     private final AuthService authService;
 
     // 회원 가입 페이지 요청
@@ -85,7 +91,7 @@ public class MemberController {
     public String showMyPage(Authentication auth){
         MyUser user = (MyUser) auth.getPrincipal();
 
-        return "members/my-page";
+        return "members/my-page/my-page";
     }
 
     @GetMapping("/my-page/profile")
@@ -100,7 +106,41 @@ public class MemberController {
         model.addAttribute("addressDetail", member.getAddressDetail());
         model.addAttribute("nickName", member.getNickname());
 
-        return "members/profile";
+        return "members/my-page/profile";
+    }
+
+    @GetMapping("/my-page/products")
+    public String showProducts(Authentication auth, Model model){
+        MyUser myUser = (MyUser) auth.getPrincipal();
+
+        ProductSearchCondition searchCondition = new ProductSearchCondition();
+        searchCondition.setSellerUsername(myUser.getUsername());
+
+        List<Product> products = productService.searchProducts(searchCondition);
+
+        model.addAttribute("username", myUser.getUsername());
+        model.addAttribute("products", products);
+
+        return "members/my-page/products";
+    }
+
+    @GetMapping("/my-page/products/{id}")
+    String showDetail(@PathVariable Long id, Model model){
+        Product product = productService.findById(id);
+
+        model.addAttribute("product", product);
+
+        return "members/my-page/edit-product";
+    }
+
+    @PutMapping("/my-page/products/{id}")
+    ResponseEntity editDetail(Authentication auth, @PathVariable Long productId, @RequestBody ProductUpdateRequest updateRequest){
+        MyUser user = (MyUser) auth.getPrincipal();
+        productService.updateProduct(user.getId(), productId, updateRequest);
+
+        ApiResponse<Void> response = ApiResponse.successNoData("상품 정보 수정 완료");
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @PutMapping("/my-page/profile")

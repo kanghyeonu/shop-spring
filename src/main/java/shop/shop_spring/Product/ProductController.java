@@ -10,10 +10,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import shop.shop_spring.Dto.ApiResponse;
 import shop.shop_spring.Product.Dto.ProductCreationRequest;
+import shop.shop_spring.Product.Dto.ProductSearchCondition;
 import shop.shop_spring.Product.domain.Product;
+import shop.shop_spring.Product.enums.Status;
 
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -24,18 +25,33 @@ import java.util.Map;
 public class ProductController {
     private final ProductServiceImpl productService;
 
-    @GetMapping
-    public String showProductListPage(Model model){
-        List<Product> products = productService.getAllProduct();
-        model.addAttribute("products", products);
-        return "products/list";
-    }
-
     @GetMapping("/{id}")
     String showDetail(@PathVariable Long id, Model model){
         Product product = productService.findById(id);
         model.addAttribute("product", product);
         return "products/detail";
+    }
+
+
+    @GetMapping
+    public String listProducts(
+        @RequestParam(value = "title", required = false) String title,
+        @RequestParam(value = "category", required = false) Long categoryId,
+        Model model
+    ){
+        ProductSearchCondition searchCondition = new ProductSearchCondition();
+        searchCondition.setProductTitle(title);
+        searchCondition.setCategoryId(categoryId);
+
+        List<Status> statuses = new ArrayList<>();
+        statuses.add(Status.ACTIVE);
+        statuses.add(Status.SOLD_OUT);
+        searchCondition.setStatuses(statuses);
+
+        List<Product> products = productService.searchProducts(searchCondition);
+
+        model.addAttribute("products", products);
+        return "products/list";
     }
 
     @GetMapping("/new")

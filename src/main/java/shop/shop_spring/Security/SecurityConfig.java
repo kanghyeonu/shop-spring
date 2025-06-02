@@ -30,6 +30,7 @@ public class SecurityConfig {
     };
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
     @Bean
     PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
@@ -59,13 +60,11 @@ public class SecurityConfig {
         http.authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers(urlsBePermittedAll).permitAll()
                         .requestMatchers("/members/my-page/**").authenticated())
+
                 .logout(logout -> logout.permitAll());
 
         // .formLogin(...) 은 session 방식에서 사용함 빼야함
 
         return http.build();
     }
-
-
-
 }

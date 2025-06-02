@@ -1,5 +1,6 @@
 package shop.shop_spring.Security;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import shop.shop_spring.Member.domain.enums.Role;
 
@@ -24,6 +25,7 @@ import java.util.List;
 @AllArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
+
     @Override
     protected void doFilterInternal(
             HttpServletRequest request,
