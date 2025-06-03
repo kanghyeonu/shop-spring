@@ -12,6 +12,7 @@ import java.util.Collection;
 @Setter
 public class MyUser extends User {
     // 필요 정보 추가
+    private Long id;
     private String name;
     private String nickname;
     private Role role;

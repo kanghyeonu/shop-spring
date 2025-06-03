@@ -38,6 +38,7 @@ public class MyUserDetailService implements UserDetailsService {
         authorities.add(new SimpleGrantedAuthority(member.getRole().name()));
 
         MyUser myUser = new MyUser(member.getUsername(), member.getPassword(), authorities);
+        myUser.setId(member.getId());
         myUser.setName(member.getName());
         if (member.getNickname() == null){
             myUser.setNickname("null");

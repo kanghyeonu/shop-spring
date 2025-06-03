@@ -28,6 +28,7 @@ public class JwtUtil {
     public String createToken(Authentication auth) {
         var user = (MyUser) auth.getPrincipal();
         String jwt = Jwts.builder()
+                .claim("id", user.getId())
                 .claim("username", user.getUsername())
                 .claim("nickname", user.getNickname())
                 .claim("name", user.getName())

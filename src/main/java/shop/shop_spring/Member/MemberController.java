@@ -134,9 +134,10 @@ public class MemberController {
     }
 
     @PutMapping("/my-page/products/{id}")
-    ResponseEntity editDetail(Authentication auth, @PathVariable Long productId, @RequestBody ProductUpdateRequest updateRequest){
+    ResponseEntity editDetail(@PathVariable Long id, @RequestBody ProductUpdateRequest updateRequest, Authentication auth){
         MyUser user = (MyUser) auth.getPrincipal();
-        productService.updateProduct(user.getId(), productId, updateRequest);
+;
+        productService.updateProduct(user.getId(), id, updateRequest);
 
         ApiResponse<Void> response = ApiResponse.successNoData("상품 정보 수정 완료");
 

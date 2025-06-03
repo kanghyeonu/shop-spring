@@ -4,6 +4,7 @@ import jakarta.mail.MessagingException;
 import org.springframework.boot.availability.AvailabilityChangeEvent;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -56,6 +57,14 @@ public class GlobalExceptionHandler  {
         ApiResponse<Void> errorResponse = ApiResponse.errorNoData(HttpStatus.BAD_REQUEST,
                 "잘못된 아이디 또는 비밀번호");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ApiResponse<Void>> handlerAccessDeniedException(AccessDeniedException e){
+        System.err.println("AccessDeniedException 발생:" + e.getMessage());
+        ApiResponse<Void> errorResponse = ApiResponse.errorNoData(HttpStatus.FORBIDDEN,
+                "권한이 없음");
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
     }
 
     // 그 외 모든 예상치 못한 Exception 발생 시 처리
