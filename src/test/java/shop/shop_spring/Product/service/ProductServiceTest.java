@@ -1,23 +1,31 @@
-package shop.shop_spring.products;
+package shop.shop_spring.Product.service;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.core.parameters.P;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import shop.shop_spring.Category.CategoryService;
 import shop.shop_spring.Category.domain.Category;
+import shop.shop_spring.Exception.DataNotFoundException;
 import shop.shop_spring.Product.Dto.ProductCreationRequest;
+import shop.shop_spring.Product.Dto.ProductSearchCondition;
 import shop.shop_spring.Product.ProductRepository;
-import shop.shop_spring.Product.ProductService;
 import shop.shop_spring.Product.ProductServiceImpl;
 import shop.shop_spring.Product.domain.Product;
+import shop.shop_spring.Product.domain.ProductDescription;
+import shop.shop_spring.Product.specification.ProductSpecification;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
@@ -34,7 +42,25 @@ public class ProductServiceTest {
     @InjectMocks
     private ProductServiceImpl productService;
 
-    ArgumentCaptor<Product> productArgumentCaptor = ArgumentCaptor.forClass(Product.class);
+
+    private Product createTestProduct(Long id){
+        Product product = new Product();
+        product.setId(id);
+        product.setTitle("테스트 상품");
+        product.setPrice(BigDecimal.valueOf(10000));
+        product.setUsername("테스트 판매자");
+        product.setStockQuantity(50);
+        ProductDescription productDescription = new ProductDescription();
+        productDescription.setDescription("테스트 상품 상세 설명");
+        product.setDescription(productDescription);
+        product.setThumbnailUrl("http://example.com/thum.jpg");
+        Category category = new Category();
+        category.setId(1L);
+        category.setName("테스트 카테고리");
+        product.setCategory(category);
+
+        return product;
+    }
 
     @Test
     void 상품_등록_성공(){
@@ -50,6 +76,8 @@ public class ProductServiceTest {
         Category mockCategory = new Category();
         mockCategory.setId(1L);
         mockCategory.setName("모킹 카테고리");
+
+        ArgumentCaptor<Product> productArgumentCaptor = ArgumentCaptor.forClass(Product.class);
 
         when(categoryService.findById(anyLong())).thenReturn(mockCategory);
 
@@ -79,5 +107,44 @@ public class ProductServiceTest {
         assertEquals(request.getDescription(), capturedProduct.getDescription().getDescription(), "상품 설명이 다름");
         assertEquals(101L, capturedProduct.getId(), "저장되야하는 상품 id와 값이 다름");
     }
+
+    @Test
+    void 상품_조회_성공(){
+        // given
+
+        Long productId = 1L;
+        Product product = createTestProduct(productId);
+
+        when(productRepository.findById(productId)).thenReturn(Optional.of(product));
+
+        // when
+        Product foundProduct = productService.findById(productId);
+
+        // then
+        verify(productRepository, times(1)).findById(productId);
+
+        assertNotNull(foundProduct, "상품이 존재 해야함");
+        assertEquals(productId, foundProduct.getId(), "조회 상품 id와 찾은 상품 id는 같아야함");
+    }
+
+    @Test
+    void 상품_조회_실패(){
+        //given
+        Long nonExistingProductId = 100L;
+
+        when(productRepository.findById(nonExistingProductId)).thenReturn(Optional.empty());
+
+        //when & then
+        DataNotFoundException thrown = assertThrows(DataNotFoundException.class, ()->{
+            productService.findById(nonExistingProductId);
+        }, "존재하지 않는 상품은 DataNotFoundException");
+
+        assertEquals("삭제되거나 없는 상품임", thrown.getMessage());
+
+        verify(productRepository, times(1)).findById(nonExistingProductId);
+    }
+
+
+
 
 }

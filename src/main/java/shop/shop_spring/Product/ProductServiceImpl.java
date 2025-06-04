@@ -61,11 +61,6 @@ public class ProductServiceImpl implements ProductService{
          */
     }
 
-    public List<Product> getAllActiveOrSoldOutProducts(){
-        Sort sortByCreatedAtDesc = Sort.by(Sort.Direction.DESC, "createdAt");
-        return productRepository.findAllByStatusNot(Status.INACTIVE, sortByCreatedAtDesc);
-    }
-
     private Product productCreationRequestToProduct(ProductCreationRequest request) {
         Product product = new Product();
         product.setTitle(request.getTitle());
@@ -133,6 +128,7 @@ public class ProductServiceImpl implements ProductService{
         if (!username.equals(product.getUsername())){
             throw new AccessDeniedException("상품 삭제 권한이 없음");
         }
+        productRepository.deleteById(productId);
     }
 
     @Transactional
