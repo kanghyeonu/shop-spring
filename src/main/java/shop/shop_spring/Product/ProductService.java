@@ -8,8 +8,14 @@ import shop.shop_spring.Product.domain.Product;
 import java.util.List;
 
 public interface ProductService {
+
     Long createProduct(ProductCreationRequest product);
+
     List<Product> searchProducts(ProductSearchCondition productSearchCondition);
+
     Product findById(Long id);
-    void updateProduct(Long userId, Long productId, ProductUpdateRequest updateRequest);
+
+    void updateProduct(String username, Long productId, ProductUpdateRequest updateRequest);
+
+    void deleteProduct(String username, Long pd);
 }

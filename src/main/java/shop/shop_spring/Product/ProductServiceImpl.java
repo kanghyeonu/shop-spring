@@ -127,11 +127,20 @@ public class ProductServiceImpl implements ProductService{
 
     @Transactional
     @Override
-    public void updateProduct(Long userId, Long productId, ProductUpdateRequest updateRequest){
+    public void deleteProduct(String username, Long productId){
         Product product = findById(productId);
-        Member member = memberService.findById(userId);
 
-        if (!member.getUsername().equals(product.getUsername())){
+        if (!username.equals(product.getUsername())){
+            throw new AccessDeniedException("상품 삭제 권한이 없음");
+        }
+    }
+
+    @Transactional
+    @Override
+    public void updateProduct(String username, Long productId, ProductUpdateRequest updateRequest){
+        Product product = findById(productId);
+
+        if (!username.equals(product.getUsername())){
             throw new AccessDeniedException("상품 수정 권한이 없음");
         }
 

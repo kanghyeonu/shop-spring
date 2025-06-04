@@ -41,7 +41,7 @@
 
     <h4>상품 이미지 변경 (구현 x)</h4>
     <button type="button" id="updateProductButton">상품 수정</button>
-    <button type="button">상품 삭제</button>
+    <button type="button" id="deleteProductButton">상품 삭제</button>
 </div>
 
 <div th:if="${product == null}">
@@ -52,6 +52,41 @@
     document.addEventListener('DOMContentLoaded', function() {
 
         const updateButton = document.getElementById('updateProductButton');
+        const deleteButton = document.getElementById('deleteProductButton');
+
+        deleteButton.addEventListener('click', function() {
+            const productId = [[${product.id}]];
+
+            const deleteUrl = `/members/my-page/products/${productId}`;
+
+            if (confirm('정말로 삭제?')){
+                fetch(deleteUrl, {
+                    method: 'DELETE',
+                    headers: {
+                    }
+                })
+                .then(response => {
+                    if (response.ok || reponse.status === 204){
+                        alert('상품이 삭제됨')
+                        window.location.href = '/members/my-page/products';
+                    } else {
+                        response.json().then(data => {
+                            alert(`상품 삭제 실패: ${data.message || response.statusText}`);
+                            console.error('삭제 실패 응답:', response.status, data);
+                        }).catch(() => {
+                            // JSON 파싱 실패 시 일반적인 에러 메시지
+                             alert(`상품 삭제 실패: ${response.statusText}`);
+                             console.error('삭제 실패 응답:', response.status);
+                        });
+                    }
+                })
+                .catch(error => {
+                    // 네트워크 오류 등 예외 처리
+                    console.error('상품 삭제 중 오류 발생:', error);
+                    alert('상품 삭제 중 오류가 발생했습니다. 다시 시도해주세요.');
+                });
+            }
+        });
 
         updateButton.addEventListener('click', function() { // <--- 이 부분을 수정했습니다.
 

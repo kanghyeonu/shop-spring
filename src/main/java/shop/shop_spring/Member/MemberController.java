@@ -137,11 +137,22 @@ public class MemberController {
     ResponseEntity editDetail(@PathVariable Long id, @RequestBody ProductUpdateRequest updateRequest, Authentication auth){
         MyUser user = (MyUser) auth.getPrincipal();
 ;
-        productService.updateProduct(user.getId(), id, updateRequest);
+        productService.updateProduct(user.getUsername(), id, updateRequest);
 
         ApiResponse<Void> response = ApiResponse.successNoData("상품 정보 수정 완료");
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @DeleteMapping("/my-page/products/{id}")
+    ResponseEntity deleteProduct(@PathVariable Long id, Authentication auth){
+        MyUser user = (MyUser) auth.getPrincipal();
+
+        productService.deleteProduct(user.getUsername(), id);
+
+        ApiResponse<Void> response = ApiResponse.successNoData("상품 삭제 완료");
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+
     }
 
     @PutMapping("/my-page/profile")
@@ -153,7 +164,8 @@ public class MemberController {
         
         return ResponseEntity.status(HttpStatus.OK).body(successResponse);
     }
-    
+
+
     private Member updateMemberDtoToMember(MemberUpdateRequest dto){
         Member member = new Member();
         member.setUsername(dto.getUsername());
