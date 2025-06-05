@@ -155,6 +155,7 @@ public class ProductServiceImpl implements ProductService{
         if (productDescription == null){
             ProductDescription description = new ProductDescription();
             product.setDescription(description);
+            productDescription = product.getDescription();
         }
         productDescription.setDescription(descriptionContent);
 
@@ -162,6 +163,8 @@ public class ProductServiceImpl implements ProductService{
             status = product.getStatus();
         }
         product.setStatus(status);
+
+        product.setUpdatedAt(LocalDateTime.now());
 
         validateProduct(product);
 

@@ -9,6 +9,7 @@ import org.mockito.MockedStatic;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.access.AccessDeniedException;
 import shop.shop_spring.Category.CategoryService;
 import shop.shop_spring.Category.domain.Category;
 import shop.shop_spring.Exception.DataNotFoundException;
@@ -144,7 +145,42 @@ public class ProductServiceTest {
         verify(productRepository, times(1)).findById(nonExistingProductId);
     }
 
+    @Test
+    void 상품_삭제_성공(){
+        // given
+        String username = "테스트 판매자";
+        Long productId = 1L;
+        Product product = createTestProduct(productId);
 
+        when(productRepository.findById(productId)).thenReturn(Optional.of(product));
+
+        // when
+        assertDoesNotThrow(() ->{
+            productService.deleteProduct(username, productId);
+        }, "소유자는 상품을 삭제 가능함");
+
+        // then
+        verify(productRepository, times(1)).deleteById(productId);
+    }
+
+    @Test
+    void 상품_삭제_실패(){
+        // given
+        String unauthorizedUsername = "테스트 매판자";
+        Long productId = 1L;
+        Product product = createTestProduct(productId);
+
+        when(productRepository.findById(productId)).thenReturn(Optional.of(product));
+
+        // when & then
+        AccessDeniedException thrown = assertThrows(AccessDeniedException.class, () ->{
+            productService.deleteProduct(unauthorizedUsername, productId);
+        }, "상품 소유자만 삭제할 수 있어야함");
+
+        assertEquals("상품 삭제 권한이 없음", thrown.getMessage());
+
+        verify(productRepository, never()).deleteById(anyLong());
+    }
 
 
 }
