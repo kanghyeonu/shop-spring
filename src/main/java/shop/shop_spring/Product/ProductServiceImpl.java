@@ -163,6 +163,8 @@ public class ProductServiceImpl implements ProductService{
         }
         product.setStatus(status);
 
+        validateProduct(product);
+
         productRepository.save(product);
 
     }
