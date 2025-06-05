@@ -20,8 +20,8 @@ public class Member {
     @Column(nullable = false)   private String                 address;
     @Column(nullable = false)   private String                 addressDetail;
     @Column(nullable = true, unique = true) private String     nickname;
-    @Column(nullable = false) // NOT NULL 제약 조건을 설정합니다.
-    @Enumerated(EnumType.STRING) // Enum 타입을 사용할 경우, 문자열 형태로 DB에 저장되도록 설정합니다.
-    private Role role; // 사용자의 권한을 나타내는 칼럼입니다.
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
 }
