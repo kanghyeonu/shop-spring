@@ -2,6 +2,7 @@ package shop.shop_spring.Member.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import shop.shop_spring.Cart.domain.Cart;
 import shop.shop_spring.Member.domain.enums.Role;
 
 import java.time.LocalDate;
@@ -24,4 +25,13 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @OneToOne(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private Cart cart;
+
+    public void setCart(Cart cart){
+        this.cart = cart;
+        if(cart != null && cart.getMember() != this){
+            cart.setMember(this);
+        }
+    }
 }
