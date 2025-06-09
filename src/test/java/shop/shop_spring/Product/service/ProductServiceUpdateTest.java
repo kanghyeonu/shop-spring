@@ -5,12 +5,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
-import shop.shop_spring.Category.CategoryService;
+import shop.shop_spring.Category.service.CategoryService;
 import shop.shop_spring.Category.domain.Category;
 
 import shop.shop_spring.Product.Dto.ProductUpdateRequest;
-import shop.shop_spring.Product.ProductRepository;
-import shop.shop_spring.Product.ProductServiceImpl;
+import shop.shop_spring.Product.repository.ProductRepository;
 import shop.shop_spring.Product.domain.Product;
 import shop.shop_spring.Product.domain.ProductDescription;
 import shop.shop_spring.Product.enums.Status;

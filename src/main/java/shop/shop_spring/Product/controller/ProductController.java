@@ -1,4 +1,4 @@
-package shop.shop_spring.Product;
+package shop.shop_spring.Product.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.*;
 import shop.shop_spring.Dto.ApiResponse;
 import shop.shop_spring.Product.Dto.ProductCreationRequest;
 import shop.shop_spring.Product.Dto.ProductSearchCondition;
+import shop.shop_spring.Product.ProductForm;
 import shop.shop_spring.Product.domain.Product;
 import shop.shop_spring.Product.enums.Status;
+import shop.shop_spring.Product.service.ProductServiceImpl;
 
 
 import java.util.ArrayList;

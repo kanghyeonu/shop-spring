@@ -1,8 +1,8 @@
-package shop.shop_spring.Category;
+package shop.shop_spring.Category.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ResponseBody;
+import shop.shop_spring.Category.repository.CategoryRepository;
 import shop.shop_spring.Category.domain.Category;
 import shop.shop_spring.Exception.DataNotFoundException;
 

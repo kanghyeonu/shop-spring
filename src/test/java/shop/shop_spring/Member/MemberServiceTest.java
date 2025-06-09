@@ -4,13 +4,14 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import shop.shop_spring.Exception.DataNotFoundException;
 import shop.shop_spring.Member.Dto.MemberCreationRequest;
 import shop.shop_spring.Member.domain.Member;
+import shop.shop_spring.Member.repository.MemberRepository;
+import shop.shop_spring.Member.service.MemberService;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;

@@ -1,4 +1,4 @@
-package shop.shop_spring.Product;
+package shop.shop_spring.Product.service;
 
 import shop.shop_spring.Product.Dto.ProductCreationRequest;
 import shop.shop_spring.Product.Dto.ProductSearchCondition;

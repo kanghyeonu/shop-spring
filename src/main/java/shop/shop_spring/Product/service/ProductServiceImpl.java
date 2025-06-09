@@ -1,4 +1,4 @@
-package shop.shop_spring.Product;
+package shop.shop_spring.Product.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
@@ -6,14 +6,14 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import shop.shop_spring.Category.CategoryService;
+import shop.shop_spring.Category.service.CategoryService;
 import shop.shop_spring.Category.domain.Category;
 import shop.shop_spring.Exception.DataNotFoundException;
-import shop.shop_spring.Member.MemberService;
-import shop.shop_spring.Member.domain.Member;
+import shop.shop_spring.Member.service.MemberService;
 import shop.shop_spring.Product.Dto.ProductCreationRequest;
 import shop.shop_spring.Product.Dto.ProductSearchCondition;
 import shop.shop_spring.Product.Dto.ProductUpdateRequest;
+import shop.shop_spring.Product.repository.ProductRepository;
 import shop.shop_spring.Product.domain.Product;
 import shop.shop_spring.Product.domain.ProductDescription;
 import shop.shop_spring.Product.enums.Status;
@@ -22,7 +22,6 @@ import shop.shop_spring.Product.specification.ProductSpecification;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Service

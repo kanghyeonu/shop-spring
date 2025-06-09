@@ -1,29 +1,20 @@
 package shop.shop_spring.Product.service;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockedStatic;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.access.AccessDeniedException;
-import shop.shop_spring.Category.CategoryService;
+import shop.shop_spring.Category.service.CategoryService;
 import shop.shop_spring.Category.domain.Category;
 import shop.shop_spring.Exception.DataNotFoundException;
 import shop.shop_spring.Product.Dto.ProductCreationRequest;
-import shop.shop_spring.Product.Dto.ProductSearchCondition;
-import shop.shop_spring.Product.ProductRepository;
-import shop.shop_spring.Product.ProductServiceImpl;
+import shop.shop_spring.Product.repository.ProductRepository;
 import shop.shop_spring.Product.domain.Product;
 import shop.shop_spring.Product.domain.ProductDescription;
-import shop.shop_spring.Product.specification.ProductSpecification;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;

@@ -15,6 +15,7 @@ import java.io.UnsupportedEncodingException;
 @RestControllerAdvice
 public class GlobalExceptionHandler  {
 
+
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ApiResponse<Void>> handleIllegalArgumentException(IllegalArgumentException e){
         System.err.println("IllegalArgumentException: " + e.getMessage());

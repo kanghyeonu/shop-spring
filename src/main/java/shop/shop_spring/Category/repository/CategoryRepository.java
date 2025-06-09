@@ -1,4 +1,4 @@
-package shop.shop_spring.Category;
+package shop.shop_spring.Category.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import shop.shop_spring.Category.domain.Category;

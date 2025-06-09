@@ -1,4 +1,4 @@
-package shop.shop_spring.Product;
+package shop.shop_spring.Product.repository;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,4 +1,4 @@
-package shop.shop_spring.Member;
+package shop.shop_spring.Member.service;
 
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +9,8 @@ import shop.shop_spring.Email.Dto.EmailDto;
 import shop.shop_spring.Email.EmailServiceImpl;
 import shop.shop_spring.Exception.DataNotFoundException;
 import shop.shop_spring.Member.Dto.MemberCreationRequest;
+import shop.shop_spring.Member.MemberForm;
+import shop.shop_spring.Member.repository.MemberRepository;
 import shop.shop_spring.Member.domain.Member;
 import shop.shop_spring.Member.domain.enums.Role;
 import shop.shop_spring.Redis.RedisEmailAuthentication;

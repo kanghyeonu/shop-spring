@@ -1,4 +1,4 @@
-package shop.shop_spring.Member;
+package shop.shop_spring.Member.controller;
 
 import org.springframework.ui.Model;
 import jakarta.mail.MessagingException;
@@ -13,11 +13,12 @@ import org.springframework.web.bind.annotation.*;
 import shop.shop_spring.Dto.ApiResponse;
 import shop.shop_spring.Member.Dto.MemberCreationRequest;
 import shop.shop_spring.Member.Dto.MemberUpdateRequest;
+import shop.shop_spring.Member.MemberForm;
 import shop.shop_spring.Member.domain.Member;
-import shop.shop_spring.Member.domain.enums.Role;
+import shop.shop_spring.Member.service.MemberService;
 import shop.shop_spring.Product.Dto.ProductSearchCondition;
 import shop.shop_spring.Product.Dto.ProductUpdateRequest;
-import shop.shop_spring.Product.ProductService;
+import shop.shop_spring.Product.service.ProductService;
 import shop.shop_spring.Product.domain.Product;
 import shop.shop_spring.Security.AuthService;
 import shop.shop_spring.Security.MyUser;

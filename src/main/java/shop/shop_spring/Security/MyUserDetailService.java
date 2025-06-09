@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import shop.shop_spring.Exception.DataNotFoundException;
 import shop.shop_spring.Member.domain.Member;
-import shop.shop_spring.Member.MemberRepository;
+import shop.shop_spring.Member.repository.MemberRepository;
 
 import java.util.ArrayList;
 import java.util.List;

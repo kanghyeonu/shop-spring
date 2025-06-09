@@ -5,8 +5,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-import shop.shop_spring.Category.CategoryRepository;
-import shop.shop_spring.Category.CategoryService;
+import shop.shop_spring.Category.repository.CategoryRepository;
+import shop.shop_spring.Category.service.CategoryService;
 import shop.shop_spring.Category.domain.Category;
 import shop.shop_spring.Exception.DataNotFoundException;
 

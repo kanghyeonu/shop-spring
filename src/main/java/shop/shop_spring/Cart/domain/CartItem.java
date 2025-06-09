@@ -6,7 +6,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import shop.shop_spring.Product.domain.Product;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
