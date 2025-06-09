@@ -59,7 +59,7 @@ public class SecurityConfig {
 
         http.authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers(urlsBePermittedAll).permitAll()
-                        .requestMatchers("/members/my-page/**").authenticated())
+                        .requestMatchers("/members/my-page/**", "/cart/**").authenticated())
 
                 .logout(logout -> logout.permitAll());
 
