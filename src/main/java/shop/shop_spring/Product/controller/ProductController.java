@@ -28,9 +28,13 @@ public class ProductController {
     private final ProductServiceImpl productService;
 
     @GetMapping("/{id}")
-    String showDetail(@PathVariable Long id, Model model){
+    String showDetail(@PathVariable Long id, Model model, Authentication auth){
         Product product = productService.findById(id);
         model.addAttribute("product", product);
+
+        boolean isLoggedIn = auth != null && auth.isAuthenticated();
+        model.addAttribute("isLoggedIn", isLoggedIn);
+
         return "products/detail";
     }
 

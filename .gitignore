@@ -39,6 +39,3 @@ out/
 ### properties ###
 src/main/resources/application-*.properties
 src/main/resources/application*.yml
-
-
-src/main/java/shop/shop_spring/test/**

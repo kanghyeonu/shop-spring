@@ -20,6 +20,17 @@ import shop.shop_spring.Security.MyUser;
 public class CartController {
     private final CartServiceImpl cartService;
 
+    @GetMapping("/items")
+    public String showCart(Authentication auth, Model model){
+        MyUser member = (MyUser) auth.getPrincipal();
+
+        CartDto cartDto = cartService.getCartForMember(member.getId());
+
+        model.addAttribute("cart", cartDto);
+
+        return "/members/my-page/cartItems";
+    }
+
     @PostMapping("/items")
     public ResponseEntity addProductToCart(@RequestBody CartAddRequest addRequest, Authentication auth){
         MyUser member = (MyUser) auth.getPrincipal();
@@ -30,15 +41,5 @@ public class CartController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @GetMapping("/items")
-    public String showCart(Authentication auth, Model model){
-        MyUser member = (MyUser) auth.getPrincipal();
 
-        CartDto cartDto = cartService.getCartForMember(member.getId());
-
-        model.addAttribute("cart", cartDto);
-
-        ApiResponse<Void> response = ApiResponse.successNoData("추가 성공");
-        return "my-page/cart";
-    }
 }

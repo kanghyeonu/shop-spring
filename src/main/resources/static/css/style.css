@@ -1,6 +1,7 @@
-.card {
- margin : 30px auto;
- display : flex;
+.card a {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
 }
 .card img {
  width : 150px;
@@ -48,3 +49,5 @@ input {
   display : block;
   margin : auto;
 }
+
+

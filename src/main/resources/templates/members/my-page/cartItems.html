@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+
+<div th:replace="~{ util/nav.html::navbar }"></div>
+
+<div th:if="${cart == null}">
+    <p>장바구니가 비었음</p>
+</div>
+
+<div th:if="${cart != null}">
+    <!-- 장바구니 항목 목록(items)이 비어있는지 여부는 이 div 외부에서 확인해야 할 수 있습니다. -->
+    <!-- 이 div 안에서는 cart가 null이 아니라고 가정하고, items 목록을 순회합니다. -->
+    <!-- 만약 cart.items가 비어있다면 th:each 루프는 실행되지 않습니다. -->
+
+    <div class="card" th:each="item : ${cart.items}" style="display: flex; gap: 20px; align-items: center;">
+        <!-- 왼쪽 칼럼: 이미지 -->
+        <div style="flex: 0 0 150px;">
+            <img src="https://placehold.co/300" alt="상품 이미지" style="width: 100%; height: auto; object-fit: cover;">
+        </div>
+
+        <!-- 오른쪽 칼럼: 텍스트 -->
+        <div style="flex: 1; display: flex; flex-direction: column; gap: 5px; justify-content: center;">
+            <a th:href="@{'/products/' + ${item.productId}}">
+                <h4 th:text="${item.productTitle}" style="margin: 0;">상품 이름</h4>
+                <h4 th:text="${#numbers.formatDecimal(item.productPrice, 0, 'COMMA', 0, 'POINT')} + '원'" style="margin: 0;">가격</h4>
+            </a>
+
+            <div>
+                <label th:for="'quantityInput_' + ${item.id}">수량:</label>
+                <input type="number"
+                       th:id="'quantityInput_' + ${item.id}"
+                       th:value="${item.quantity}"
+                       min="1"
+                       style="width: 50px;">
+            </div>
+            <button type="button" id="deleteButton" style="
+                width: auto;
+                padding: 6px 12px;
+                font-size: 14px;
+                background-color: #000;
+                color: #fff;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                max-width: 150px;
+                display: inline-block;
+                text-align: center;">상품 삭제</button>
+            </div>
+    </div>
+
+    <!-- 장바구니 전체 총 금액 등 요약 정보 및 주문하기 버튼은 이 루프 밖에 위치해야 합니다. -->
+    <!-- <div th:if="${cart.estimatedTotalAmount != null}"> ... </div> -->
+    <!-- <div> <button id="checkoutButton">주문하기</button> </div> -->
+    <h4 th:text="'총 가격: ' + ${#numbers.formatDecimal(cart.totalPrice, 0, 'COMMA', 0, 'POINT')} + '원'">총 가격</h4>
+
+    <button type="button" id="purchaseButton">주문하기</button>
+    <button type="button", id="editCartButton">장바구니 수정</button>
+    <button type="button", id="clearCartButton">장바구니 비우기</button>
+
+</div>
+
+</body>
+</html>

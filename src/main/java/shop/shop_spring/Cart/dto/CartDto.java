@@ -3,10 +3,12 @@ package shop.shop_spring.Cart.dto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.context.annotation.Bean;
 import org.springframework.jndi.JndiLocatorDelegate;
 import shop.shop_spring.Cart.domain.Cart;
 import shop.shop_spring.Cart.domain.CartItem;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,6 +21,7 @@ public class CartDto {
     private List<CartItemDto> items;
     private int totalItemCount;
     private int totalProductsCount;
+    private BigDecimal totalPrice;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -32,11 +35,16 @@ public class CartDto {
                 .sum();
         int totalProducts = cartItemDtos.size();
 
+        BigDecimal calculatedTotalPrice = cartItemDtos.stream()
+                .map(CartItemDto::getLineItemTotal)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
         return new CartDto(
                 cart.getId(),
                 cartItemDtos,
                 totalItems,
                 totalProducts,
+                calculatedTotalPrice,
                 cart.getCreatedAt(),
                 cart.getUpdatedAt()
         );

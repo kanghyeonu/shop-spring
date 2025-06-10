@@ -18,7 +18,7 @@
     <img src="https://placehold.co/300">
     <p th:text="${product.category.name}">없음</p>
     <h4 th:text="${product.title}">바지</h4>
-    <h4 th:text="${product.price} + '원'">100억</h4>
+    <h4 th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')} + '원'">가격</h4>
     <h4 th:text="'재고: ' + ${product.stockQuantity}">없음</h4>
     <h4 th:text="'상품 설명: ' + ${product.description.description}">없음</h4>
     <h4>
@@ -26,13 +26,102 @@
         <span th:if="${product.status.name() == 'SOLD_OUT'}">품절</span>
         <span th:if="${product.status.name() == 'INACTIVE'}">비활성화</span>
     </h4>
-    <button type="button">구매</button>
+
+    <div>
+        <label for="quantityInput">수량:</label>
+        <input type="number" id="quantityInput" value="1" min="1" style="width: 50px;">
+    </div>
+
+    <button type="button" id="purchaseButton">구매</button>
+    <button type="button", id="addToCartButton">장바구니 담기</button>
 
 </div>
 <div th:if="${product == null}">
     <!-- null인 경우 어떻게 처리할지 여기에 추가 -->
     <p>삭제된 상품</p>
 </div>
+
+<script th:inline="javascript">
+    const isLoggedIn = [[${isLoggedIn}]];
+    const productId = [[${product.id}]];
+
+    function isUserLoggedIn(){
+        return isLoggedIn;
+    }
+
+    document.getElementById('purchaseButton').addEventListener('click', function() {
+        if (isUserLoggedIn()) {
+            //TODO: 구매 기능 실행
+
+        } else {
+            // 로그아웃 상태일 때 로그인 안내 메시지 표시
+            alert("로그인이 필요한 기능. 로그인 페이지로 이동.");
+            window.location.href = '/members/login';
+        }
+    });
+
+    document.getElementById('addToCartButton').addEventListener('click', async function() { // async 키워드 추가
+        if (isUserLoggedIn()) { // isUserLoggedIn 함수는 별도로 정의되어 있다고 가정
+            console.log("장바구니 담기 기능");
+            const quantity = parseInt(document.getElementById('quantityInput').value, 10);
+
+            if (isNaN(quantity) || quantity < 1){ // 숫자가 아니거나 1 미만인 경우 추가 검증
+                 alert("수량은 1개 이상이어야 합니다.");
+                 return; // 조건이 맞지 않으면 함수 종료
+            }
+
+            // productId 변수는 이 스코프 외부에서 정의되어 있다고 가정
+            const requestBody = {
+                productId: productId,
+                quantity: quantity
+            }
+
+            try{ // try 블록 시작
+                const response = await fetch('/cart/items', { // 장바구니 추가 API 엔드포인트 (이전 논의에서는 /cart/items 로 제안되었습니다)
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        // 필요한 경우 인증 토큰 헤더 추가 (예: 'Authorization': 'Bearer YOUR_TOKEN')
+                    },
+                    body: JSON.stringify(requestBody)
+                });
+
+                if (response.ok){ // HTTP 상태 코드가 200-299 범위인 경우
+                    alert("장바구니 추가 완료");
+                    // 성공 후 필요한 동작 추가 (예: 장바구니 내용 새로고침, 메시지 표시 등)
+                } else if (response.status === 401 || response.status === 403){
+                    alert("로그인 만료 또는 권한 없음. 다시 로그인 해주세요.");
+                    // 필요에 따라 로그인 페이지로 리다이렉트
+                     window.location.href = '/members/login';
+                } else {
+                    // 4xx, 5xx 등 실패 응답 처리
+                    alert("장바구니 담기 실패");
+                    try { // 에러 응답 본문 파싱도 실패할 수 있으므로 try-catch로 감싸는 것이 안전
+                        const errorData = await response.json(); // await 사용
+                        console.error("Error: ", response.status, errorData); // 에러 상세 정보 콘솔 출력
+                        // 서버에서 보낸 에러 메시지를 사용자에게 보여줄 수도 있습니다.
+                        // alert(`장바구니 담기 실패: ${errorData.message || response.statusText}`);
+                    } catch (jsonError) {
+                        // JSON 파싱 실패 시
+                        console.error("Error parsing response body: ", jsonError);
+                        console.error("Error response status: ", response.status, response.statusText);
+                         alert(`장바구니 담기 실패: ${response.statusText}`);
+                    }
+                }
+            } catch (error) { // catch 블록 추가 - 네트워크 오류 등 fetch 자체에서 발생한 예외 처리
+                console.error('Fetch 또는 장바구니 추가 중 오류 발생:', error);
+                alert('장바구니 추가 중 오류가 발생했습니다. 다시 시도해주세요.');
+            } // try-catch 블록 끝
+
+        } else {
+            // 로그아웃 상태일 때 로그인 안내 메시지 표시
+            alert("로그인이 필요한 기능입니다. 로그인 페이지로 이동합니다.");
+            window.location.href = '/members/login';
+        }
+    }); // 이벤트 리스너 함수 끝
+
+
+</script>
 
 
 </body>
