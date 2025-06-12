@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import shop.shop_spring.Cart.dto.CartAddRequest;
 import shop.shop_spring.Cart.dto.CartDto;
+import shop.shop_spring.Cart.dto.CartItemUpdateRequest;
 import shop.shop_spring.Cart.service.CartService;
 import shop.shop_spring.Cart.service.CartServiceImpl;
 import shop.shop_spring.Dto.ApiResponse;
@@ -41,5 +42,31 @@ public class CartController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    @DeleteMapping("/items/{id}")
+    public ResponseEntity removeProductFromCart(@PathVariable Long id, Authentication auth){
+        MyUser member = (MyUser) auth.getPrincipal();
+        cartService.removeItemFromCart(member.getId(), id);
 
+        ApiResponse<Void> response = ApiResponse.successNoData("상품 삭제 성공");
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @DeleteMapping
+    public ResponseEntity clearCart(Authentication auth){
+        MyUser member = (MyUser) auth.getPrincipal();
+
+        cartService.clearCart(member.getId());
+
+        ApiResponse<Void> response = ApiResponse.successNoData("장바구니 비우기 성공");
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @PutMapping("/items/{id}")
+    public ResponseEntity updateQuantity(@PathVariable Long id, @RequestBody CartItemUpdateRequest updateRequest, Authentication auth){
+
+        System.out.println(id);
+
+        ApiResponse<Void> response = ApiResponse.successNoData("상품 개수 업데이트");
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
 }

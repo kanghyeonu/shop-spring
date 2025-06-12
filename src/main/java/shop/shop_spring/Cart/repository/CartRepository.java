@@ -8,6 +8,9 @@ import shop.shop_spring.Cart.domain.Cart;
 import java.util.Optional;
 
 public interface CartRepository extends JpaRepository<Cart, Long> {
-    @Query("SELECT c FROM Cart c JOIN FETCH c.cartItems ci JOIN FETCH ci.product WHERE c.member.id = :memberId")
+    @Query("SELECT c FROM Cart c " +
+            "LEFT JOIN FETCH c.cartItems ci " +
+            "LEFT JOIN FETCH ci.product p " +
+            "WHERE c.member.id = :memberId")
     Optional<Cart> findByMemberIdWithItemsAndProducts(@Param("memberId") Long memberId);
 }

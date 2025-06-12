@@ -10,6 +10,7 @@ import shop.shop_spring.Cart.domain.CartItem;
 import shop.shop_spring.Cart.dto.CartDto;
 import shop.shop_spring.Cart.repository.CartItemRepository;
 import shop.shop_spring.Cart.repository.CartRepository;
+import shop.shop_spring.Exception.DataNotFoundException;
 import shop.shop_spring.Member.domain.Member;
 import shop.shop_spring.Member.service.MemberService;
 import shop.shop_spring.Product.domain.Product;
@@ -28,11 +29,11 @@ public class CartServiceImpl implements CartService{
 
     @Override
     public CartDto getCartForMember(Long memberId) {
-        Optional<Cart> cart = cartRepository.findByMemberIdWithItemsAndProducts(memberId);
-        if (cart.isEmpty() || cart.get().getCartItems().isEmpty()){
+        Optional<Cart> cartOptional = cartRepository.findByMemberIdWithItemsAndProducts(memberId);
+        if (cartOptional.isEmpty() || cartOptional.get().getCartItems().isEmpty()){
             return null;
         }
-        return CartDto.fromEntity(cart.get());
+        return CartDto.fromEntity(cartOptional.get());
     }
 
     @Transactional
@@ -73,21 +74,31 @@ public class CartServiceImpl implements CartService{
     @Override
     public void updateItemQuantity(Long memberId, Long productId, int newQuantity) {
 
-    }
-
-    @Override
-    public void removeItemFromCart(Long memberId, Long productId) {
 
     }
 
     @Transactional
     @Override
+    public void removeItemFromCart(Long memberId, Long cartItemId) {
+        // 카드 안의 상품 검색
+        Optional<CartItem> cartItemOptional = cartItemRepository.findById(cartItemId);
+        if (cartItemOptional.isEmpty()){
+            throw new DataNotFoundException("장바구니 내 없는 상품");
+        }
+        CartItem cartItemToRemove = cartItemOptional.get();
+
+        // 일치하는거 삭제
+        cartItemToRemove.getCart().removeCartItem(cartItemToRemove);
+    }
+
+    @Transactional
+    @Override
     public void clearCart(Long memberId) {
-        Optional<Cart> cart = cartRepository.findByMemberIdWithItemsAndProducts(memberId);
-        if (cart.isEmpty() || cart.get().getCartItems().isEmpty()){
+        Optional<Cart> cartOptional = cartRepository.findByMemberIdWithItemsAndProducts(memberId);
+        if (cartOptional.isEmpty() || cartOptional.get().getCartItems().isEmpty()){
             return;
         }
-        cart.get().getCartItems().clear();
+        cartOptional.get().getCartItems().clear();
     }
 
 }

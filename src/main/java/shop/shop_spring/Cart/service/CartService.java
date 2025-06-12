@@ -12,7 +12,7 @@ public interface CartService {
 
     void updateItemQuantity(Long memberId, Long productId, int newQuantity);
 
-    void removeItemFromCart(Long memberId, Long productId);
+    void removeItemFromCart(Long memberId, Long cartItemId);
 
     void clearCart(Long memberId);
 
