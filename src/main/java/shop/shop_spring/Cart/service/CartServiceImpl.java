@@ -16,6 +16,7 @@ import shop.shop_spring.Member.service.MemberService;
 import shop.shop_spring.Product.domain.Product;
 import shop.shop_spring.Product.service.ProductService;
 
+import org.springframework.security.access.AccessDeniedException;
 import java.util.Optional;
 
 @Service
@@ -71,15 +72,34 @@ public class CartServiceImpl implements CartService{
 
     }
 
+    @Transactional
     @Override
-    public void updateItemQuantity(Long memberId, Long productId, int newQuantity) {
+    public void updateItemQuantity(Long memberId, Long cartItemId, int newQuantity) {
+       Optional<CartItem> cartItemOptional = cartItemRepository.findById(cartItemId);
+       if (cartItemOptional.isEmpty()){
+           throw new DataNotFoundException("장바구니 내 없는 상품");
+       }
 
+       CartItem cartItemToUpdate = cartItemOptional.get();
+       if(!cartItemToUpdate.getCart().getMember().getId().equals(memberId)){
+           throw new AccessDeniedException("권한 없는 사용자");
+       }
 
+       if (newQuantity <= 0) {
+           throw new IllegalArgumentException("0 이하의 상품 수량");
+       }
+
+       cartItemOptional.get().setQuantity(newQuantity);
     }
+
 
     @Transactional
     @Override
     public void removeItemFromCart(Long memberId, Long cartItemId) {
+        Optional<Cart> cartOptional = cartRepository.findByMemberIdWithItemsAndProducts(memberId);
+        if (cartOptional.isEmpty() || cartOptional.get().getCartItems().isEmpty()){
+            throw new DataNotFoundException("장바구니가 비었음");
+        }
         // 카드 안의 상품 검색
         Optional<CartItem> cartItemOptional = cartItemRepository.findById(cartItemId);
         if (cartItemOptional.isEmpty()){
@@ -93,12 +113,13 @@ public class CartServiceImpl implements CartService{
 
     @Transactional
     @Override
-    public void clearCart(Long memberId) {
+    public boolean clearCart(Long memberId) {
         Optional<Cart> cartOptional = cartRepository.findByMemberIdWithItemsAndProducts(memberId);
         if (cartOptional.isEmpty() || cartOptional.get().getCartItems().isEmpty()){
-            return;
+            return false;
         }
         cartOptional.get().getCartItems().clear();
+        return true;
     }
 
 }

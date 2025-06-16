@@ -40,7 +40,9 @@
                        th:id="'quantityInput_' + ${item.id}"
                        th:value="${item.quantity}"
                        min="1"
-                       style="width: 50px;">
+                       style="width: 50px;"
+                       th:data-cart-item-id="${item.id}"
+                       class="quantity-input">
             </div>
 
             <!-- 장바구니 항목별 총 금액 (CartItemDto에 lineItemTotal 필드가 있다고 가정) -->

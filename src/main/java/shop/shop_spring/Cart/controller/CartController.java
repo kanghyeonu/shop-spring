@@ -55,16 +55,19 @@ public class CartController {
     public ResponseEntity clearCart(Authentication auth){
         MyUser member = (MyUser) auth.getPrincipal();
 
-        cartService.clearCart(member.getId());
+        boolean cleared = cartService.clearCart(member.getId());
 
-        ApiResponse<Void> response = ApiResponse.successNoData("장바구니 비우기 성공");
+        String message = cleared ? "장바구니 비우기 성공" : "이미 비어있는 장바구니";
+
+        ApiResponse<Void> response  = ApiResponse.successNoData(message);;
+
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @PutMapping("/items/{id}")
     public ResponseEntity updateQuantity(@PathVariable Long id, @RequestBody CartItemUpdateRequest updateRequest, Authentication auth){
-
-        System.out.println(id);
+        MyUser member = (MyUser) auth.getPrincipal();
+        cartService.updateItemQuantity(member.getId(), id ,updateRequest.getQuantity());
 
         ApiResponse<Void> response = ApiResponse.successNoData("상품 개수 업데이트");
         return ResponseEntity.status(HttpStatus.OK).body(response);
