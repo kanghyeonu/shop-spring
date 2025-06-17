@@ -1,6 +1,5 @@
 package shop.shop_spring.Cart.service;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -8,7 +7,6 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.context.SpringBootTest;
 import shop.shop_spring.Cart.domain.Cart;
 import shop.shop_spring.Cart.domain.CartItem;
 import shop.shop_spring.Cart.dto.CartDto;
@@ -27,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class CartServiceTest {
+public class CartServiceSearchTest {
     @Mock
     private MemberService memberService;
     @Mock
