@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @ToString(exclude = {"cart", "product"})
+@EqualsAndHashCode(exclude = {"cart", "product", "createdAt", "updatedAt"})
 public class CartItem {
 
     @Id
