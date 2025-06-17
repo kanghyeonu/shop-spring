@@ -1,8 +1,7 @@
 package shop.shop_spring.Product.domain;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import shop.shop_spring.Category.domain.Category;
 import shop.shop_spring.Product.enums.Status;
 import java.math.BigDecimal;
@@ -10,8 +9,10 @@ import java.time.LocalDateTime;
 
 
 @Entity
-@Getter
-@Setter
+@Getter @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

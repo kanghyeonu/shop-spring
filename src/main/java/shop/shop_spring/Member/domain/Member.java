@@ -8,9 +8,11 @@ import shop.shop_spring.Member.domain.enums.Role;
 import java.time.LocalDate;
 
 @Entity
-@Getter
-@Setter
+@Getter @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @ToString
+@Builder
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) private Long id;
