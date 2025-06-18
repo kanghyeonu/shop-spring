@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 @Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @ToString(exclude = {"order", "product"})
 public class OrderItem {
     @Id

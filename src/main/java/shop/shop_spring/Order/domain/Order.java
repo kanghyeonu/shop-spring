@@ -15,6 +15,7 @@ import java.util.List;
 @Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @ToString(exclude = {"order", "orderItems", "delivery"})
 public class Order {
     @Id
