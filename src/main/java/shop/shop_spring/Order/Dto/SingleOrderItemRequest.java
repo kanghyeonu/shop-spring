@@ -11,4 +11,5 @@ import lombok.Setter;
 public class SingleOrderItemRequest {
     private int quantity;
     private DeliveryInfo deliveryInfo;
+    private String paymentMethod;
 }

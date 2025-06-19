@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import shop.shop_spring.Dto.ApiResponse;
 import shop.shop_spring.Order.Dto.SingleOrderItemRequest;
 import shop.shop_spring.Order.sevice.OrderServiceImpl;
+import shop.shop_spring.Payment.Dto.PaymentInitiationResponse;
 import shop.shop_spring.Security.MyUser;
 
 import java.util.Map;
@@ -26,15 +27,15 @@ public class OrderController {
             Authentication auth
             ){
         MyUser member = (MyUser) auth.getPrincipal();
-        Long orderId = orderService.placeOrder(
+        PaymentInitiationResponse initiationResponse = orderService.placeOrder(
                 member.getId(),
                 productId,
                 request.getQuantity(),
-                request.getDeliveryInfo());
+                request.getDeliveryInfo(),
+                request.getPaymentMethod());
 
-        Map<String, String> responseData = ApiResponse.createResponseData("상품 아이디", orderId.toString());
-        ApiResponse<Map<String, String>> successResponse = ApiResponse.success("상품 구매 완료", responseData);
+        ApiResponse<PaymentInitiationResponse> response = ApiResponse.success("주문 시작 및 결제 요청 정보 생성", response);
 
-        return ResponseEntity.status(HttpStatus.OK).body(successResponse);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

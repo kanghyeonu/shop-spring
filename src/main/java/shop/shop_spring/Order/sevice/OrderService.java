@@ -2,6 +2,7 @@ package shop.shop_spring.Order.sevice;
 
 import shop.shop_spring.Order.Dto.DeliveryInfo;
 import shop.shop_spring.Order.Dto.OrderDetailDto;
+import shop.shop_spring.Payment.Dto.PaymentInitiationResponse;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ public interface OrderService {
      * @param deliveryInfo 배송 정보
      * @return
      */
-    Long placeOrder(Long memberId, Long productId, int quantity, DeliveryInfo deliveryInfo);
+    PaymentInitiationResponse placeOrder(Long memberId, Long productId, int quantity, DeliveryInfo deliveryInfo, String paymentMethod);
 
     /**
      *  카트 내 상품 일괄 구매
@@ -46,5 +47,9 @@ public interface OrderService {
      * @return
      */
     List<OrderDetailDto> getOrdersByMember(Long memberId);
+
+    void handlePaymentSuccessCallback(Long orderId);
+
+    void handlePaymentFailureCallback(Long orderId);
 
 }
