@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import shop.shop_spring.Exception.DataNotFoundException;
 import shop.shop_spring.Exception.InsufficientStockException;
 import shop.shop_spring.Member.domain.Member;
 import shop.shop_spring.Member.service.MemberService;
@@ -27,6 +28,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class OrderServiceImpl implements OrderService{
     private final OrderRepository orderRepository;
     private final MemberService memberService;
@@ -39,7 +41,6 @@ public class OrderServiceImpl implements OrderService{
     private String failureCallbackUrl;
 
 
-    @Transactional
     @Override
     public PaymentInitiationResponse placeOrder(Long memberId, Long productId, int quantity, DeliveryInfo deliveryInfo, String paymentMethod) {
         // 1. 주문 상품 및 회원 조회
@@ -115,14 +116,49 @@ public class OrderServiceImpl implements OrderService{
         return List.of();
     }
 
-    @Transactional
     @Override
     public void handlePaymentSuccessCallback(Long orderId) {
+        // 1. 성공 주문 조회
+        Order order = orderRepository.findByIdWithOrderItemsAndProduct(orderId)
+                .orElseThrow(() -> {
+                    return new DataNotFoundException("결제 성공 처리 중 주문 찾기 실패");
+                });
 
+        // 2. 주문 상태 확인(중복 처리 방지 등)
+        if (order.getStatus() != Order.OrderStatus.PENDING){
+            System.out.println("주문이 이미 처리 됐음" + order.getStatus().toString());
+            return;
+        }
+
+        // 3. 주문 상태 갱신
+        order.setStatus(Order.OrderStatus.PAID);
+
+        // 4. 주문 후속 처리
+        for (OrderItem orderItem : order.getOrderItems()){
+            Product product = orderItem.getProduct();
+            product.setStockQuantity(product.getStockQuantity() - orderItem.getCount());
+        }
+
+        orderRepository.save(order);
     }
 
     @Override
     public void handlePaymentFailureCallback(Long orderId) {
+        // 1. 성공 주문 조회
+        Order order = orderRepository.findByIdWithOrderItemsAndProduct(orderId)
+                .orElseThrow(() -> {
+                    return new DataNotFoundException("결제 성공 처리 중 주문 찾기 실패");
+                });
 
+        // 2. 주문 상태 확인(중복 처리 방지)
+        if (order.getStatus() != Order.OrderStatus.PENDING){
+            System.out.println("주문이 이미 취소 처리 됐음" + order.getStatus().toString());
+            return;
+        }
+
+        // 3. 주문 상태 갱신
+        order.setStatus(Order.OrderStatus.CANCELED);
+
+        orderRepository.save(order);
     }
 }
