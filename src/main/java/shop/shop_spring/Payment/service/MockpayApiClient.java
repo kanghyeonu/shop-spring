@@ -2,12 +2,13 @@ package shop.shop_spring.Payment.service;
 
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import shop.shop_spring.Payment.Dto.PaymentInitiationResponse;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@Setter
+@Service
 public class MockpayApiClient implements PgApiClient{
 
     @Value("${pg.mypay.api-key}")
