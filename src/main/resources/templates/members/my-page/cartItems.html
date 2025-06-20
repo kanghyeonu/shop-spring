@@ -174,7 +174,7 @@
                 if (response.ok) {
                     console.log('수량 변경 성공');
                     // 성공 후 항목 소계 업데이트 등 UI 반영 로직 추가
-                    // calculateTotalPrice(); // 전체 총 가격 재계산 함수 호출 (필요시)
+                    window.location.reload()
                 } else {
                     alert('수량 변경 실패');
                     // 실패 시 서버 응답에 따라 처리 (예: 재고 부족 등)
