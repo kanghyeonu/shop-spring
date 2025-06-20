@@ -57,4 +57,51 @@ input {
   margin : auto;
 }
 
+/* modal.css */
+.modal {
+    display: none; /* 기본적으로 숨김 */
+    position: fixed; /* 화면에 고정 */
+    z-index: 1; /* 다른 요소 위에 표시 */
+    left: 0;
+    top: 0;
+    width: 100%; /* 전체 너비 */
+    height: 100%; /* 전체 높이 */
+    overflow: auto; /* 내용이 넘칠 경우 스크롤 */
+    background-color: rgba(0,0,0,0.4); /* 배경을 어둡게 */
+}
 
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto; /* 화면 중앙에 위치 (상하 15%, 좌우 자동) */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* 너비 설정 */
+    max-width: 500px; /* 최대 너비 제한 */
+    position: relative; /* 닫기 버튼 위치 지정을 위해 */
+}
+
+.close-button {
+    color: #aaa;
+    float: right; /* 오른쪽 정렬 */
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer; /* 클릭 가능한 커서 */
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* 모달 내부 폼 스타일 (선택 사항) */
+#delivery-form div {
+    margin-bottom: 10px;
+}
+
+#delivery-form label {
+    display: inline-block;
+    width: 100px; /* 레이블 너비 고정 */
+    margin-right: 10px;
+}
