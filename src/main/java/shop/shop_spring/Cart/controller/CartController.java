@@ -27,6 +27,8 @@ public class CartController {
 
         CartDto cartDto = cartService.getCartForMember(member.getId());
 
+        boolean isLoggedIn = auth != null && auth.isAuthenticated();
+        model.addAttribute("isLoggedIn", isLoggedIn);
         model.addAttribute("cart", cartDto);
 
         return "/members/my-page/cartItems";
