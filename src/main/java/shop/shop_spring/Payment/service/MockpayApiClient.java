@@ -34,10 +34,9 @@ public class MockpayApiClient implements PgApiClient{
         mockPgResponse.put("pgTransactionId", "PG_TXN_" + requestData.get("orderId") + "_" + System.currentTimeMillis());
         mockPgResponse.put(
                 "redirectUrl",
-                "http://localhost:8080/payments/mock-redirect?orderId=" +
+                "https://mock_mypay.com/payment?orderId=" +
                         requestData.get("orderId") +
-                        "&pg_token=mock_token_" + System.currentTimeMillis());
-
+                        "&token=mock_token");
         return mockPgResponse;
     }
 

@@ -28,6 +28,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class OrderServiceImpl implements OrderService{
     private final OrderRepository orderRepository;
     private final MemberService memberService;
@@ -39,7 +40,7 @@ public class OrderServiceImpl implements OrderService{
     @Value("${app.payment.failure-callback-url}")
     private String failureCallbackUrl;
 
-    @Transactional
+
     @Override
     public PaymentInitiationResponse placeOrder(Long memberId, Long productId, int quantity, DeliveryInfo deliveryInfo, String paymentMethod) {
         // 1. 주문 상품 및 회원 조회
@@ -67,7 +68,6 @@ public class OrderServiceImpl implements OrderService{
                 .status(Delivery.DeliveryStatus.READY)
                 .build();
 
-
         // 5. 주문 생성
         Order order = Order.builder()
                 .orderer(member)
@@ -75,7 +75,6 @@ public class OrderServiceImpl implements OrderService{
                 .status(Order.OrderStatus.PENDING)
                 .totalAmount(product.getPrice().multiply(BigDecimal.valueOf(quantity)))
                 .orderItems(new ArrayList<>())
-                .paymentMethod(paymentMethod)
                 .build();
 
         // 연관 관계 설정
@@ -116,14 +115,13 @@ public class OrderServiceImpl implements OrderService{
     public List<OrderDetailDto> getOrdersByMember(Long memberId) {
         return List.of();
     }
-    @Transactional
+
     @Override
     public void handlePaymentSuccessCallback(Long orderId) {
-        System.out.println(orderId);
         // 1. 성공 주문 조회
         Order order = orderRepository.findByIdWithOrderItemsAndProduct(orderId)
                 .orElseThrow(() -> {
-                    throw new DataNotFoundException("결제 성공 처리 중 주문 찾기 실패");
+                    return new DataNotFoundException("결제 성공 처리 중 주문 찾기 실패");
                 });
 
         // 2. 주문 상태 확인(중복 처리 방지 등)
@@ -144,13 +142,12 @@ public class OrderServiceImpl implements OrderService{
         orderRepository.save(order);
     }
 
-    @Transactional
     @Override
     public void handlePaymentFailureCallback(Long orderId) {
         // 1. 성공 주문 조회
         Order order = orderRepository.findByIdWithOrderItemsAndProduct(orderId)
                 .orElseThrow(() -> {
-                    throw new DataNotFoundException("결제 성공 처리 중 주문 찾기 실패");
+                    return new DataNotFoundException("결제 성공 처리 중 주문 찾기 실패");
                 });
 
         // 2. 주문 상태 확인(중복 처리 방지)

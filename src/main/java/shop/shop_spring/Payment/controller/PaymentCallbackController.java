@@ -16,30 +16,28 @@ import java.util.Map;
 @RequestMapping("/payments")
 @RequiredArgsConstructor
 public class PaymentCallbackController {
-    private final OrderService orderService;
+    private OrderService orderService;
 
-    @PostMapping("/mock-callback/success")
+    @PostMapping("/mock-callback/sucess")
     public ResponseEntity handleMockPaymentSuccessCallback(@RequestBody Map<String, Object> callbackData){
 
-        Long orderId;
-        try {
-            Object orderIdObj = callbackData.get("orderId");
-            if (orderIdObj == null){
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: orderId missing");
-            }
-
-            if (orderIdObj instanceof Number){
-                orderId = ((Number) orderIdObj).longValue();
-            } else {
-                orderId = Long.valueOf(orderIdObj.toString());
-            }
-        } catch (Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: invalid data format");
-        }
-
-        System.out.println(orderId);
+         Long orderId;
          try {
-             System.out.println("여긴 오긴해");
+             Object orderIdObj = callbackData.get("orderId");
+             if (orderIdObj == null){
+                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: orderId missing");
+             }
+
+             if (orderIdObj instanceof Number){
+                 orderId = ((Number) orderIdObj).longValue();
+             } else {
+                 orderId = Long.valueOf(orderIdObj.toString());
+             }
+         } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: invalid data format");
+         }
+
+         try {
             orderService.handlePaymentSuccessCallback(orderId);
             return ResponseEntity.status(HttpStatus.OK).body("OK");
          } catch (Exception e){
@@ -48,32 +46,4 @@ public class PaymentCallbackController {
     }
 
     // 실패는 생략
-    @PostMapping("/mock-callback/failure")
-    public ResponseEntity handleMockPaymentFailureCallback(@RequestBody Map<String, Object> callbackData){
-
-        Long orderId;
-        try {
-            Object orderIdObj = callbackData.get("orderId");
-            if (orderIdObj == null){
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: orderId missing");
-            }
-
-            if (orderIdObj instanceof Number){
-                orderId = ((Number) orderIdObj).longValue();
-            } else {
-                orderId = Long.valueOf(orderIdObj.toString());
-            }
-        } catch (Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: invalid data format");
-        }
-
-        System.out.println(orderId);
-        try {
-            System.out.println("여긴 오긴해");
-            orderService.handlePaymentFailureCallback(orderId);
-            return ResponseEntity.status(HttpStatus.OK).body("OK");
-        } catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: Internal server error");
-        }
-    }
 }
