@@ -7,12 +7,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import shop.shop_spring.Dto.ApiResponse;
-import shop.shop_spring.Order.Dto.SingleOrderItemRequest;
+import shop.shop_spring.Order.Dto.CartItemOrderRequest;
+import shop.shop_spring.Order.Dto.SingleItemOrderRequest;
 import shop.shop_spring.Order.sevice.OrderServiceImpl;
 import shop.shop_spring.Payment.Dto.PaymentInitiationResponse;
 import shop.shop_spring.Security.MyUser;
-
-import java.util.Map;
 
 @Controller
 @RequestMapping("/orders")
@@ -23,9 +22,8 @@ public class OrderController {
     @PostMapping("/single-item/{productId}")
     public ResponseEntity placeSingleItemOrder(
             @PathVariable Long productId,
-            @RequestBody SingleOrderItemRequest request,
-            Authentication auth
-            ){
+            @RequestBody SingleItemOrderRequest request,
+            Authentication auth){
         MyUser member = (MyUser) auth.getPrincipal();
 
         PaymentInitiationResponse initiationResponse = orderService.placeOrder(
@@ -40,4 +38,20 @@ public class OrderController {
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
+    @PostMapping("/cart-items")
+    public ResponseEntity placeCartItemOrder(
+            @RequestBody CartItemOrderRequest request,
+            Authentication auth){
+
+        MyUser member = (MyUser) auth.getPrincipal();
+
+        PaymentInitiationResponse initiationResponse = orderService.placeCartOrder(
+                member.getId(),
+                request.getDeliveryInfo(),
+                request.getPaymentMethod());
+
+        return ResponseEntity.status(HttpStatus.OK).body("ok");
+    }
+
 }

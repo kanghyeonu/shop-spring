@@ -1,5 +1,6 @@
 package shop.shop_spring.Cart.service;
 
+import shop.shop_spring.Cart.domain.Cart;
 import shop.shop_spring.Cart.dto.CartDto;
 import shop.shop_spring.Cart.dto.CartItemDto;
 import shop.shop_spring.Member.domain.Member;
@@ -16,7 +17,6 @@ public interface CartService {
 
     boolean clearCart(Long memberId);
 
-    // 사용자 장바구니 결제 후 주문 생성
-    //Order checkoutCart()
+    Cart getCartEntityWithItemsAndProducts(Long memberId);
 
 }

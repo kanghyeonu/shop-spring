@@ -216,7 +216,7 @@
                 const paymentMethod = '가상 결제'; // 임시 값 (백엔드 Mock에 맞춤)
 
                 // 입력 값 유효성 검사 (간단하게)
-                if (!receiverName || !address || !paymentMethod || quantity < 1) {
+                if (!receiverName || !address || !addressDetail || !paymentMethod || quantity < 1) {
                      alert("필수 정보를 모두 입력하고 수량을 확인해주세요.");
                      return;
                 }
