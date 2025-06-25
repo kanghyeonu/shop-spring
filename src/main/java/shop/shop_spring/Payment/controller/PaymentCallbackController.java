@@ -36,17 +36,15 @@ public class PaymentCallbackController {
         } catch (Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: invalid data format");
         }
-
-        System.out.println(orderId);
+        
          try {
-             System.out.println("여긴 오긴해");
             orderService.handlePaymentSuccessCallback(orderId);
             return ResponseEntity.status(HttpStatus.OK).body("OK");
          } catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: Internal server error");
          }
     }
-    
+
     @PostMapping("/mock-callback/failure")
     public ResponseEntity handleMockPaymentFailureCallback(@RequestBody Map<String, Object> callbackData){
 
