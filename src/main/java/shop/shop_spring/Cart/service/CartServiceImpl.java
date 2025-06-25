@@ -28,6 +28,7 @@ public class CartServiceImpl implements CartService{
     private final CartItemRepository cartItemRepository;
 
 
+    @Transactional
     @Override
     public CartDto getCartForMember(Long memberId) {
         Optional<Cart> cartOptional = cartRepository.findByMemberIdWithItemsAndProducts(memberId);
@@ -120,6 +121,15 @@ public class CartServiceImpl implements CartService{
         }
         cartOptional.get().getCartItems().clear();
         return true;
+    }
+
+    @Override
+    public Cart getCartEntityWithItemsAndProducts(Long memberId) {
+        Optional<Cart> cartOptional = cartRepository.findByMemberIdWithItemsAndProducts(memberId);
+        if (cartOptional.isEmpty() || cartOptional.get().getCartItems().isEmpty()){
+            throw new DataNotFoundException("장바구니가 없음");
+        }
+        return cartOptional.get();
     }
 
 }

@@ -1,10 +1,13 @@
 package shop.shop_spring.Order.sevice;
 
-import jakarta.persistence.OneToOne;
 import lombok.RequiredArgsConstructor;
+import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import shop.shop_spring.Cart.domain.Cart;
+import shop.shop_spring.Cart.domain.CartItem;
+import shop.shop_spring.Cart.service.CartService;
 import shop.shop_spring.Exception.DataNotFoundException;
 import shop.shop_spring.Exception.InsufficientStockException;
 import shop.shop_spring.Member.domain.Member;
@@ -21,7 +24,6 @@ import shop.shop_spring.Product.domain.Product;
 import shop.shop_spring.Product.service.ProductService;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +35,7 @@ public class OrderServiceImpl implements OrderService{
     private final MemberService memberService;
     private final ProductService productService;
     private final PaymentService paymentService;
+    private final CartService cartService;
 
     @Value("${app.payment.success-callback-url}")
     private String successCallbackUrl;
@@ -56,13 +59,13 @@ public class OrderServiceImpl implements OrderService{
                 .product(product)
                 .orderPrice(product.getPrice())
                 .count(quantity)
-                .productNameAtOrder(product.getTitle())
+                .productTitleAtOrder(product.getTitle())
                 .build();
 
         // 4. 배송 정보 생성
         Delivery delivery = Delivery.builder()
                 .receiverName(deliveryInfo.getReceiverName())
-                .address(deliveryInfo.getAddress())
+                .address(deliveryInfo.getAddress() + " " + deliveryInfo.getAddressDetail())
                 .deliveryMessage(deliveryInfo.getDeliveryMessage())
                 .status(Delivery.DeliveryStatus.READY)
                 .build();
@@ -97,9 +100,70 @@ public class OrderServiceImpl implements OrderService{
         return initiationResponse;
     }
 
+
     @Override
-    public Long placeCartOrder(Long memberId, DeliveryInfo deliveryInfo) {
-        return 0L;
+    public PaymentInitiationResponse placeCartOrder(Long memberId, DeliveryInfo deliveryInfo, String paymentMethod) {
+        // 1. 회원 및 장바구니 조회
+        Member member = memberService.findById(memberId);
+        Cart cart = cartService.getCartEntityWithItemsAndProducts(memberId);
+
+        List<CartItem> cartItems = cart.getCartItems();
+
+        // 2. 장바구니 내 상품 재고 체크
+        List<OrderItem> orderItems = new ArrayList<>();
+        BigDecimal totalAmount = BigDecimal.ZERO;
+
+        for (CartItem cartItem : cartItems){
+            Product product = cartItem.getProduct();
+            int quantity = cartItem.getQuantity();
+            if ( product.getStockQuantity() < quantity){
+                throw new InsufficientStockException("상품 재고 부족");
+            }
+
+            OrderItem orderItem = OrderItem.builder()
+                    .product(product)
+                    .orderPrice(product.getPrice())
+                    .count(quantity)
+                    .productTitleAtOrder(product.getTitle())
+                    .build();
+            orderItems.add(orderItem);
+
+            totalAmount = totalAmount.add(product.getPrice().multiply(BigDecimal.valueOf(quantity)));
+        }
+
+        Delivery delivery = Delivery.builder()
+                .receiverName(deliveryInfo.getReceiverName())
+                .address(deliveryInfo.getAddress() + " " + deliveryInfo.getDeliveryMessage())
+                .deliveryMessage(deliveryInfo.getDeliveryMessage())
+                .status(Delivery.DeliveryStatus.READY)
+                .build();
+
+        Order order = Order.builder()
+                .orderer(member)
+                .orderDate(LocalDateTime.now())
+                .status(Order.OrderStatus.PENDING)
+                .totalAmount(totalAmount)
+                .paymentMethod(paymentMethod)
+                .build();
+
+        for (OrderItem orderItem : orderItems){
+            order.addOrderItem(orderItem);
+        }
+        order.setDelivery(delivery);
+
+        Order savedOrder = orderRepository.save(order);
+
+        cartService.clearCart(memberId);
+
+        PaymentInitiationResponse initiationResponse = paymentService.initiatePayment(
+                savedOrder.getId(),
+                savedOrder.getTotalAmount(),
+                savedOrder.getPaymentMethod(),
+                this.successCallbackUrl,
+                this.failureCallbackUrl
+        );
+
+        return initiationResponse;
     }
 
     @Override

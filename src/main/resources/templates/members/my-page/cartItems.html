@@ -72,7 +72,195 @@
     <button type="button", id="clearCartButton">장바구니 비우기</button>
 </div>
 
+<!-- 배송 정보 입력 모달/팝업 구조 (order.html과 동일하게 재활용) -->
+<div id="deliveryModal" class="modal">
+    <div class="modal-content">
+        <span class="close-button">&times;</span>
+        <h3>배송 정보 입력</h3>
+        <form id="delivery-form">
+            <div>
+                <label for="modal-receiver-name">수령인 이름:</label>
+                <input type="text" id="modal-receiver-name" name="receiverName" required>
+            </div>
+            <div>
+                <label for="modal-address">주소:</label>
+                <input type="text" id="modal-address" name="address" required>
+            </div>
+            <div>
+                <label for="modal-detail-address">상세 주소:</label>
+                <input type="text" id="modal-detail-address" name="detailAddress">
+            </div>
+            <div>
+                <label for="modal-delivery-message">배송 메시지:</label>
+                <input type="text" id="modal-delivery-message" name="deliveryMessage">
+            </div>
+            <button type="submit" id="confirmPurchaseButton">구매 확정</button>
+        </form>
+    </div>
+</div>
+
+<!-- 주문 결과 메시지 표시 영역 -->
+<div id="order-result" style="margin-top: 20px; color: green;"></div>
+
+
 <script th:inline="javascript">
+    // Thymeleaf를 통해 주입된 변수 (장바구니 페이지에서는 productId가 필요 없을 수 있음)
+    const isLoggedIn = [[${isLoggedIn}]]; // 로그인 상태 확인용
+
+    function isUserLoggedIn(){
+        return isLoggedIn;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        // 요소 가져오기
+        const purchaseButton = document.getElementById('purchaseButton'); // 장바구니 구매 버튼
+        const deliveryModal = document.getElementById('deliveryModal'); // 모달 요소
+        const closeButton = document.querySelector('.close-button'); // 모달 닫기 버튼
+        const deliveryForm = document.getElementById('delivery-form'); // 배송 정보 폼
+
+        // 배송 정보 입력 필드 요소를 가져옵니다. (모달 내 필드)
+        const modalReceiverNameInput = document.getElementById('modal-receiver-name');
+        const modalAddressInput = document.getElementById('modal-address');
+        const modalDetailAddressInput = document.getElementById('modal-detail-address');
+        const modalDeliveryMessageInput = document.getElementById('modal-delivery-message');
+
+        // TODO: 결제 수단 입력 필드 요소를 가져옵니다. (현재 HTML에 없으므로 임시 값 사용)
+        // const paymentMethodSelect = document.getElementById('payment-method');
+
+
+        // 구매 버튼 (모달 열기) 클릭 이벤트 리스너
+        if (purchaseButton) {
+            purchaseButton.addEventListener('click', function() {
+                if (isUserLoggedIn()) {
+                    if (deliveryModal) {
+                         deliveryModal.style.display = 'block'; // 모달을 보이게 함
+                    } else {
+                         console.error('오류: 배송 정보 모달 요소를 찾을 수 없습니다.');
+                         alert('주문 기능을 사용할 수 없습니다 (모달 오류).');
+                    }
+                } else {
+                    alert("로그인이 필요한 기능입니다. 로그인 페이지로 이동합니다.");
+                    window.location.href = '/members/login';
+                }
+            });
+        } else {
+            console.error('오류: 구매 버튼 요소를 찾을 수 없습니다.');
+        }
+
+        // 모달 닫기 버튼 클릭 이벤트 리스너
+        if (closeButton && deliveryModal) {
+            closeButton.addEventListener('click', () => {
+                deliveryModal.style.display = 'none';
+            });
+
+            // 모달 외부 클릭 시 모달 닫기 이벤트 리스너
+            window.addEventListener('click', (event) => {
+                if (event.target === deliveryModal) {
+                    deliveryModal.style.display = 'none';
+                }
+            });
+        }
+
+
+        // 배송 정보 폼 제출 (최종 구매 확정) 이벤트 리스너
+        if (deliveryForm) {
+            deliveryForm.addEventListener('submit', async (event) => {
+                event.preventDefault();
+
+                // 장바구니 구매는 상품 ID나 수량을 별도로 받지 않습니다.
+                // 백엔드에서 회원 ID로 장바구니를 조회합니다.
+
+                // 모달 내 배송 정보 입력 필드에서 값 가져옴
+                const receiverName = modalReceiverNameInput ? modalReceiverNameInput.value : '';
+                const address = modalAddressInput ? modalAddressInput.value : '';
+                const detailAddress = modalDetailAddressInput ? modalDetailAddressInput.value : '';
+                const deliveryMessage = modalDeliveryMessageInput ? modalDeliveryMessageInput.value : '';
+
+                // TODO: 결제 수단 값을 가져와야 합니다. (현재 HTML에 없으므로 임시 값 사용)
+                const paymentMethod = '가상 결제'; // 임시 값 (백엔드 Mock에 맞춤)
+
+                // 입력 값 유효성 검사 (간단하게)
+                if (!receiverName || !address || !detailAddress || !paymentMethod) { // 수량 검사 제외
+                     alert("필수 정보를 모두 입력해주세요.");
+                     return;
+                }
+
+                // 배송 정보 DTO 객체 생성
+                const deliveryInfo = {
+                    receiverName: receiverName,
+                    address: address,
+                    detailAddress: detailAddress,
+                    deliveryMessage: deliveryMessage
+                };
+
+                // 백엔드 API가 요구하는 JSON 형식의 요청 본문을 만듭니다.
+                // 장바구니 구매 요청 DTO (SingleOrderItemRequestDto와 유사하지만 productId, quantity 없음)
+                const requestBody = {
+                    deliveryInfo: deliveryInfo,
+                    paymentMethod: paymentMethod
+                };
+
+                // 백엔드 API 엔드포인트 URL (장바구니 구매용)
+                const apiUrl = `/orders/cart-items`; // 상품 ID가 아닌 장바구니 전체 구매
+
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            // 'Authorization': 'Bearer YOUR_JWT_TOKEN' // 인증 토큰 필요시 추가
+                        },
+                        body: JSON.stringify(requestBody)
+                    });
+
+                    const responseData = await response.json();
+
+                    if (response.ok) {
+                        if (responseData && responseData.status >= 200 && responseData.status < 300) {
+                            const paymentInitiationResponse = responseData.data;
+
+                            if (paymentInitiationResponse && paymentInitiationResponse.success) {
+                                const redirectUrl = paymentInitiationResponse.redirectUrl;
+                                if (redirectUrl) {
+                                    console.log(`결제 페이지로 리다이렉션: ${redirectUrl}`);
+                                    deliveryModal.style.display = 'none';
+                                    window.location.href = redirectUrl;
+                                } else {
+                                    console.error('오류: 리다이렉션 URL이 응답에 포함되지 않았습니다.');
+                                    alert('주문 처리 중 오류가 발생했습니다 (리다이렉션 정보 누락).');
+                                    deliveryModal.style.display = 'none';
+                                }
+                            } else {
+                                const errorMessage = paymentInitiationResponse.errorMessage || '결제 요청 시작 실패';
+                                console.error(`주문 실패: ${errorMessage}`);
+                                alert(`주문 실패: ${errorMessage}`);
+                                deliveryModal.style.display = 'none';
+                            }
+                        } else {
+                            const errorMessage = responseData.message || '백엔드 처리 오류';
+                            console.error(`주문 요청 실패: ${errorMessage}`);
+                            alert(`주문 요청 실패: ${errorMessage}`);
+                            deliveryModal.style.display = 'none';
+                        }
+                    } else {
+                        const errorMessage = responseData.message || `HTTP 오류: ${response.status} ${response.statusText}`;
+                        console.error(`HTTP 요청 실패: ${errorMessage}`);
+                        alert(`주문 요청 실패: ${errorMessage}`);
+                        deliveryModal.style.display = 'none';
+                    }
+
+                } catch (error) {
+                    console.error('주문 요청 중 오류 발생:', error);
+                    alert(`요청 중 오류 발생: ${error.message}`);
+                    deliveryModal.style.display = 'none';
+                }
+            });
+        } else {
+            console.error('오류: 배송 정보 폼 요소를 찾을 수 없습니다.');
+        }
+
+    }); // DOMContentLoaded 끝
+
     // 모든 삭제 버튼에 이벤트 리스너 추가
     document.querySelectorAll('.remove-item-button').forEach(button => {
         button.addEventListener('click', async function() {

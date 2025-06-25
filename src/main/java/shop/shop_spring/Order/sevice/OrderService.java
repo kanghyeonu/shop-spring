@@ -24,7 +24,7 @@ public interface OrderService {
      * @param deliveryInfo
      * @return
      */
-    Long placeCartOrder(Long memberId, DeliveryInfo deliveryInfo);
+    PaymentInitiationResponse placeCartOrder(Long memberId, DeliveryInfo deliveryInfo, String paymentMethod);
 
     /**
      * 주문 취소
