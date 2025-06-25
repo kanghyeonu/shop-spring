@@ -19,7 +19,6 @@ public class CartItemDto {
     private BigDecimal productPrice;
     private Integer quantity;
     private BigDecimal lineItemTotal;
-
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
