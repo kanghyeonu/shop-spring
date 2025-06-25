@@ -27,6 +27,7 @@ public class OrderController {
             Authentication auth
             ){
         MyUser member = (MyUser) auth.getPrincipal();
+
         PaymentInitiationResponse initiationResponse = orderService.placeOrder(
                 member.getId(),
                 productId,
