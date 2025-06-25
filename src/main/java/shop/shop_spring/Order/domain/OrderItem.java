@@ -2,7 +2,6 @@ package shop.shop_spring.Order.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.aspectj.weaver.ast.Or;
 import shop.shop_spring.Product.domain.Product;
 
 import java.math.BigDecimal;
@@ -35,5 +34,5 @@ public class OrderItem {
     private Integer count; // 개수
 
     @Column(name = "product_name_at_order", nullable = false, length = 255)
-    private String productNameAtOrder; // 주문 당시 가격
+    private String productTitleAtOrder; // 주문 당시 가격
 }

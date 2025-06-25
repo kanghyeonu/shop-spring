@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class SingleOrderItemRequest {
+public class SingleItemOrderRequest {
     private int quantity;
     private DeliveryInfo deliveryInfo;
     private String paymentMethod;
