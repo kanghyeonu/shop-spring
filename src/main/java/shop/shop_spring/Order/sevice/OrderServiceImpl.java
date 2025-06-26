@@ -100,7 +100,7 @@ public class OrderServiceImpl implements OrderService{
         return initiationResponse;
     }
 
-
+    @Transactional
     @Override
     public PaymentInitiationResponse placeCartOrder(Long memberId, DeliveryInfo deliveryInfo, String paymentMethod) {
         // 1. 회원 및 장바구니 조회
@@ -126,6 +126,7 @@ public class OrderServiceImpl implements OrderService{
                     .count(quantity)
                     .productTitleAtOrder(product.getTitle())
                     .build();
+
             orderItems.add(orderItem);
 
             totalAmount = totalAmount.add(product.getPrice().multiply(BigDecimal.valueOf(quantity)));
@@ -149,6 +150,7 @@ public class OrderServiceImpl implements OrderService{
         for (OrderItem orderItem : orderItems){
             order.addOrderItem(orderItem);
         }
+
         order.setDelivery(delivery);
 
         Order savedOrder = orderRepository.save(order);
@@ -180,10 +182,10 @@ public class OrderServiceImpl implements OrderService{
     public List<OrderDetailDto> getOrdersByMember(Long memberId) {
         return List.of();
     }
+
     @Transactional
     @Override
     public void handlePaymentSuccessCallback(Long orderId) {
-        System.out.println(orderId);
         // 1. 성공 주문 조회
         Order order = orderRepository.findByIdWithOrderItemsAndProduct(orderId)
                 .orElseThrow(() -> {
@@ -219,7 +221,7 @@ public class OrderServiceImpl implements OrderService{
 
         // 2. 주문 상태 확인(중복 처리 방지)
         if (order.getStatus() != Order.OrderStatus.PENDING){
-            System.out.println("주문이 이미 취소 처리 됐음" + order.getStatus().toString());
+            System.out.println("주문이 이미 결제 됐거나 취소 처리 됐음" + order.getStatus().toString());
             return;
         }
 

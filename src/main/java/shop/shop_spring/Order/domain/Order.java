@@ -41,6 +41,7 @@ public class Order {
     private Delivery delivery;  // 배송 상태
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<OrderItem> orderItems = new ArrayList<>(); // 주문한 상품들
 
     @Column(name = "payment_method", nullable = false, length = 50)
