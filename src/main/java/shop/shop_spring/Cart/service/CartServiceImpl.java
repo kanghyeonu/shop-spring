@@ -35,6 +35,7 @@ public class CartServiceImpl implements CartService{
         if (cartOptional.isEmpty() || cartOptional.get().getCartItems().isEmpty()){
             return null;
         }
+
         return CartDto.fromEntity(cartOptional.get());
     }
 

@@ -20,7 +20,6 @@ public class PaymentCallbackController {
 
     @PostMapping("/mock-callback/success")
     public ResponseEntity handleMockPaymentSuccessCallback(@RequestBody Map<String, Object> callbackData){
-
         Long orderId;
         try {
             Object orderIdObj = callbackData.get("orderId");
@@ -47,7 +46,6 @@ public class PaymentCallbackController {
 
     @PostMapping("/mock-callback/failure")
     public ResponseEntity handleMockPaymentFailureCallback(@RequestBody Map<String, Object> callbackData){
-
         Long orderId;
         try {
             Object orderIdObj = callbackData.get("orderId");
