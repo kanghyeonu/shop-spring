@@ -51,7 +51,10 @@ public class OrderController {
                 request.getDeliveryInfo(),
                 request.getPaymentMethod());
 
-        return ResponseEntity.status(HttpStatus.OK).body("ok");
+        ApiResponse<PaymentInitiationResponse> response = ApiResponse.success(
+                "주문 시작 및 결제 요청 정보 생성", initiationResponse);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
 }
