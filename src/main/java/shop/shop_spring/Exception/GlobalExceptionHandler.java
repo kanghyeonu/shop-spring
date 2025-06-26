@@ -77,4 +77,12 @@ public class GlobalExceptionHandler  {
                 "서버 내부 오류가 발생했습니다.");
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
     }
+
+    @ExceptionHandler(InsufficientStockException.class)
+    public ResponseEntity<ApiResponse<Void>> handleInsufficientStockException(Exception e){
+        System.err.println("InsufficientStockException 발생:" + e.getMessage());
+        ApiResponse<Void> errorResponse = ApiResponse.errorNoData(HttpStatus.FORBIDDEN,
+                "재고 부족");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
 }
