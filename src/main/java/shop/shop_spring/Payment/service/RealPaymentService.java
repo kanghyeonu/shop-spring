@@ -12,7 +12,7 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
-public class MockPaymentService implements PaymentService{
+public class RealPaymentService implements PaymentService{
     private final PgApiClient pgApiClient;
 
     @Value("${app.payment.success-callback-url}")
