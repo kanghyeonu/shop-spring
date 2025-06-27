@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.4.5'
 	id 'io.spring.dependency-management' version '1.1.7'
+	id 'jacoco' // Jacoco Plugin 추가
 }
 
 group = 'shop'
@@ -12,6 +13,7 @@ java {
 		languageVersion = JavaLanguageVersion.of(17)
 	}
 }
+
 
 repositories {
 	mavenCentral()
@@ -35,9 +37,32 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	testImplementation 'org.mockito:mockito-junit-jupiter:5.2.0'
-	testImplementation 'org.mockito:mockito-inline:${mockitoVersion}'
+	testImplementation 'org.mockito:mockito-inline:3.5.0'
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
+	finalizedBy(jacocoTestReport)
+}
+
+
+jacocoTestReport {
+
+	dependsOn(test)
+
+	reports {
+		xml {
+			enabled false
+		}
+		csv {
+			enabled false
+		}
+		html {
+			enabled true
+		}
+
+		xml.destination file(project.layout.buildDirectory.dir("jacoco/index.xml")) as File
+		csv.destination file(project.layout.buildDirectory.dir("jacoco/index.csv")) as File
+		html.destination file(project.layout.buildDirectory.dir("jacoco/index.html")) as File
+	}
 }
