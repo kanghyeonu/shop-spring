@@ -65,7 +65,7 @@ public class Order {
     public enum OrderStatus{
         PENDING,        // 대기 중
         PAID,           // 결제 완료
-        SHIPPED,        // 배송 중
+        SHIPPED,        // 배송 중 
         DELIVERED,      // 배송 완료
         CANCELED        // 취소됨
     }
