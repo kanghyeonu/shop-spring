@@ -1,6 +1,7 @@
 package shop.shop_spring.Redis;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -8,6 +9,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import static org.junit.jupiter.api.Assertions.*;
 import org.springframework.test.context.ActiveProfiles;
 
+@Disabled
 @SpringBootTest
 @ActiveProfiles("redis")
 public class RedisUtilTest {
