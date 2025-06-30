@@ -29,6 +29,13 @@ public class SecurityConfig {
             "/categories/**"
     };
 
+    String[] urlBeAuthenticated = {
+            "/members/my-page/**",
+            "/cart/**",
+            "/orders/**",
+            "/payments/**"
+    };
+
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
@@ -59,7 +66,7 @@ public class SecurityConfig {
 
         http.authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers(urlsBePermittedAll).permitAll()
-                        .requestMatchers("/members/my-page/**", "/cart/**", "/orders/**", "/payments/**").authenticated())
+                        .requestMatchers(urlBeAuthenticated).authenticated())
 
                 .logout(logout -> logout.permitAll());
 

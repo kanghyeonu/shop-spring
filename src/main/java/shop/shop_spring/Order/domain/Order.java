@@ -63,11 +63,20 @@ public class Order {
     }
 
     public enum OrderStatus{
-        PENDING,        // 대기 중
-        PAID,           // 결제 완료
-        SHIPPED,        // 배송 중 
-        DELIVERED,      // 배송 완료
-        CANCELED        // 취소됨
+        PENDING("결제 대기 중"),      // 대기 중
+        PAID("결제 완료"),           // 결제 완료
+        SHIPPED("배송 중"),          // 배송 중
+        DELIVERED("배송 완료"),      // 배송 완료
+        CANCELED("취소 됨");         // 취소됨
+        private final String displayName;
+
+        OrderStatus(String displayName) {
+            this.displayName = displayName;
+        }
+
+        public String getDisplayName() {
+            return displayName;
+        }
     }
 
 }
