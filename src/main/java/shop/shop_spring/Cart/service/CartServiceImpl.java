@@ -127,8 +127,8 @@ public class CartServiceImpl implements CartService{
     @Override
     public Cart getCartEntityWithItemsAndProducts(Long memberId) {
         Optional<Cart> cartOptional = cartRepository.findByMemberIdWithItemsAndProducts(memberId);
-        if (cartOptional.isEmpty() || cartOptional.get().getCartItems().isEmpty()){
-            throw new DataNotFoundException("장바구니가 없음");
+        if (cartOptional.isEmpty()){
+            throw new DataNotFoundException("장바구니가 비었음");
         }
         return cartOptional.get();
     }
