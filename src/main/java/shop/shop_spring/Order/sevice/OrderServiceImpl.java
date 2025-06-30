@@ -108,6 +108,9 @@ public class OrderServiceImpl implements OrderService{
         Cart cart = cartService.getCartEntityWithItemsAndProducts(memberId);
 
         List<CartItem> cartItems = cart.getCartItems();
+        if (cartItems.isEmpty()){
+            throw new IllegalArgumentException("장바구니가 비었음. 주문 상품 없음");
+        }
 
         // 2. 장바구니 내 상품 재고 체크
         List<OrderItem> orderItems = new ArrayList<>();
@@ -117,7 +120,7 @@ public class OrderServiceImpl implements OrderService{
             Product product = cartItem.getProduct();
             int quantity = cartItem.getQuantity();
             if ( product.getStockQuantity() < quantity){
-                throw new InsufficientStockException("상품 재고 부족");
+                throw new InsufficientStockException("상품 재고 부족: " + product.getTitle());
             }
 
             OrderItem orderItem = OrderItem.builder()
@@ -134,7 +137,7 @@ public class OrderServiceImpl implements OrderService{
 
         Delivery delivery = Delivery.builder()
                 .receiverName(deliveryInfo.getReceiverName())
-                .address(deliveryInfo.getAddress() + " " + deliveryInfo.getDeliveryMessage())
+                .address(deliveryInfo.getAddress() + " " + deliveryInfo.getAddressDetail())
                 .deliveryMessage(deliveryInfo.getDeliveryMessage())
                 .status(Delivery.DeliveryStatus.READY)
                 .build();
