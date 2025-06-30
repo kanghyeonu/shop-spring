@@ -2,6 +2,7 @@ package shop.shop_spring.Order.sevice;
 
 import shop.shop_spring.Order.Dto.DeliveryInfo;
 import shop.shop_spring.Order.Dto.OrderDetailDto;
+import shop.shop_spring.Order.Dto.OrderSummaryDto;
 import shop.shop_spring.Payment.Dto.PaymentInitiationResponse;
 
 import java.util.List;
@@ -46,7 +47,7 @@ public interface OrderService {
      * @param memberId
      * @return
      */
-    List<OrderDetailDto> getOrdersByMember(Long memberId);
+    List<OrderSummaryDto> getOrdersByMember(Long memberId);
 
     void handlePaymentSuccessCallback(Long orderId);
 

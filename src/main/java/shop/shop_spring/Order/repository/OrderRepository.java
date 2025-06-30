@@ -1,11 +1,13 @@
 package shop.shop_spring.Order.repository;
 
 
+import org.aspectj.weaver.ast.Or;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import shop.shop_spring.Order.domain.Order;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
@@ -21,4 +23,6 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             "JOIN FETCH oi.product p " +
             "WHERE o.id = :orderId")
     Optional<Order> findByIdWithOrderItemsAndProduct(@Param("orderId") Long orderId);
+
+    List<Order> findByOrdererId(Long memberId);
 }

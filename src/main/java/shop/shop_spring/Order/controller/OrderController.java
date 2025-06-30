@@ -5,13 +5,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import shop.shop_spring.Dto.ApiResponse;
 import shop.shop_spring.Order.Dto.CartItemOrderRequest;
+import shop.shop_spring.Order.Dto.OrderSummaryDto;
 import shop.shop_spring.Order.Dto.SingleItemOrderRequest;
 import shop.shop_spring.Order.sevice.OrderServiceImpl;
 import shop.shop_spring.Payment.Dto.PaymentInitiationResponse;
 import shop.shop_spring.Security.MyUser;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/orders")
@@ -55,6 +59,15 @@ public class OrderController {
                 "주문 시작 및 결제 요청 정보 생성", initiationResponse);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping("/my-orders")
+    public String getMyOrderPage(Authentication auth, Model model){
+        MyUser member = (MyUser) auth.getPrincipal();
+        List<OrderSummaryDto> orderSummaries = orderService.getOrdersByMember(member.getId());
+
+        model.addAttribute("orderSummaries", orderSummaries);
+        return "/members/my-page/orders";
     }
 
 }

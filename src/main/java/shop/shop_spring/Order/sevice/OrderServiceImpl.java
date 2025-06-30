@@ -14,6 +14,7 @@ import shop.shop_spring.Member.domain.Member;
 import shop.shop_spring.Member.service.MemberService;
 import shop.shop_spring.Order.Dto.DeliveryInfo;
 import shop.shop_spring.Order.Dto.OrderDetailDto;
+import shop.shop_spring.Order.Dto.OrderSummaryDto;
 import shop.shop_spring.Order.domain.Delivery;
 import shop.shop_spring.Order.domain.Order;
 import shop.shop_spring.Order.domain.OrderItem;
@@ -27,6 +28,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -182,8 +184,22 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public List<OrderDetailDto> getOrdersByMember(Long memberId) {
-        return List.of();
+    public List<OrderSummaryDto> getOrdersByMember(Long memberId) {
+        memberService.findById(memberId);
+
+        List<Order> orders = orderRepository.findByOrdererId(memberId);
+        if (orders.isEmpty()){
+            return new ArrayList<>();
+        }
+
+        return orders.stream()
+                .map(order -> OrderSummaryDto.builder()
+                        .orderId(order.getId())
+                        .orderDate(order.getOrderDate())
+                        .totalAmount(order.getTotalAmount())
+                        .status(order.getStatus())
+                        .build())
+                .collect(Collectors.toList());
     }
 
     @Transactional
