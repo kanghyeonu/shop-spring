@@ -24,5 +24,13 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             "WHERE o.id = :orderId")
     Optional<Order> findByIdWithOrderItemsAndProduct(@Param("orderId") Long orderId);
 
+    @Query("SELECT DISTINCT o FROM Order o " +
+            "JOIN FETCH o.orderer m " +           // 주문자(Member) Fetch Join
+            "JOIN FETCH o.delivery d " +           // 배송 정보(Delivery) Fetch Join
+            "JOIN FETCH o.orderItems oi " +        // 주문 상품(OrderItem) 컬렉션 Fetch Join
+            "JOIN FETCH oi.product p " +           // 각 주문 상품의 Product Fetch Join
+            "WHERE o.id = :orderId")
+    Optional<Order> findByIdWithAllDetails(@Param("orderId") Long orderId);
+
     List<Order> findByOrdererId(Long memberId);
 }

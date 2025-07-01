@@ -3,6 +3,7 @@ package shop.shop_spring.Order.sevice;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.shop_spring.Cart.domain.Cart;
@@ -28,6 +29,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -180,7 +182,14 @@ public class OrderServiceImpl implements OrderService{
 
     @Override
     public OrderDetailDto getOrderDetails(Long memberId, Long orderId) {
-        return null;
+        Order order = orderRepository.findByIdWithAllDetails(orderId)
+                .orElseThrow(() -> new DataNotFoundException("주문을 찾을 수 없음"));
+
+        if (!order.getOrderer().getId().equals(memberId)) {
+            throw new AccessDeniedException("접근 권한 없음");
+        }
+
+        return OrderDetailDto.fromEntity(order);
     }
 
     @Override
