@@ -83,4 +83,14 @@ public class OrderController {
 
     }
 
+    @PostMapping("/{orderId}/cancel")
+    public ResponseEntity cancelOrder(@PathVariable("orderId") Long orderId, Authentication auth){
+        MyUser member = (MyUser) auth.getPrincipal();
+
+        orderService.cancelOrder(member.getId(), orderId);
+
+        ApiResponse<Void> response = ApiResponse.successNoData("취소됨");
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
 }
