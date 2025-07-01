@@ -255,6 +255,7 @@ public class OrderServiceImpl implements OrderService{
 
         // 3. 주문 상태 갱신
         order.setStatus(Order.OrderStatus.CANCELED);
+        order.getDelivery().setStatus(Delivery.DeliveryStatus.CANCELED);
 
         orderRepository.save(order);
     }
