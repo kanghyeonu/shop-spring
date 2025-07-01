@@ -11,6 +11,7 @@ import shop.shop_spring.Cart.domain.CartItem;
 import shop.shop_spring.Cart.service.CartService;
 import shop.shop_spring.Exception.DataNotFoundException;
 import shop.shop_spring.Exception.InsufficientStockException;
+import shop.shop_spring.Exception.InvalidOrderStatusException;
 import shop.shop_spring.Member.domain.Member;
 import shop.shop_spring.Member.service.MemberService;
 import shop.shop_spring.Order.Dto.DeliveryInfo;
@@ -175,8 +176,29 @@ public class OrderServiceImpl implements OrderService{
         return initiationResponse;
     }
 
+    @Transactional
     @Override
     public void cancelOrder(Long memberId, Long orderId) {
+        Order order = orderRepository.findByIdWithOrdererItemsAndProducts(orderId)
+                .orElseThrow(() -> new DataNotFoundException("주문을 찾을 수 없음"));
+
+        if (!order.getOrderer().getId().equals(memberId)) {
+            throw new AccessDeniedException("접근 권한 없음");
+        }
+
+        if (order.getStatus() == Order.OrderStatus.SHIPPED ||
+            order.getStatus() == Order.OrderStatus.DELIVERED ||
+            order.getStatus() == Order.OrderStatus.CANCELED){
+            throw new InvalidOrderStatusException("현재 주문 상태(" + order.getStatus().getDisplayName() + ") 취소 불가");
+        }
+
+        order.setStatus(Order.OrderStatus.CANCELED);
+        order.getDelivery().setStatus(Delivery.DeliveryStatus.CANCELED);
+
+        for (OrderItem orderItem : order.getOrderItems()){
+            Product product = orderItem.getProduct();
+            product.setStockQuantity(product.getStockQuantity() + orderItem.getCount());
+        }
 
     }
 
