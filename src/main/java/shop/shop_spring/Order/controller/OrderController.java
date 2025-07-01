@@ -9,12 +9,14 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import shop.shop_spring.Dto.ApiResponse;
 import shop.shop_spring.Order.Dto.CartItemOrderRequest;
+import shop.shop_spring.Order.Dto.OrderDetailDto;
 import shop.shop_spring.Order.Dto.OrderSummaryDto;
 import shop.shop_spring.Order.Dto.SingleItemOrderRequest;
 import shop.shop_spring.Order.sevice.OrderServiceImpl;
 import shop.shop_spring.Payment.Dto.PaymentInitiationResponse;
 import shop.shop_spring.Security.MyUser;
 
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 
 @Controller
@@ -68,6 +70,17 @@ public class OrderController {
 
         model.addAttribute("orderSummaries", orderSummaries);
         return "/members/my-page/orders";
+    }
+
+    @GetMapping("/{orderId}")
+    public String getOrderDetailsPage(@PathVariable("orderId") Long orderId, Authentication auth, Model model){
+        MyUser member = (MyUser) auth.getPrincipal();
+
+        OrderDetailDto orderDetailDto = orderService.getOrderDetails(member.getId(), orderId);
+
+        model.addAttribute("orderDetails", orderDetailDto);
+        return "orders/details";
+
     }
 
 }
