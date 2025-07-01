@@ -85,4 +85,12 @@ public class GlobalExceptionHandler  {
                 "재고 부족");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
+
+    @ExceptionHandler(InvalidOrderStatusException.class)
+    public ResponseEntity<ApiResponse<Void>> handleInvalidOrderStatusException(Exception e){
+        System.err.println("InvalidOrderStatusException 발생: " + e.getMessage());
+        ApiResponse<Void> errorResponse = ApiResponse.errorNoData(HttpStatus.BAD_REQUEST, "주문 상태 변경 오류");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+
+    }
 }
