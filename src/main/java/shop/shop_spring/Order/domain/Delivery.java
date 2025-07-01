@@ -37,8 +37,19 @@ public class Delivery {
 
 
     public enum DeliveryStatus{
-        READY,
-        IN_TRANSIT,
-        DELIVERED
+        READY("배송 준비 중"),
+        SHIPPING("배송 중"),
+        COMPLETED("배송 완료"),
+        CANCELED("배송 취소");
+
+        private final String displayName;
+
+        DeliveryStatus(String displayName) {
+            this.displayName = displayName;
+        }
+
+        public String getDisplayName() {
+            return displayName;
+        }
     }
 }
