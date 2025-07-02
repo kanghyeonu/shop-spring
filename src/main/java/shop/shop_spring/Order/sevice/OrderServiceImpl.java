@@ -202,6 +202,7 @@ public class OrderServiceImpl implements OrderService{
 
     }
 
+    @Transactional
     @Override
     public OrderDetailDto getOrderDetails(Long memberId, Long orderId) {
         Order order = orderRepository.findByIdWithAllDetails(orderId)
@@ -214,6 +215,7 @@ public class OrderServiceImpl implements OrderService{
         return OrderDetailDto.fromEntity(order);
     }
 
+    @Transactional
     @Override
     public List<OrderSummaryDto> getOrdersByMember(Long memberId) {
         memberService.findById(memberId);
