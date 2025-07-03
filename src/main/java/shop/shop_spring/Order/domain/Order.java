@@ -16,7 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString(exclude = {"order", "orderItems", "delivery"})
+@ToString(exclude = {"orderer", "orderItems", "delivery"})
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // DB에 위임하여 PK 자동 생성 (MySQL 기준)

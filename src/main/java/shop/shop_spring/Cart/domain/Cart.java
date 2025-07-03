@@ -16,7 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString(exclude = {"user", "cartItems"})
+@ToString(exclude = {"member", "cartItems"})
 public class Cart {
 
     @Id
