@@ -6,12 +6,16 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.annotation.Transactional;
+import shop.shop_spring.Email.Dto.EmailDto;
+import shop.shop_spring.Email.EmailServiceImpl;
 import shop.shop_spring.Exception.DataNotFoundException;
 import shop.shop_spring.Member.Dto.MemberCreationRequest;
 import shop.shop_spring.Member.domain.Member;
 import shop.shop_spring.Member.repository.MemberRepository;
-import shop.shop_spring.Member.service.MemberService;
+import shop.shop_spring.Member.service.MemberServiceImpl;
+import shop.shop_spring.Redis.RedisEmailAuthentication;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -22,11 +26,19 @@ import java.util.Optional;
 
 @SpringBootTest
 @Transactional
-public class MemberServiceTest {
+public class MemberServiceImplTest {
     @InjectMocks
-    private MemberService memberService;
+    private MemberServiceImpl memberService;
+
     @Mock
     private MemberRepository memberRepository;
+
+    @Mock
+    private EmailServiceImpl emailService;
+
+    @Mock
+    private RedisEmailAuthentication redisEmailAuthentication;
+
     @Mock
     private PasswordEncoder passwordEncoder;
 
@@ -43,6 +55,97 @@ public class MemberServiceTest {
 
         return member;
     }
+
+    @Test
+    void formToMember_변환_성공() {
+        MemberForm form = new MemberForm();
+        form.setEmail("test@example.com");
+        form.setPassword("pass");
+        form.setName("홍길동");
+        form.setAddress("서울");
+        form.setAddressDetail("101동");
+        form.setBirthDate("19990101");
+        form.setNickname("gil");
+
+        Member member = ReflectionTestUtils.invokeMethod(memberService, "formToMember", form);
+
+        assertNotNull(member);
+        assertEquals("홍길동", member.getName());
+        assertEquals(LocalDate.of(1999, 1, 1), member.getBirthDate());
+    }
+
+    @Test
+    void createRandomCode_6자리_숫자() {
+        String code = ReflectionTestUtils.invokeMethod(memberService, "createRandomCode");
+
+        assertNotNull(code);
+        assertEquals(6, code.length());
+        assertTrue(code.matches("\\d{6}"));
+    }
+
+    @Test
+    void validateAuthenticationCode_일치하면_성공() {
+        String email = "test@example.com";
+        String code = "123456";
+        when(redisEmailAuthentication.getEmailAuthenticationCode(email)).thenReturn("123456");
+
+        assertDoesNotThrow(() -> memberService.validateAuthenticationCode(email, code));
+    }
+
+    @Test
+    void validateAuthenticationCode_일치하지않으면_예외() {
+        String email = "test@example.com";
+        when(redisEmailAuthentication.getEmailAuthenticationCode(email)).thenReturn("999999");
+
+        assertThrows(DataNotFoundException.class,
+                () -> memberService.validateAuthenticationCode(email, "123456"));
+    }
+
+    @Test
+    void validateUserInformation_정상정보_통과() {
+        String username = "test@example.com";
+        String name = "홍길동";
+        String birthDate = "19990101";
+
+        Member member = new Member();
+        member.setUsername(username);
+        member.setName(name);
+        member.setBirthDate(LocalDate.of(1999, 1, 1));
+        when(memberRepository.findByUsername(username)).thenReturn(Optional.of(member));
+
+        assertDoesNotThrow(() -> memberService.validateUserInformation(username, name, birthDate));
+    }
+
+    @Test
+    void validateUserInformation_이름불일치_예외() {
+        String username = "test@example.com";
+        Member member = new Member();
+        member.setUsername(username);
+        member.setName("김철수");
+        member.setBirthDate(LocalDate.of(1999, 1, 1));
+        when(memberRepository.findByUsername(username)).thenReturn(Optional.of(member));
+
+        assertThrows(IllegalArgumentException.class,
+                () -> memberService.validateUserInformation(username, "홍길동", "19990101"));
+    }
+
+    @Test
+    void sendAuthenticationCode_성공() throws Exception {
+        String email = "test@example.com";
+
+        when(memberRepository.findByUsername(email)).thenReturn(Optional.empty());
+
+        doNothing().when(redisEmailAuthentication)
+                .setEmailAuthenticationExpire(eq(email), anyString(), anyLong());
+
+        // ✅ 수정된 부분
+        doAnswer(invocation -> null)
+                .when(emailService).sendMail(any(EmailDto.class));
+
+        assertDoesNotThrow(() -> memberService.sendAuthenticationCode(email));
+    }
+
+
     @Test
     void 회원가입_성공(){
         // given

@@ -1,8 +1,6 @@
 package shop.shop_spring.Cart.service;
 
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.shop_spring.Cart.domain.Cart;
@@ -13,6 +11,7 @@ import shop.shop_spring.Cart.repository.CartRepository;
 import shop.shop_spring.Exception.DataNotFoundException;
 import shop.shop_spring.Member.domain.Member;
 import shop.shop_spring.Member.service.MemberService;
+import shop.shop_spring.Member.service.MemberServiceImpl;
 import shop.shop_spring.Product.domain.Product;
 import shop.shop_spring.Product.service.ProductService;
 

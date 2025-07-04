@@ -7,14 +7,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.access.AccessDeniedException;
 import shop.shop_spring.Cart.domain.Cart;
 import shop.shop_spring.Cart.domain.CartItem;
 import shop.shop_spring.Cart.repository.CartItemRepository;
 import shop.shop_spring.Cart.repository.CartRepository;
-import shop.shop_spring.Exception.DataNotFoundException;
 import shop.shop_spring.Member.domain.Member;
-import shop.shop_spring.Member.service.MemberService;
+import shop.shop_spring.Member.service.MemberServiceImpl;
 import shop.shop_spring.Product.domain.Product;
 import shop.shop_spring.Product.service.ProductService;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -36,7 +34,7 @@ public class CartServiceClearTest {
     private CartServiceImpl cartService;
 
     @Mock
-    private MemberService memberService;
+    private MemberServiceImpl memberService;
 
     @Mock
     private ProductService productService;

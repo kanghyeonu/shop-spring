@@ -12,7 +12,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import shop.shop_spring.Cart.service.CartService;
 import shop.shop_spring.Exception.DataNotFoundException;
 import shop.shop_spring.Member.domain.Member;
-import shop.shop_spring.Member.service.MemberService;
+import shop.shop_spring.Member.service.MemberServiceImpl;
 import shop.shop_spring.Order.Dto.OrderDetailDto;
 import shop.shop_spring.Order.domain.Delivery;
 import shop.shop_spring.Order.domain.Order;
@@ -40,7 +40,7 @@ public class getOrderDetailsTest {
     @Mock
     private OrderRepository orderRepository;
     @Mock
-    private MemberService memberService;
+    private MemberServiceImpl memberService;
     @Mock
     private ProductService productService;
     @Mock

@@ -3,24 +3,21 @@ package shop.shop_spring.Cart.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.access.AccessDeniedException;
 import shop.shop_spring.Cart.domain.Cart;
 import shop.shop_spring.Cart.domain.CartItem;
 import shop.shop_spring.Cart.repository.CartItemRepository;
 import shop.shop_spring.Cart.repository.CartRepository;
 import shop.shop_spring.Exception.DataNotFoundException;
 import shop.shop_spring.Member.domain.Member;
-import shop.shop_spring.Member.service.MemberService;
+import shop.shop_spring.Member.service.MemberServiceImpl;
 import shop.shop_spring.Product.domain.Product;
 import shop.shop_spring.Product.service.ProductService;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.assertThrows; // assertThrows 임포트
@@ -37,7 +34,7 @@ public class CartServiceRemoveTest {
     private CartServiceImpl cartService;
 
     @Mock
-    private MemberService memberService;
+    private MemberServiceImpl memberService;
 
     @Mock
     private ProductService productService;

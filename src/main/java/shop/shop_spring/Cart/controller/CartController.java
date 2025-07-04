@@ -31,7 +31,7 @@ public class CartController {
         model.addAttribute("isLoggedIn", isLoggedIn);
         model.addAttribute("cart", cartDto);
 
-        return "/members/my-page/cartItems";
+        return "members/my-page/cartItems";
     }
 
     @PostMapping("/items")

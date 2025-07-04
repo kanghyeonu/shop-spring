@@ -15,7 +15,7 @@ import shop.shop_spring.Exception.DataNotFoundException;
 import shop.shop_spring.Exception.InsufficientStockException;
 import shop.shop_spring.Exception.PaymentInitiationException;
 import shop.shop_spring.Member.domain.Member;
-import shop.shop_spring.Member.service.MemberService;
+import shop.shop_spring.Member.service.MemberServiceImpl;
 import shop.shop_spring.Order.Dto.DeliveryInfo;
 import shop.shop_spring.Order.domain.Delivery;
 import shop.shop_spring.Order.domain.Order;
@@ -44,7 +44,7 @@ public class placeCartOrderTest {
     @Mock
     private OrderRepository orderRepository;
     @Mock
-    private MemberService memberService;
+    private MemberServiceImpl memberService;
     @Mock
     private ProductService productService; // placeCartOrder에서는 직접 사용 안함 (CartItem을 통해 접근)
     @Mock

@@ -12,7 +12,7 @@ import shop.shop_spring.Cart.service.CartService;
 import shop.shop_spring.Exception.InsufficientStockException;
 import shop.shop_spring.Exception.PaymentInitiationException;
 import shop.shop_spring.Member.domain.Member;
-import shop.shop_spring.Member.service.MemberService;
+import shop.shop_spring.Member.service.MemberServiceImpl;
 import shop.shop_spring.Order.Dto.DeliveryInfo;
 import shop.shop_spring.Order.domain.Delivery;
 import shop.shop_spring.Order.domain.Order;
@@ -40,7 +40,7 @@ public class placeOrderTest {
     @Mock
     private OrderRepository orderRepository;
     @Mock
-    private MemberService memberService;
+    private MemberServiceImpl memberService;
     @Mock
     private ProductService productService;
     @Mock

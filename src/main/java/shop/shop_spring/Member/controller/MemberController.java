@@ -15,7 +15,7 @@ import shop.shop_spring.Member.Dto.MemberCreationRequest;
 import shop.shop_spring.Member.Dto.MemberUpdateRequest;
 import shop.shop_spring.Member.MemberForm;
 import shop.shop_spring.Member.domain.Member;
-import shop.shop_spring.Member.service.MemberService;
+import shop.shop_spring.Member.service.MemberServiceImpl;
 import shop.shop_spring.Product.Dto.ProductSearchCondition;
 import shop.shop_spring.Product.Dto.ProductUpdateRequest;
 import shop.shop_spring.Product.service.ProductService;
@@ -34,7 +34,7 @@ import java.util.Map;
 @RequestMapping("/members")
 @RequiredArgsConstructor
 public class MemberController {
-    private final MemberService memberService;
+    private final MemberServiceImpl memberService;
     private final ProductService productService;
     private final AuthService authService;
 

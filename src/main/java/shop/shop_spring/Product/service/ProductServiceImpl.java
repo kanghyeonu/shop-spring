@@ -10,6 +10,7 @@ import shop.shop_spring.Category.service.CategoryService;
 import shop.shop_spring.Category.domain.Category;
 import shop.shop_spring.Exception.DataNotFoundException;
 import shop.shop_spring.Member.service.MemberService;
+import shop.shop_spring.Member.service.MemberServiceImpl;
 import shop.shop_spring.Product.Dto.ProductCreationRequest;
 import shop.shop_spring.Product.Dto.ProductSearchCondition;
 import shop.shop_spring.Product.Dto.ProductUpdateRequest;
@@ -28,7 +29,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService{
     private final CategoryService categoryService;
-    private final MemberService memberService;
     private final ProductRepository productRepository;
 
     @Override

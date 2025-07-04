@@ -69,7 +69,7 @@ public class OrderController {
         List<OrderSummaryDto> orderSummaries = orderService.getOrdersByMember(member.getId());
 
         model.addAttribute("orderSummaries", orderSummaries);
-        return "/members/my-page/orders";
+        return "members/my-page/orders";
     }
 
     @GetMapping("/{orderId}")

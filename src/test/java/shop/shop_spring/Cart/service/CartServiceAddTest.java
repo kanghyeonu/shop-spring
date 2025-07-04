@@ -12,7 +12,7 @@ import shop.shop_spring.Cart.domain.CartItem;
 import shop.shop_spring.Cart.repository.CartItemRepository;
 import shop.shop_spring.Cart.repository.CartRepository;
 import shop.shop_spring.Member.domain.Member;
-import shop.shop_spring.Member.service.MemberService;
+import shop.shop_spring.Member.service.MemberServiceImpl;
 import shop.shop_spring.Product.domain.Product;
 import shop.shop_spring.Product.service.ProductService;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -29,7 +29,7 @@ public class CartServiceAddTest {
     private CartServiceImpl cartService;
 
     @Mock
-    private MemberService memberService;
+    private MemberServiceImpl memberService;
 
     @Mock
     private ProductService productService;
