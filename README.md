@@ -56,18 +56,22 @@ Spring Boot 3 기반의 실무형 쇼핑몰 프로젝트입니다.
 
 ## 📁 프로젝트 구조
 
+<details> <summary>📦 프로젝트 구조 보기</summary>
+plaintext
+Copy
+Edit
 shop.shop_spring
- ├── Member
- │   ├── controller
- │   ├── service
- │   ├── domain
- ├── Product
- ├── Order
- ├── Payment
- ├── Redis
- ├── Security
- ├── Exception
-
+├── Member
+│   ├── controller
+│   ├── service
+│   └── domain
+├── Product
+├── Order
+├── Payment
+├── Redis
+├── Security
+└── Exception
+</details>
 ---
 
 ## 📄 API 문서 
