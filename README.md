@@ -56,8 +56,8 @@ Spring Boot 3 기반의 실무형 쇼핑몰 프로젝트입니다.
 
 ## 📁 프로젝트 구조
 <pre> shop.shop_spring 
-	├── Member │   
-	├── controller 
+	├── Member 
+	│   ├── controller 
 	│   ├── service 
 	│   └── domain 
 	├── Product 
