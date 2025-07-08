@@ -23,7 +23,7 @@ Spring Boot 3 기반의 실무형 쇼핑몰 프로젝트입니다.
 
 ## 📐 프로젝트 아키텍처
 
-![shoppingMall.drawio](C:\Users\User\Downloads\shoppingMall.drawio.png)
+<img width="893" height="529" alt="Image" src="https://github.com/user-attachments/assets/5617eb88-86a0-4ded-9a98-4532231397dc" />
 
 ## 🧩 주요 기능
 
@@ -54,7 +54,7 @@ Spring Boot 3 기반의 실무형 쇼핑몰 프로젝트입니다.
 
 ---
 
-## 📁 프로젝트 구조 (일부 예시)
+## 📁 프로젝트 구조
 
 shop.shop_spring
  ├── Member
