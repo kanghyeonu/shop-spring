@@ -7,10 +7,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
-import shop.shop_spring.Exception.PaymentInitiationException;
-import shop.shop_spring.Payment.Dto.PaymentInitiationResponse;
-import shop.shop_spring.Payment.service.PgApiClient;
-import shop.shop_spring.Payment.service.RealPaymentService;
+import shop.shop_spring.exception.PaymentInitiationException;
+import shop.shop_spring.payment.Dto.PaymentInitiationResponse;
+import shop.shop_spring.payment.service.PgApiClient;
+import shop.shop_spring.payment.service.RealPaymentService;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
