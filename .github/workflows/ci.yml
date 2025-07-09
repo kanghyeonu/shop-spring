@@ -22,7 +22,7 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      # 3. Gradle 캐싱 (빌드 시간 단축)
+      # 3. Gradle 캐시
       - name: Cache Gradle packages
         uses: actions/cache@v3
         with:
@@ -33,10 +33,16 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      # 4. 권한 부여
+      # 4. gradlew 실행 권한 부여
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
 
-      # 5. 테스트 + 빌드 실행
+      # ✅ 5. GitHub Secret(APP_YML) → application.yml 디코딩하여 생성
+      - name: Create application.yml from Secret
+        run: |
+          mkdir -p src/main/resources
+          echo "${{ secrets.APP_YML }}" | base64 -d > src/main/resources/application.yml
+
+      # 6. 테스트 및 빌드
       - name: Build and run tests
         run: ./gradlew clean build --info
