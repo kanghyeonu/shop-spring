@@ -29,7 +29,8 @@ public class SecurityConfig {
             "/members/change-password",
             "/categories/**",
             "/swagger-ui/**",
-            "/swagger-ui.html"
+            "/swagger-ui.html",
+            "/v3/api-docs/**"
     };
 
     String[] urlBeAuthenticated = {
