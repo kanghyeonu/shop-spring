@@ -8,7 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import shop.shop_spring.Dto.ApiResponse;
+import shop.shop_spring.Dto.CustomApiResponse;
 import shop.shop_spring.product.Dto.ProductCreationRequest;
 import shop.shop_spring.product.Dto.ProductSearchCondition;
 import shop.shop_spring.product.ProductForm;
@@ -69,11 +69,11 @@ public class ProductController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<ApiResponse<Map<String, String>>> createProduct(@RequestBody ProductCreationRequest request){
+    public ResponseEntity<CustomApiResponse<Map<String, String>>> createProduct(@RequestBody ProductCreationRequest request){
         Long Id = productService.createProduct(request);
 
-        Map<String, String> responseData = ApiResponse.createResponseData("상품 아이디", Id.toString());
-        ApiResponse<Map<String, String> > successResponse = ApiResponse.success("상품 등록 완료", responseData);
+        Map<String, String> responseData = CustomApiResponse.createResponseData("상품 아이디", Id.toString());
+        CustomApiResponse<Map<String, String> > successResponse = CustomApiResponse.success("상품 등록 완료", responseData);
 
         return ResponseEntity.status(HttpStatus.OK).body(successResponse);
     }

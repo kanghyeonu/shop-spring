@@ -15,33 +15,33 @@ import java.util.Map;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ApiResponse<T> {
+public class CustomApiResponse<T> {
     private int status;
     private String message;
     private T data;
 
     // 성공 응답을 생성하는 정적 팩토리 메서드
-    public static <T> ApiResponse<T> success(String message, T data) {
-        return new ApiResponse<>(HttpStatus.OK.value(), message, data);
+    public static <T> CustomApiResponse<T> success(String message, T data) {
+        return new CustomApiResponse<>(HttpStatus.OK.value(), message, data);
     }
 
-    public static <T> ApiResponse<T> success(String message) {
-        return new ApiResponse<>(HttpStatus.OK.value(), message, null);
+    public static <T> CustomApiResponse<T> success(String message) {
+        return new CustomApiResponse<>(HttpStatus.OK.value(), message, null);
     }
 
     // 실패 응답을 생성하는 정적 팩토리 메서드
-    public static <T> ApiResponse<T> error(HttpStatus status, String message) {
-        return new ApiResponse<>(status.value(), message, null);
+    public static <T> CustomApiResponse<T> error(HttpStatus status, String message) {
+        return new CustomApiResponse<>(status.value(), message, null);
     }
 
     // 오버로드: 데이터가 없는 성공 응답
-    public static ApiResponse<Void> successNoData(String message) {
-        return new ApiResponse<>(HttpStatus.OK.value(), message, null);
+    public static CustomApiResponse<Void> successNoData(String message) {
+        return new CustomApiResponse<>(HttpStatus.OK.value(), message, null);
     }
 
     // 오버로드: 데이터가 없는 실패 응답
-    public static ApiResponse<Void> errorNoData(HttpStatus status, String message) {
-        return new ApiResponse<>(status.value(), message, null);
+    public static CustomApiResponse<Void> errorNoData(HttpStatus status, String message) {
+        return new CustomApiResponse<>(status.value(), message, null);
     }
 
     public static Map<String, String> createResponseData(String key, String message){

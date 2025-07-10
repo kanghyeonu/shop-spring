@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import shop.shop_spring.Dto.ApiResponse;
+import shop.shop_spring.Dto.CustomApiResponse;
 import shop.shop_spring.member.Dto.MemberCreationRequest;
 import shop.shop_spring.member.Dto.MemberUpdateRequest;
 import shop.shop_spring.member.MemberForm;
@@ -140,7 +140,7 @@ public class MemberController {
 ;
         productService.updateProduct(user.getUsername(), id, updateRequest);
 
-        ApiResponse<Void> response = ApiResponse.successNoData("상품 정보 수정 완료");
+        CustomApiResponse<Void> response = CustomApiResponse.successNoData("상품 정보 수정 완료");
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
@@ -151,17 +151,17 @@ public class MemberController {
 
         productService.deleteProduct(user.getUsername(), id);
 
-        ApiResponse<Void> response = ApiResponse.successNoData("상품 삭제 완료");
+        CustomApiResponse<Void> response = CustomApiResponse.successNoData("상품 삭제 완료");
         return ResponseEntity.status(HttpStatus.OK).body(response);
 
     }
 
     @PutMapping("/my-page/profile")
-    public ResponseEntity<ApiResponse<Void>> modifyProfile(@RequestBody MemberUpdateRequest dto){
+    public ResponseEntity<CustomApiResponse<Void>> modifyProfile(@RequestBody MemberUpdateRequest dto){
         // validateMember(updateMemberDtoToMember(dto)) 검증 한번 하는게 좋을 듯
         memberService.updateMember(updateMemberDtoToMember(dto));
         
-        ApiResponse<Void> successResponse = ApiResponse.successNoData("회원 정보 수정 완료");
+        CustomApiResponse<Void> successResponse = CustomApiResponse.successNoData("회원 정보 수정 완료");
         
         return ResponseEntity.status(HttpStatus.OK).body(successResponse);
     }
@@ -200,9 +200,9 @@ public class MemberController {
 
         memberService.validateUserInformation(username, name, brithDate);
 
-        Map<String, String> responseData = ApiResponse.createResponseData("username", data.get("username"));
-        ApiResponse<Map<String, String>> successResponse =
-                ApiResponse.success("본인 인증 완료", responseData);
+        Map<String, String> responseData = CustomApiResponse.createResponseData("username", data.get("username"));
+        CustomApiResponse<Map<String, String>> successResponse =
+                CustomApiResponse.success("본인 인증 완료", responseData);
         return ResponseEntity.status(HttpStatus.OK).body(successResponse);
     }
 
@@ -211,31 +211,31 @@ public class MemberController {
 
         memberService.updatePassword(data.get("username"), data.get("newPassword"));
 
-        ApiResponse<Void> response = ApiResponse.successNoData("비밀번호 변경 완료");
+        CustomApiResponse<Void> response = CustomApiResponse.successNoData("비밀번호 변경 완료");
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
     // 인증 번호 전송
     @PostMapping("/verify-email")
-    public ResponseEntity<ApiResponse<Map<String, String>>> sendEmail(@RequestBody Map<String, String> data) throws MessagingException, UnsupportedEncodingException {
+    public ResponseEntity<CustomApiResponse<Map<String, String>>> sendEmail(@RequestBody Map<String, String> data) throws MessagingException, UnsupportedEncodingException {
         // 인증 번호 생성 및 메일 전송
         memberService.sendAuthenticationCode(data.get("email"));
 
         // 성공 시 응답 데이터 준비
-        Map<String, String> responseData = ApiResponse.createResponseData("email", data.get("email"));
-        ApiResponse<Map<String, String>> successResponse =
-                ApiResponse.success("인증 번호 발송 성공", responseData);
+        Map<String, String> responseData = CustomApiResponse.createResponseData("email", data.get("email"));
+        CustomApiResponse<Map<String, String>> successResponse =
+                CustomApiResponse.success("인증 번호 발송 성공", responseData);
 
         return ResponseEntity.status(HttpStatus.OK).body(successResponse);
     }
 
     //이메일 인증
     @PostMapping("/validate-email")
-    public ResponseEntity<ApiResponse<Map<String, String>>> validateEmail(@RequestBody Map<String, String> data) {
+    public ResponseEntity<CustomApiResponse<Map<String, String>>> validateEmail(@RequestBody Map<String, String> data) {
         memberService.validateAuthenticationCode(data.get("email"), data.get("code"));
 
-        Map<String, String> responseData = ApiResponse.createResponseData("email", data.get("email"));
-        ApiResponse<Map<String, String>> successResponse =
-                ApiResponse.success("이메일 인증 성공", responseData);
+        Map<String, String> responseData = CustomApiResponse.createResponseData("email", data.get("email"));
+        CustomApiResponse<Map<String, String>> successResponse =
+                CustomApiResponse.success("이메일 인증 성공", responseData);
 
         return ResponseEntity.status(200).body(successResponse);
     }

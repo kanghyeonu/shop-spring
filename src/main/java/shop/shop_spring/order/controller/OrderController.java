@@ -7,7 +7,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import shop.shop_spring.Dto.ApiResponse;
+import shop.shop_spring.Dto.CustomApiResponse;
 import shop.shop_spring.order.Dto.CartItemOrderRequest;
 import shop.shop_spring.order.Dto.OrderDetailDto;
 import shop.shop_spring.order.Dto.OrderSummaryDto;
@@ -38,7 +38,7 @@ public class OrderController {
                 request.getDeliveryInfo(),
                 request.getPaymentMethod());
 
-        ApiResponse<PaymentInitiationResponse> response = ApiResponse.success(
+        CustomApiResponse<PaymentInitiationResponse> response = CustomApiResponse.success(
                 "주문 시작 및 결제 요청 정보 생성", initiationResponse);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
@@ -56,7 +56,7 @@ public class OrderController {
                 request.getDeliveryInfo(),
                 request.getPaymentMethod());
 
-        ApiResponse<PaymentInitiationResponse> response = ApiResponse.success(
+        CustomApiResponse<PaymentInitiationResponse> response = CustomApiResponse.success(
                 "주문 시작 및 결제 요청 정보 생성", initiationResponse);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
@@ -88,7 +88,7 @@ public class OrderController {
 
         orderService.cancelOrder(member.getId(), orderId);
 
-        ApiResponse<Void> response = ApiResponse.successNoData("취소됨");
+        CustomApiResponse<Void> response = CustomApiResponse.successNoData("취소됨");
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
