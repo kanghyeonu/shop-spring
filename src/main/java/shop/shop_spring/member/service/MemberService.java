@@ -1,7 +1,7 @@
 package shop.shop_spring.member.service;
 
 import jakarta.mail.MessagingException;
-import shop.shop_spring.member.Dto.MemberCreationRequest;
+import shop.shop_spring.member.dto.MemberCreationRequest;
 import shop.shop_spring.member.domain.Member;
 
 import java.io.UnsupportedEncodingException;

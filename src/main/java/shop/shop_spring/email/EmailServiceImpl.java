@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.stereotype.Service;
-import shop.shop_spring.email.Dto.EmailDto;
+import shop.shop_spring.email.dto.EmailDto;
 
 import java.io.UnsupportedEncodingException;
 

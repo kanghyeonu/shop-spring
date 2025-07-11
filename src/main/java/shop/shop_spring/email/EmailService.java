@@ -1,7 +1,7 @@
 package shop.shop_spring.email;
 
 import jakarta.mail.MessagingException;
-import shop.shop_spring.email.Dto.EmailDto;
+import shop.shop_spring.email.dto.EmailDto;
 
 import java.io.UnsupportedEncodingException;
 

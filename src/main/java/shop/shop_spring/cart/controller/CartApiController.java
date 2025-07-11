@@ -18,7 +18,7 @@ import shop.shop_spring.security.model.MyUser;
 @RestController
 @RequestMapping("/api/cart")
 @RequiredArgsConstructor
-@Tag(name = "Cart API", description = "장바구니 관련 API")
+@Tag(name = "Cart API", description = "장바구니 관련 API(추가, 삭제, 비우기 등)")
 public class CartApiController {
     private final CartServiceImpl cartService;
 

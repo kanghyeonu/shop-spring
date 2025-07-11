@@ -1,4 +1,4 @@
-package shop.shop_spring.member.Dto;
+package shop.shop_spring.member.dto;
 
 import lombok.Getter;
 import lombok.Setter;

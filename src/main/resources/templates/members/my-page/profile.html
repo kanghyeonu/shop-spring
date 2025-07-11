@@ -238,7 +238,7 @@
 
 
             try {
-                const response = await fetch('/members/my-page/profile', { // 예시 URL, 실제 API 경로로 변경
+                const response = await fetch('/api/members/my-page/profile', {
                     method: 'PUT', // 회원 정보 수정은 보통 PUT 또는 PATCH 사용
                     headers: {
                         'Content-Type': 'application/json'

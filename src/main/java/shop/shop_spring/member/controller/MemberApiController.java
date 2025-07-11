@@ -1,25 +1,25 @@
 package shop.shop_spring.member.controller;
 
-import org.springframework.ui.Model;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import shop.shop_spring.Dto.CustomApiResponse;
-import shop.shop_spring.member.Dto.MemberCreationRequest;
-import shop.shop_spring.member.Dto.MemberUpdateRequest;
+import shop.shop_spring.member.dto.*;
 import shop.shop_spring.member.MemberForm;
 import shop.shop_spring.member.domain.Member;
 import shop.shop_spring.member.service.MemberServiceImpl;
-import shop.shop_spring.product.Dto.ProductSearchCondition;
 import shop.shop_spring.product.Dto.ProductUpdateRequest;
 import shop.shop_spring.product.service.ProductService;
-import shop.shop_spring.product.domain.Product;
 import shop.shop_spring.security.auth.AuthService;
 import shop.shop_spring.security.model.MyUser;
 
@@ -27,114 +27,44 @@ import java.io.UnsupportedEncodingException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.List;
 import java.util.Map;
 
-@Controller
-@RequestMapping("/members")
+@RestController
+@RequestMapping("/api/members")
 @RequiredArgsConstructor
-public class MemberController {
+@Tag(name = "member API", description = "회원 관련 API(회원 가입, 로그인, 회원 정보 수정 등)")
+public class MemberApiController {
     private final MemberServiceImpl memberService;
     private final ProductService productService;
     private final AuthService authService;
 
-    // 회원 가입 페이지 요청
-    @GetMapping("/register")
-    public String createForm(){
-        return "members/register";
-    }
-
-    /**
-     * 회원가입 요청
-     */
-    @PostMapping
-    public String signup(@ModelAttribute MemberForm form){
-        MemberCreationRequest memberCreationRequest = formToMemberCreationReqeust(form);
-        memberService.createMember(memberCreationRequest);
-        return "redirect:/members/login";
-    }
-
-    @GetMapping("/login")
-    public String login() {
-        return "members/login";
-    }
-
-    /**
-     * 로그인 수행
-     * @param data
-     * @param httpServletResponse
-     * @return 로그인에 대한 jwt
-     */
+    @Operation(summary = "로그인 기능", description = "사용자 인증 후 jwt 반환")
     @PostMapping("/login")
     @ResponseBody
-    public String doLogin(@RequestBody Map<String, String> data,
+    public String doLogin(@RequestBody LoginRequest request,
                           HttpServletResponse httpServletResponse) {
-        String jwt = authService.login(data.get("username"), data.get("password"));
+        String jwt = authService.login(request.getEmail(), request.getPassword());
 
         addJwtCookieToResponse(httpServletResponse, jwt);
 
         return jwt;
     }
 
-    /**
-     * 쿠키 추가
-     */
     private void addJwtCookieToResponse(HttpServletResponse httpServletResponse, String jwt){
         // 쿠키에 jwt 저장
         var cookie = new Cookie("jwt", jwt);
-        cookie.setMaxAge(60 * 5);
+        cookie.setMaxAge(60 * 60);
         cookie.setHttpOnly(true); // js 등에서 접근 x
         cookie.setPath("/");
         httpServletResponse.addCookie(cookie);
     }
 
-    @GetMapping("/my-page")
-    public String showMyPage(Authentication auth){
-        MyUser user = (MyUser) auth.getPrincipal();
-
-        return "members/my-page/my-page";
-    }
-
-    @GetMapping("/my-page/profile")
-    public String showProfile(Authentication auth, Model model){
-        MyUser myUser = (MyUser) auth.getPrincipal();
-        Member member = memberService.findByUsername(myUser.getUsername());
-
-        model.addAttribute("username", member.getUsername());
-        model.addAttribute("name", member.getName());
-        model.addAttribute("birthDate", member.getBirthDate());
-        model.addAttribute("address", member.getAddress());
-        model.addAttribute("addressDetail", member.getAddressDetail());
-        model.addAttribute("nickName", member.getNickname());
-
-        return "members/my-page/profile";
-    }
-
-    @GetMapping("/my-page/products")
-    public String showProducts(Authentication auth, Model model){
-        MyUser myUser = (MyUser) auth.getPrincipal();
-
-        ProductSearchCondition searchCondition = new ProductSearchCondition();
-        searchCondition.setSellerUsername(myUser.getUsername());
-
-        List<Product> products = productService.searchProducts(searchCondition);
-
-        model.addAttribute("username", myUser.getUsername());
-        model.addAttribute("products", products);
-
-        return "members/my-page/products";
-    }
-
-    @GetMapping("/my-page/products/{id}")
-    String showDetail(@PathVariable Long id, Model model){
-        Product product = productService.findById(id);
-
-        model.addAttribute("product", product);
-
-        return "members/my-page/edit-product";
-    }
-
+    @Operation(summary = "등록 상품 정보 수정", description = "회원이 등록한 상품의 정보를 수정 후 저장")
     @PutMapping("/my-page/products/{id}")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "상품 정보 수정 완료"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청(유효하지 않은 값)"),
+    })
     ResponseEntity editDetail(@PathVariable Long id, @RequestBody ProductUpdateRequest updateRequest, Authentication auth){
         MyUser user = (MyUser) auth.getPrincipal();
 ;
@@ -145,7 +75,12 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    @Operation(summary = "등록 상품 삭제", description = "사용자가 등록한 상품을 삭제")
     @DeleteMapping("/my-page/products/{id}")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "상품 삭제 완료"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청(존재하지 않는 상품)"),
+    })
     ResponseEntity deleteProduct(@PathVariable Long id, Authentication auth){
         MyUser user = (MyUser) auth.getPrincipal();
 
@@ -153,13 +88,25 @@ public class MemberController {
 
         CustomApiResponse<Void> response = CustomApiResponse.successNoData("상품 삭제 완료");
         return ResponseEntity.status(HttpStatus.OK).body(response);
-
     }
 
+    @Operation(summary = "회원 가입", description = "폼에 기입된 내용을 가진 회원 생성")
+    @PostMapping
+    public String signup(@ModelAttribute MemberForm form){
+        MemberCreationRequest memberCreationRequest = formToMemberCreationRequest(form);
+        memberService.createMember(memberCreationRequest);
+        return "redirect:/members/login";
+    }
+
+    @Operation(summary = "회원 정보 수정", description = "회원의 개인 정보를 수정 후 저장")
     @PutMapping("/my-page/profile")
-    public ResponseEntity<CustomApiResponse<Void>> modifyProfile(@RequestBody MemberUpdateRequest dto){
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "회원 정보 수정 완료"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청 (유효하지 않은 수정 값)"),
+    })
+    public ResponseEntity<CustomApiResponse<Void>> modifyProfile(@RequestBody MemberUpdateRequest request){
         // validateMember(updateMemberDtoToMember(dto)) 검증 한번 하는게 좋을 듯
-        memberService.updateMember(updateMemberDtoToMember(dto));
+        memberService.updateMember(updateMemberDtoToMember(request));
         
         CustomApiResponse<Void> successResponse = CustomApiResponse.successNoData("회원 정보 수정 완료");
         
@@ -186,61 +133,59 @@ public class MemberController {
         return member;
     }
 
-    @GetMapping("/password-reset")
-    public String showPasswordReset(){
-        return "members/password-reset";
-    }
-
+    @Operation(summary = "비밀번호 초기화를 위한 본인 인증", description = "비밀번호를 초기화하기 위한 사용자 확인")
     @PostMapping("/password-reset")
     @ResponseBody
-    public ResponseEntity resetPassword(@RequestBody Map<String, String> data){
-        String username = data.get("username");
-        String name = data.get("name");
-        String brithDate = data.get("birthDate");
+    public ResponseEntity resetPassword(@RequestBody PasswordResetRequest request){
+        String username = request.getUsername();
+        String name = request.getName();
+        String brithDate = request.getBirthDate();
 
         memberService.validateUserInformation(username, name, brithDate);
 
-        Map<String, String> responseData = CustomApiResponse.createResponseData("username", data.get("username"));
+        Map<String, String> responseData = CustomApiResponse.createResponseData("username", username);
         CustomApiResponse<Map<String, String>> successResponse =
                 CustomApiResponse.success("본인 인증 완료", responseData);
         return ResponseEntity.status(HttpStatus.OK).body(successResponse);
     }
 
+    @Operation(summary = "비밀번호 변경", description = "회원의 비밀번호를 변경")
     @PostMapping("/change-password")
-    public ResponseEntity updatePassword(@RequestBody Map<String, String> data){
+    public ResponseEntity updatePassword(@RequestBody PasswordChangeRequest request){
 
-        memberService.updatePassword(data.get("username"), data.get("newPassword"));
+        memberService.updatePassword(request.getUsername(),request.getNewPassword());
 
         CustomApiResponse<Void> response = CustomApiResponse.successNoData("비밀번호 변경 완료");
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
-    // 인증 번호 전송
+
+    @Operation(summary = "이메일 검증을 위한 랜덤 숫자 전송", description = "이메일 유효성을 확인하기 위한 랜덤 숫자 이메일 전송")
     @PostMapping("/verify-email")
-    public ResponseEntity<CustomApiResponse<Map<String, String>>> sendEmail(@RequestBody Map<String, String> data) throws MessagingException, UnsupportedEncodingException {
+    public ResponseEntity<CustomApiResponse<Map<String, String>>> sendEmail(@RequestBody EmailVerificationRequest request) throws MessagingException, UnsupportedEncodingException {
         // 인증 번호 생성 및 메일 전송
-        memberService.sendAuthenticationCode(data.get("email"));
+        memberService.sendAuthenticationCode(request.getEmail());
 
         // 성공 시 응답 데이터 준비
-        Map<String, String> responseData = CustomApiResponse.createResponseData("email", data.get("email"));
+        Map<String, String> responseData = CustomApiResponse.createResponseData("email", request.getEmail());
         CustomApiResponse<Map<String, String>> successResponse =
                 CustomApiResponse.success("인증 번호 발송 성공", responseData);
 
         return ResponseEntity.status(HttpStatus.OK).body(successResponse);
     }
 
-    //이메일 인증
+    @Operation(summary = "이메일 인증", description = "랜덤 숫자 비교를 통한 이메일 인증")
     @PostMapping("/validate-email")
-    public ResponseEntity<CustomApiResponse<Map<String, String>>> validateEmail(@RequestBody Map<String, String> data) {
-        memberService.validateAuthenticationCode(data.get("email"), data.get("code"));
+    public ResponseEntity<CustomApiResponse<Map<String, String>>> validateEmail(@RequestBody EmailValidateRequest request) {
+        memberService.validateAuthenticationCode(request.getEmail(), request.getCode());
 
-        Map<String, String> responseData = CustomApiResponse.createResponseData("email", data.get("email"));
+        Map<String, String> responseData = CustomApiResponse.createResponseData("email", request.getEmail());
         CustomApiResponse<Map<String, String>> successResponse =
                 CustomApiResponse.success("이메일 인증 성공", responseData);
 
         return ResponseEntity.status(200).body(successResponse);
     }
 
-    private MemberCreationRequest formToMemberCreationReqeust (MemberForm form) {
+    private MemberCreationRequest formToMemberCreationRequest (MemberForm form) {
         MemberCreationRequest memberCreationRequest = new MemberCreationRequest();
         memberCreationRequest.setUsername(form.getEmail());
         memberCreationRequest.setPassword(form.getPassword());
@@ -251,5 +196,6 @@ public class MemberController {
         memberCreationRequest.setNickname(form.getNickname());
         return memberCreationRequest;
     }
+
 
 }

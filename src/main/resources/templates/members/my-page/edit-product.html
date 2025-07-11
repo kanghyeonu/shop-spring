@@ -57,7 +57,7 @@
         deleteButton.addEventListener('click', function() {
             const productId = [[${product.id}]];
 
-            const deleteUrl = `/members/my-page/products/${productId}`;
+            const deleteUrl = `/api/members/my-page/products/${productId}`;
 
             if (confirm('정말로 삭제?')){
                 fetch(deleteUrl, {
@@ -135,7 +135,7 @@
                 thumbnailUrl: null
              };
 
-             fetch(/*[[@{/members/my-page/products/{id}(id=${product.id})}]]*/ '', {
+             fetch(/*[[@{/api/members/my-page/products/{id}(id=${product.id})}]]*/ '', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

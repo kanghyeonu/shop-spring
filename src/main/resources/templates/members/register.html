@@ -87,7 +87,7 @@
         }
 
         // 서버에 인증 메일 전송을 위한 POST 요청
-        fetch('/members/verify-email', {
+        fetch('/api/members/verify-email', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json' // JSON 형태로 데이터 전송
@@ -129,7 +129,7 @@
       }
 
       // 서버에 랜덤 숫자를 전송을 위한 POST 요청
-        fetch('/members/validate-email', {
+        fetch('/api/members/validate-email', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json' // JSON 형태로 데이터 전송

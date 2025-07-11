@@ -1,4 +1,4 @@
-package shop.shop_spring.email.Dto;
+package shop.shop_spring.email.dto;
 
 import lombok.*;
 
