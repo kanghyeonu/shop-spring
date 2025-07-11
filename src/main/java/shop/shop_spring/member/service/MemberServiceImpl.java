@@ -5,10 +5,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import shop.shop_spring.email.Dto.EmailDto;
+import shop.shop_spring.email.dto.EmailDto;
 import shop.shop_spring.email.EmailServiceImpl;
 import shop.shop_spring.exception.DataNotFoundException;
-import shop.shop_spring.member.Dto.MemberCreationRequest;
+import shop.shop_spring.member.dto.MemberCreationRequest;
 import shop.shop_spring.member.MemberForm;
 import shop.shop_spring.member.repository.MemberRepository;
 import shop.shop_spring.member.domain.Member;
@@ -32,14 +32,14 @@ public class MemberServiceImpl implements MemberService{
     @Override
     @Transactional
     public Long createMember(MemberCreationRequest request) {
-        Member member = MemberCreationRequestToMember(request);
+        Member member = memberCreationRequestToMember(request);
         validateMember(member);
         member.setPassword(passwordEncoder.encode(member.getPassword()));
         memberRepository.save(member);
         return member.getId();
     }
 
-    private Member MemberCreationRequestToMember(MemberCreationRequest request){
+    private Member memberCreationRequestToMember(MemberCreationRequest request){
         Member member = new Member();
         member.setUsername(request.getUsername());
         member.setPassword(request.getPassword());
