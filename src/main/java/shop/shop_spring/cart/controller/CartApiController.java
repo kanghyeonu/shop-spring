@@ -40,6 +40,11 @@ public class CartApiController {
 
     @Operation(summary = "장바구니 내 특정 상품 삭제", description = "사용자의 장바구니에서 선택된 특정 상품을 제거")
     @DeleteMapping("/items/{id}")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "상품 삭제 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청(없는 상품, 없는 회원 정보)"),
+            @ApiResponse(responseCode = "403", description = "로그인 정보 불일치 또는 세션 종료")
+    })
     public ResponseEntity removeProductFromCart(@PathVariable Long id, Authentication auth){
         MyUser member = (MyUser) auth.getPrincipal();
         cartService.removeItemFromCart(member.getId(), id);
@@ -50,6 +55,11 @@ public class CartApiController {
 
     @Operation(summary = "장바구니 비우기", description = "사용자의 장바구니 내에 있는 모든 상품 제거")
     @DeleteMapping
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "장바구니 비우기 성공 or 이미 비어있는 장바구니"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청(없는 회원 정보)"),
+            @ApiResponse(responseCode = "403", description = "로그인 정보 불일치 또는 세션 종료")
+    })
     public ResponseEntity clearCart(Authentication auth){
         MyUser member = (MyUser) auth.getPrincipal();
 
@@ -64,6 +74,11 @@ public class CartApiController {
 
     @Operation(summary = "장바구니 내 상품 수량 업데이트", description = "장바구니 내에 있는 상품의 수량을 변경")
     @PutMapping("/items/{id}")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "상품 개수 업데이트"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청(없는 상품, 잘못된 상품 수량)"),
+            @ApiResponse(responseCode = "403", description = "로그인 정보 불일치 또는 세션 종료")
+    })
     public ResponseEntity updateQuantity(@PathVariable Long id, @RequestBody CartItemUpdateRequest updateRequest, Authentication auth){
         MyUser member = (MyUser) auth.getPrincipal();
         cartService.updateItemQuantity(member.getId(), id ,updateRequest.getQuantity());
