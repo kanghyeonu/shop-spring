@@ -17,7 +17,7 @@ Spring Boot 3 기반의 실무형 쇼핑몰 프로젝트입니다.
 - Redis (이메일 인증)
 - JPA / Hibernate
 - JUnit5 + Mockito + JaCoCo
-- Notion (API 명세 정리)
+- Notion (API 명세 정리) -> Swagger로 포팅 중
 
 ---
 
