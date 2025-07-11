@@ -30,7 +30,7 @@
     <button type="button" onclick="applyProduct()">상품 등록</button>
     <script>
         // 페이지 로드 시 최상위 카테고리 로드
-        fetch('/categories/parents')
+        fetch('/api/categories/parents')
             .then(response => response.json())
             .then(data => {
                 const parentSelect = document.getElementById('parentCategorySelect');
@@ -53,7 +53,7 @@
                 return;
             }
 
-            fetch(`/categories/children?parentId=${parentId}`)
+            fetch(`/api/categories/children?parentId=${parentId}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.length === 0) {

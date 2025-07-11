@@ -38,7 +38,7 @@
             const categorySelect = document.getElementById('searchCategorySelect');
             const currentCategoryId = [[${currentCategoryId}]]; // 컨트롤러에서 받은 현재 카테고리 ID
 
-            fetch('/categories/parents')
+            fetch('/api/categories/parents')
                 .then(response => {
                     if (!response.ok) {
                         console.error('Failed to fetch categories:', response.status, response.statusText);

@@ -270,7 +270,7 @@
             if (confirm('이 상품을 장바구니에서 삭제하시겠습니까?')) {
                 try {
                     // DELETE /cart/items/{cartItemId} API 호출
-                    const response = await fetch(`/cart/items/${cartItemId}`, {
+                    const response = await fetch(`/api/cart/items/${cartItemId}`, {
                         method: 'DELETE',
                         headers: {
                             'Content-Type': 'application/json' // DELETE 요청에 body가 없더라도 Content-Type 명시하기도 함
@@ -305,7 +305,7 @@
     clearCartButton.addEventListener('click', async function() {
         if (confirm('정말 비움?')){
             try {
-                const response = await fetch('/cart', {
+                const response = await fetch('/api/cart', {
                     method: 'DELETE'
                 });
 
@@ -351,7 +351,7 @@
             console.log(`장바구니 항목 ID: ${cartItemId}, 새로운 수량: ${newQuantity}`);
 
             try {
-                const response = await fetch(`/cart/items/${cartItemId}`, {
+                const response = await fetch(`/api/cart/items/${cartItemId}`, {
                     method: 'PUT', // 수량 변경은 보통 PUT 메서드 사용
                     headers: {
                         'Content-Type': 'application/json'
