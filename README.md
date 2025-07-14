@@ -70,9 +70,9 @@ Spring Boot 3 기반의 실무형 쇼핑몰 프로젝트입니다.
 
 ## API 문서 
 
-- *Notion 기반으로 기능별 API 정리* -> Swagger로 포팅 중
+- *Notion 기반으로 기능별 API 정리* 
   (https://veiled-breath-897.notion.site/1-1dc00da4588c80eaa9cfc83ab7f088cb?source=copy_link)
-
+-> Swagger로 포팅 중
 ---
 
 ##  실행 방법
