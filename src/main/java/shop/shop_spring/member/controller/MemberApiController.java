@@ -8,6 +8,7 @@ import jakarta.mail.MessagingException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.ReactiveAdapterRegistry;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -42,7 +43,7 @@ public class MemberApiController {
     @ResponseBody
     public String doLogin(@RequestBody LoginRequest request,
                           HttpServletResponse httpServletResponse) {
-        String jwt = authService.login(request.getEmail(), request.getPassword());
+        String jwt = authService.login(request.getUsername(), request.getPassword());
 
         addJwtCookieToResponse(httpServletResponse, jwt);
 
@@ -113,22 +114,23 @@ public class MemberApiController {
     }
 
 
-    private Member updateMemberDtoToMember(MemberUpdateRequest dto){
+    private Member updateMemberDtoToMember(MemberUpdateRequest request){
         Member member = new Member();
-        member.setUsername(dto.getUsername());
-        member.setPassword(dto.getPassword());
+        member.setUsername(request.getUsername());
+        member.setPassword(request.getPassword());
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-        LocalDate localDate;
+        LocalDate localDate = null;
         try {
-            localDate = LocalDate.parse(dto.getBirthDate(), formatter);
-
+            localDate = LocalDate.parse(request.getBirthDate(), formatter);
         } catch (DateTimeParseException e) {
             throw new IllegalArgumentException("잘못된 날짜 형식");
+        } catch (NullPointerException e){
+            localDate = null;
         }
         member.setBirthDate(localDate);
-        member.setAddress(dto.getAddress());
-        member.setAddressDetail(dto.getAddressDetail());
-        member.setNickname(dto.getNickName());
+        member.setAddress(request.getAddress());
+        member.setAddressDetail(request.getAddressDetail());
+        member.setNickname(request.getNickName());
         return member;
     }
 

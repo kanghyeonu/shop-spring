@@ -42,7 +42,7 @@
 
         <h2 class="section-title">배송 정보</h2>
         <div class="detail-item"><strong>수령인:</strong> <span th:text="${orderDetails.receiverName}"></span></div>
-        <div class="detail-item"><strong>주소:</strong> <span th:text="${orderDetails.address} + ' ' + ${orderDetails.addressDetail}"></span></div>
+        <div class="detail-item"><strong>주소:</strong> <span th:text="${orderDetails.address}"></span></div>
         <div class="detail-item"><strong>배송 메시지:</strong> <span th:text="${orderDetails.deliveryMessage ?: '-'}"></span></div>
         <div class="detail-item"><strong>배송 상태:</strong> <span th:text="${orderDetails.deliveryStatus.displayName}"></span></div>
 

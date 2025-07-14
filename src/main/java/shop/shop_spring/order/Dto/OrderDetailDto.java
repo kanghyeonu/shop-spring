@@ -25,7 +25,6 @@ public class OrderDetailDto {
     // 배송 정보
     private String receiverName;
     private String address;
-    private String addressDetail; // 상세 주소
     private String deliveryMessage;
     private Delivery.DeliveryStatus deliveryStatus; // 배송 상태
 
@@ -50,7 +49,6 @@ public class OrderDetailDto {
                 // 배송 정보 (Delivery 엔티티가 로딩되어 있어야 함)
                 .receiverName(order.getDelivery().getReceiverName())
                 .address(order.getDelivery().getAddress())
-                .addressDetail(order.getDelivery().getAddress()) // Delivery 엔티티에 addressDetail 필드 필요
                 .deliveryMessage(order.getDelivery().getDeliveryMessage())
                 .deliveryStatus(order.getDelivery().getStatus())
                 .orderItems(itemDtos)
