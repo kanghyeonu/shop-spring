@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import shop.shop_spring.cart.dto.CartAddRequest;
 import shop.shop_spring.cart.dto.CartItemUpdateRequest;
 import shop.shop_spring.cart.service.CartServiceImpl;
-import shop.shop_spring.Dto.CustomApiResponse;
+import shop.shop_spring.common.response.CustomApiResponse;
 import shop.shop_spring.security.model.MyUser;
 
 @RestController

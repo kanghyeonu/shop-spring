@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import shop.shop_spring.Dto.CustomApiResponse;
+import shop.shop_spring.common.response.CustomApiResponse;
 import shop.shop_spring.order.Dto.CartItemOrderRequest;
 import shop.shop_spring.order.Dto.SingleItemOrderRequest;
 import shop.shop_spring.order.sevice.OrderServiceImpl;

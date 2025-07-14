@@ -16,4 +16,5 @@ public class SwaggerConfig {
                         .description("쇼핑몰 API 명세서")
                         .version("v1.0.0"));
     }
+
 }

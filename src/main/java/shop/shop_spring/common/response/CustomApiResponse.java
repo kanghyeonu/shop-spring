@@ -1,4 +1,4 @@
-package shop.shop_spring.Dto;
+package shop.shop_spring.common.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

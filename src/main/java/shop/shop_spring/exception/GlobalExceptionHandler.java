@@ -7,7 +7,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import shop.shop_spring.Dto.CustomApiResponse;
+import shop.shop_spring.common.response.CustomApiResponse;
 
 import java.io.UnsupportedEncodingException;
 
