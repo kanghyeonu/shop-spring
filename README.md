@@ -1,13 +1,13 @@
-# 🛒 쇼핑몰 프로젝트 (Shop-Spring)
+# 쇼핑몰 프로젝트 (Shop-Spring)
 
-## 📌 프로젝트 소개
+## 프로젝트 소개
 
 Spring Boot 3 기반의 실무형 쇼핑몰 프로젝트입니다.  
 회원가입부터 장바구니, 주문, 결제 흐름까지의 전 과정을 **비즈니스 로직 중심으로 직접 설계하고 구현**하고자 했습니다.
 
 ---
 
-## 🔧 기술 스택
+## 기술 스택
 
 - Java 17
 - Spring Boot 3.4.5
@@ -21,11 +21,11 @@ Spring Boot 3 기반의 실무형 쇼핑몰 프로젝트입니다.
 
 ---
 
-## 📐 프로젝트 아키텍처
+## 프로젝트 아키텍처
 
 <img width="893" height="529" alt="Image" src="https://github.com/user-attachments/assets/5617eb88-86a0-4ded-9a98-4532231397dc" />
 
-## 🧩 주요 기능
+## 주요 기능
 
 ### ✅ 회원 기능
 - 회원가입 (구글 이메일 인증 + Redis 인증번호)
@@ -55,7 +55,7 @@ Spring Boot 3 기반의 실무형 쇼핑몰 프로젝트입니다.
 ---
 
 ## 📁 프로젝트 구조
-<pre> shop.shop_spring 
+<pre> shop.shop_spring
 	├── Member 
 	│   ├── controller 
 	│   ├── service 
@@ -68,14 +68,14 @@ Spring Boot 3 기반의 실무형 쇼핑몰 프로젝트입니다.
 	└── Exception </pre>
 
 
-## 📄 API 문서 
+## API 문서 
 
-- *Notion 기반으로 기능별 API 정리*
+- *Notion 기반으로 기능별 API 정리* -> Swagger로 포팅 중
   (https://veiled-breath-897.notion.site/1-1dc00da4588c80eaa9cfc83ab7f088cb?source=copy_link)
 
 ---
 
-## ⚙️ 실행 방법
+##  실행 방법
 
 ```bash
 # 로컬에서 실행 시
