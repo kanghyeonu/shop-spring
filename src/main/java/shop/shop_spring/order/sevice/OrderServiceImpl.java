@@ -244,7 +244,7 @@ public class OrderServiceImpl implements OrderService{
 
         // 2. 주문 상태 확인(중복 처리 방지 등)
         if (order.getStatus() != Order.OrderStatus.PENDING){
-            System.out.println("주문이 이미 처리 됐음" + order.getStatus().toString());
+            System.out.println("주문이 이미 처리 됐음 " + order.getStatus().toString());
             return;
         }
 
@@ -271,7 +271,7 @@ public class OrderServiceImpl implements OrderService{
 
         // 2. 주문 상태 확인(중복 처리 방지)
         if (order.getStatus() != Order.OrderStatus.PENDING){
-            System.out.println("주문이 이미 결제 됐거나 취소 처리 됐음" + order.getStatus().toString());
+            System.out.println("주문이 이미 결제 됐거나 취소 처리 됐음 " + order.getStatus().toString());
             return;
         }
 

@@ -37,7 +37,7 @@
 
 <p>닉네임: <span id="displayNickName" th:text="${nickName}"></span></p>
 <input style="display:inline" type="text" id="nickNameInput" placeholder="변경할 별명 입력">
-<button type="button" id="modifynickNameBtn">닉네임 변경</button>
+<button type="button" id="modifyNickNameBtn">닉네임 변경</button>
 
 <button type="button" id="modifyMemberBtn">수정 완료</button>
 
@@ -73,7 +73,7 @@
         const modifyBirthDateBtn = document.getElementById('modifyBirthDateBtn');
         const modifyAddressBtn = document.getElementById('modifyAddressBtn');
         const modifyAddressDetailBtn = document.getElementById('modifyAddressDetailBtn');
-        const modifynickNameBtn = document.getElementById('modifynickNameBtn');
+        const modifynickNameBtn = document.getElementById('modifyNickNameBtn');
         const modifyMemberBtn = document.getElementById('modifyMemberBtn');
 
         modifyPasswordBtn.addEventListener('click', function() {
