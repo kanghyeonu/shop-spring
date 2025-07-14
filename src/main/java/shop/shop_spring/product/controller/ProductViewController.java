@@ -1,14 +1,11 @@
 package shop.shop_spring.product.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import shop.shop_spring.Dto.CustomApiResponse;
 import shop.shop_spring.product.Dto.ProductCreationRequest;
 import shop.shop_spring.product.Dto.ProductSearchCondition;
 import shop.shop_spring.product.ProductForm;
@@ -19,12 +16,11 @@ import shop.shop_spring.product.service.ProductServiceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/products")
 @RequiredArgsConstructor
-public class ProductController {
+public class ProductViewController {
     private final ProductServiceImpl productService;
 
     @GetMapping("/{id}")
@@ -38,6 +34,12 @@ public class ProductController {
         return "products/detail";
     }
 
+    @GetMapping("/new")
+    @PreAuthorize("isAuthenticated()")
+    public String createForm(Model model, Authentication auth){
+        model.addAttribute("username", auth.getName());
+        return "products/productForm";
+    }
 
     @GetMapping
     public String listProducts(
@@ -60,23 +62,6 @@ public class ProductController {
         return "products/list";
     }
 
-    @GetMapping("/new")
-    @PreAuthorize("isAuthenticated()")
-    public String createForm(Model model, Authentication auth){
-        model.addAttribute("username", auth.getName());
-        return "products/productForm";
-    }
-
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<CustomApiResponse<Map<String, String>>> createProduct(@RequestBody ProductCreationRequest request){
-        Long Id = productService.createProduct(request);
-
-        Map<String, String> responseData = CustomApiResponse.createResponseData("상품 아이디", Id.toString());
-        CustomApiResponse<Map<String, String> > successResponse = CustomApiResponse.success("상품 등록 완료", responseData);
-
-        return ResponseEntity.status(HttpStatus.OK).body(successResponse);
-    }
 
     private ProductCreationRequest formToProductCreationRequest(ProductForm form){
         ProductCreationRequest request = new ProductCreationRequest();
