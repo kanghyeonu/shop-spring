@@ -30,14 +30,28 @@ public class SecurityConfig {
             "/categories/**",
             "/swagger-ui/**",
             "/swagger-ui.html",
-            "/v3/api-docs/**"
+            "/v3/api-docs/**",
+
+            "/api/members/register",
+            "/api/members/login",
+            "/api/members/password-reset",
+            "/api/members/change-password",
+            "/api/categories/**",
+            "/api/products/**",
+            "/api/swagger-ui/**",
+            "/api/v3/api-docs/**"
     };
 
     String[] urlBeAuthenticated = {
             "/members/my-page/**",
             "/cart/**",
             "/orders/**",
-            "/payments/**"
+            "/payments/**",
+
+            "/api/members/my-page/**",
+            "/api/cart/**",
+            "/api/orders/**",
+            "/api/payments/**"
     };
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
