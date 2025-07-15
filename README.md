@@ -23,7 +23,7 @@ Spring Boot 3 기반의 쇼핑몰 프로젝트입니다.
 
 ## 프로젝트 아키텍처
 
-<img width="893" height="529" alt="Image" src="https://github.com/user-attachments/assets/5617eb88-86a0-4ded-9a98-4532231397dc" />
+<img width="893" height="529" alt="Image" src="https://github.com/user-attachments/assets/076eb6c2-ad5f-493f-99db-2e4aa7226e42" />
 
 ## 주요 기능
 
